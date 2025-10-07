@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect } from 'react';
+import { type ReactNode, useEffect, useLayoutEffect } from 'react';
 
 import { setTheme, toggleTheme } from '@/store/app.slice';
 import { useAppDispatch, useAppSelector } from '@/store/store';
@@ -9,6 +9,29 @@ interface ThemeProviderProps {
   children: ReactNode;
 }
 
+// Синхронная инициализация темы для предотвращения мигания
+const initializeTheme = (): ThemeMode => {
+  const savedTheme = localStorage.getItem('theme') as ThemeMode;
+  if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
+    // Применяем сохраненную тему сразу к DOM
+    document.documentElement.setAttribute('data-theme', savedTheme);
+    return savedTheme;
+  }
+
+  // Проверяем системную тему
+  const prefersDark =
+    window.matchMedia &&
+    window.matchMedia('(prefers-color-scheme: dark)').matches;
+  const systemTheme = prefersDark ? 'dark' : 'light';
+
+  // Применяем системную тему сразу к DOM
+  document.documentElement.setAttribute('data-theme', systemTheme);
+  return systemTheme;
+};
+
+// Инициализируем тему сразу при загрузке модуля
+const initialTheme = initializeTheme();
+
 /**
  * Провайдер для управления темами приложения
  * Поддерживает светлую и темную тему с сохранением в localStorage
@@ -17,23 +40,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const dispatch = useAppDispatch();
   const mode = useAppSelector((state) => state.app.theme);
 
-  // Инициализация темы при первом запуске
-  useEffect(() => {
-    const savedTheme = localStorage.getItem('theme') as ThemeMode;
-    if (savedTheme && (savedTheme === 'light' || savedTheme === 'dark')) {
-      dispatch(setTheme(savedTheme));
-      return;
-    }
-
-    // Проверяем системную тему
-    if (
-      window.matchMedia &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    ) {
-      dispatch(setTheme('dark'));
-    } else {
-      dispatch(setTheme('light'));
-    }
+  // Синхронизируем Redux store с уже инициализированной темой
+  useLayoutEffect(() => {
+    dispatch(setTheme(initialTheme));
   }, [dispatch]);
 
   // Сохраняем тему в localStorage при изменении
@@ -48,8 +57,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
     const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
     const handleChange = (e: MediaQueryListEvent) => {
       // Применяем системную тему только если пользователь не выбрал тему вручную
-      if (!localStorage.getItem('theme')) {
-        dispatch(setTheme(e.matches ? 'dark' : 'light'));
+      const hasUserTheme = localStorage.getItem('theme');
+      if (!hasUserTheme) {
+        const newTheme = e.matches ? 'dark' : 'light';
+        dispatch(setTheme(newTheme));
+        document.documentElement.setAttribute('data-theme', newTheme);
       }
     };
 
@@ -76,9 +88,24 @@ export const useTheme = () => {
     dispatch(setTheme(newMode));
   };
 
+  const resetToSystemTheme = () => {
+    // Удаляем пользовательский выбор темы
+    localStorage.removeItem('theme');
+
+    // Применяем системную тему
+    const prefersDark =
+      window.matchMedia &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches;
+    const systemTheme = prefersDark ? 'dark' : 'light';
+
+    dispatch(setTheme(systemTheme));
+    document.documentElement.setAttribute('data-theme', systemTheme);
+  };
+
   return {
     mode,
     toggleTheme: handleToggleTheme,
-    setTheme: handleSetTheme
+    setTheme: handleSetTheme,
+    resetToSystemTheme
   };
 };

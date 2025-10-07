@@ -59,6 +59,8 @@ export const useAppNavigate = () => {
 
   const changeLanguage = (newLang: Languages) => {
     if (i18n.language !== newLang) {
+      // Сохраняем выбранный язык в localStorage
+      localStorage.setItem('i18nextLng', newLang);
       i18n.changeLanguage(newLang);
       const currentPath = location.pathname + location.search;
       const newPath = currentPath.replace(`/${currentLang}/`, `/${newLang}/`);

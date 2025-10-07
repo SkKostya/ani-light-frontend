@@ -30,13 +30,22 @@ const LanguageGuard: React.FC<{ children: React.ReactNode }> = ({
 
       navigate(newPath, { replace: true });
     } else if (location.pathname.match(/(^\/\w{2}\/?$)|(^\/$)/)) {
-      navigate(`/${Languages.ru}/${ROUTES.catalog}`, {
+      // Если нет языка в URL, используем сохраненный язык или русский по умолчанию
+      const savedLang = localStorage.getItem('i18nextLng');
+      const defaultLang =
+        savedLang && supportedLngs.includes(savedLang)
+          ? savedLang
+          : Languages.ru;
+
+      navigate(`/${defaultLang}/${ROUTES.catalog}`, {
         replace: true
       });
     } else if (lang && lang !== i18n.language) {
+      // Сохраняем язык в localStorage при изменении
+      localStorage.setItem('i18nextLng', lang);
       i18n.changeLanguage(lang);
     }
-  }, [location, lang, i18n, supportedLngs]);
+  }, [location, lang, i18n, supportedLngs, navigate]);
 
   // Настройки языка документа для SEO
   useEffect(() => {

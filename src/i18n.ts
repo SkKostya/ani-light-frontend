@@ -11,7 +11,15 @@ const resources = {
   ru: { translation: ru }
 };
 
-const fallbackLanguage = localStorage.getItem('i18nextLng') || Languages.ru;
+// Получаем сохраненный язык из localStorage с проверкой валидности
+const getSavedLanguage = (): string => {
+  const saved = localStorage.getItem('i18nextLng');
+  return saved && SUPPORTED_LANGUAGES.includes(saved as Languages)
+    ? saved
+    : Languages.ru;
+};
+
+const fallbackLanguage = getSavedLanguage();
 
 i18next
   .use(LanguageDetector)
@@ -24,7 +32,11 @@ i18next
       // Порядок определения языка
       order: ['path', 'localStorage', 'navigator', 'subdomain'],
       // Извлечение языка из первого сегмента пути (/:lang)
-      lookupFromPathIndex: 0
+      lookupFromPathIndex: 0,
+      // Настройки для localStorage
+      lookupLocalStorage: 'i18nextLng',
+      // Кэширование выбранного языка
+      caches: ['localStorage']
     },
     interpolation: {
       escapeValue: false // React самостоятельно экранирует значения
