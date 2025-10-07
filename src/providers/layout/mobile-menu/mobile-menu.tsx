@@ -11,6 +11,7 @@ import {
   Typography
 } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useLocation } from 'react-router';
 
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { ThemeToggle } from '@/shared/ui';
@@ -42,6 +43,7 @@ interface MobileMenuProps {
 const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
+  const location = useLocation();
 
   const menuItems = [
     {
@@ -76,6 +78,19 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
     }
   ];
 
+  // Определяем активный пункт меню на основе текущего пути
+  const isActiveItem = (path: string): boolean => {
+    const currentPath = location.pathname;
+    if (path === '/anime') {
+      return (
+        currentPath === '/anime' ||
+        currentPath === '/' ||
+        currentPath.includes('/catalog')
+      );
+    }
+    return currentPath.startsWith(path);
+  };
+
   const handleItemClick = (path: string) => {
     navigate(path);
     onClose();
@@ -99,13 +114,28 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
           <ListItem key={item.path} disablePadding>
             <ListItemButton
               onClick={() => handleItemClick(item.path)}
-              sx={listItemButtonStyles}
+              sx={{
+                ...listItemButtonStyles,
+                ...(isActiveItem(item.path) && {
+                  backgroundColor: 'var(--color-background-elevated)',
+                  borderLeft: '4px solid var(--color-primary)',
+                  '&:hover': {
+                    backgroundColor: 'var(--color-background-elevated)'
+                  }
+                })
+              }}
             >
               <ListItemIcon sx={listItemIconStyles}>{item.icon}</ListItemIcon>
               <ListItemText
                 primary={item.label}
                 primaryTypographyProps={{
-                  sx: listItemTextStyles
+                  sx: {
+                    ...listItemTextStyles,
+                    ...(isActiveItem(item.path) && {
+                      fontWeight: 600,
+                      color: 'primary.main'
+                    })
+                  }
                 }}
               />
             </ListItemButton>

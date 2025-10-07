@@ -1,5 +1,10 @@
-import './error-template.scss';
-
+import {
+  ErrorOutline,
+  Home,
+  Refresh,
+  SentimentDissatisfied
+} from '@mui/icons-material';
+import { Box, Button, Container, Typography } from '@mui/material';
 import React, { useEffect, useMemo } from 'react';
 import { useErrorBoundary } from 'react-error-boundary';
 import { useTranslation } from 'react-i18next';
@@ -8,6 +13,14 @@ import { useLocation } from 'react-router';
 import i18next from '@/i18n';
 import { ROUTES } from '@/shared/constants';
 import { LocalizedNavLink } from '@/shared/ui';
+
+import {
+  containerStyles,
+  descriptionStyles,
+  iconStyles,
+  linkStyles,
+  titleStyles
+} from './error-template.styles';
 
 interface IProps {
   type: ErrorType;
@@ -21,7 +34,7 @@ const ErrorTemplate: React.FC<IProps> = ({
   type,
   redirect = {
     text: i18next.t('404_redirect-text-1', {
-      defaultValue: 'Перейти на главную'
+      defaultValue: 'Перейти на главную'
     }),
     href: ROUTES.catalog
   }
@@ -41,15 +54,18 @@ const ErrorTemplate: React.FC<IProps> = ({
           t('404_description-2', {
             defaultValue: 'А может быть, вы перешли по неправильной ссылке.'
           })
-        ]
+        ],
+        icon: <SentimentDissatisfied />
       },
       oops: {
         title: t('404_title-2', { defaultValue: 'Что-то пошло не так' }),
         description: [
           t('404_description-3', {
-            defaultValue: 'Просим перезагрузить страницу или'
+            defaultValue:
+              'Произошла неожиданная ошибка. Попробуйте перезагрузить страницу или вернуться на главную.'
           })
-        ]
+        ],
+        icon: <ErrorOutline />
       }
     }),
     [t]
@@ -61,22 +77,66 @@ const ErrorTemplate: React.FC<IProps> = ({
     };
   }, [resetBoundary, location]);
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   return (
-    <div className="error-template">
-      <p className="error-template__title">{ERRORS[type].title}</p>
-      <p className="error-template__description">
-        {ERRORS[type].description.map((item) => (
-          <React.Fragment key={item}>
-            {item} <br />
-          </React.Fragment>
-        ))}
-        {redirect && (
-          <LocalizedNavLink className="error-template__link" to={redirect.href}>
-            {redirect.text}
-          </LocalizedNavLink>
-        )}
-      </p>
-    </div>
+    <Container sx={containerStyles}>
+      <Box sx={{ textAlign: 'center' }}>
+        {/* Иконка ошибки */}
+        <Box sx={iconStyles}>{ERRORS[type].icon}</Box>
+
+        {/* Заголовок */}
+        <Typography variant="h3" component="h1" sx={titleStyles}>
+          {ERRORS[type].title}
+        </Typography>
+
+        {/* Описание */}
+        <Typography variant="body1" sx={descriptionStyles}>
+          {ERRORS[type].description.map((item, index) => (
+            <React.Fragment key={index}>
+              {item}
+              {index < ERRORS[type].description.length - 1 && <br />}
+            </React.Fragment>
+          ))}
+        </Typography>
+
+        {/* Кнопки действий */}
+        <Box
+          sx={{
+            mt: 4,
+            display: 'flex',
+            gap: 2,
+            justifyContent: 'center',
+            flexWrap: 'wrap'
+          }}
+        >
+          {redirect && (
+            <Button
+              component={LocalizedNavLink}
+              to={redirect.href}
+              variant="contained"
+              startIcon={<Home />}
+              sx={linkStyles}
+            >
+              {redirect.text}
+            </Button>
+          )}
+
+          {type === 'oops' && (
+            <Button
+              variant="outlined"
+              startIcon={<Refresh />}
+              onClick={handleRefresh}
+              sx={linkStyles}
+            >
+              {t('error_refresh', { defaultValue: 'Перезагрузить' })}
+            </Button>
+          )}
+        </Box>
+      </Box>
+    </Container>
   );
 };
 
@@ -87,4 +147,5 @@ type ErrorType = '404' | 'oops';
 interface ErrorsInterface {
   title: string;
   description: string[];
+  icon: React.ReactNode;
 }

@@ -6,7 +6,7 @@ import {
   useMediaQuery,
   useTheme
 } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
@@ -40,6 +40,11 @@ const BottomNavigationComponent: React.FC<BottomNavigationProps> = ({
   };
 
   const [value, setValue] = useState(getCurrentValue());
+
+  // Синхронизируем состояние с URL при изменении маршрута
+  useEffect(() => {
+    setValue(getCurrentValue());
+  }, [location.pathname]);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     if (newValue === -1) return;

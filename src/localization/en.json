@@ -14,5 +14,14 @@
     "language_switch": "Change language",
     "theme_switch": "Change theme",
     "menu_toggle": "Menu"
-  }
+  },
+  "error": {
+    "refresh": "Refresh"
+  },
+  "404_title-1": "Page Not Found",
+  "404_description-1": "This page either doesn't exist or hasn't been created yet.",
+  "404_description-2": "Or maybe you followed a wrong link.",
+  "404_title-2": "Something Went Wrong",
+  "404_description-3": "An unexpected error occurred. Try refreshing the page or returning to the main page.",
+  "404_redirect-text-1": "Go to Main Page"
 }

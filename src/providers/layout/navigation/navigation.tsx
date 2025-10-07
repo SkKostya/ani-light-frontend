@@ -6,11 +6,10 @@ import {
   Settings
 } from '@mui/icons-material';
 import { Box, Tab, Tabs, useMediaQuery, useTheme } from '@mui/material';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
-import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 
 import {
@@ -49,10 +48,17 @@ const Navigation: React.FC<NavigationProps> = ({
     if (path.includes('/favorites')) return 1;
     if (path.includes('/watchlist')) return 2;
     if (path.includes('/history')) return 3;
+    if (path === '/' || path.includes('/anime') || path.includes('/catalog'))
+      return 0;
     return 0; // catalog по умолчанию
   };
 
   const [value, setValue] = useState(getCurrentTab());
+
+  // Синхронизируем состояние с URL при изменении маршрута
+  useEffect(() => {
+    setValue(getCurrentTab());
+  }, [location.pathname]);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
@@ -60,7 +66,7 @@ const Navigation: React.FC<NavigationProps> = ({
     // Навигация по разделам
     switch (newValue) {
       case 0:
-        navigate(`/${ROUTES.catalog}`);
+        navigate('/anime');
         break;
       case 1:
         navigate('/favorites');
