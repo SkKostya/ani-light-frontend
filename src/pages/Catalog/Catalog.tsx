@@ -15,7 +15,7 @@ import { ThemeToggle } from '@/shared/ui';
 
 const Catalog: React.FC = () => {
   return (
-    <Container maxWidth="lg" className="catalog">
+    <Container>
       <Box sx={{ py: 4 }}>
         {/* Заголовок с переключателем темы */}
         <Box

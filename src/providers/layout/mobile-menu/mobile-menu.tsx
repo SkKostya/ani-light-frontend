@@ -16,10 +16,8 @@ import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { ThemeToggle } from '@/shared/ui';
 
 import LanguageSwitcher from '../language-switcher';
-import UserMenu from '../user-menu';
 import {
   closeButtonStyles,
-  controlsLeftStyles,
   controlsStyles,
   drawerContentStyles,
   drawerStyles,
@@ -117,11 +115,8 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
 
       {/* Управление */}
       <Box sx={controlsStyles}>
-        <Box sx={controlsLeftStyles}>
-          <ThemeToggle size="small" showTooltip={false} />
-          <LanguageSwitcher size="small" showTooltip={false} />
-        </Box>
-        <UserMenu size="small" showTooltip={false} />
+        <ThemeToggle size="small" showTooltip={false} />
+        <LanguageSwitcher size="small" showTooltip={false} />
       </Box>
     </Box>
   );

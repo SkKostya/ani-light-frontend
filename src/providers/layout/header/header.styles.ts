@@ -15,13 +15,17 @@ export const appBarStyles: SxProps<Theme> = {
 
 export const toolbarStyles: SxProps<Theme> = {
   minHeight: { xs: 56, md: 64 },
-  px: { xs: 2, md: 3 },
-  gap: 2
-};
-
-export const mobileMenuButtonStyles: SxProps<Theme> = {
-  color: 'text.primary',
-  mr: 1
+  px: { xs: 0, md: 0 },
+  py: { xs: 1.5, md: 2 },
+  gap: 2,
+  // Ограничиваем ширину и центрируем как контент
+  width: 'var(--container-width)',
+  maxWidth: '1280px',
+  margin: '0 auto',
+  borderRadius: {
+    xs: 0,
+    md: '0 0 var(--border-radius-large) var(--border-radius-large)'
+  }
 };
 
 export const logoContainerStyles: SxProps<Theme> = {
@@ -94,5 +98,6 @@ export const searchInputStyles: SxProps<Theme> = {
 export const controlsContainerStyles: SxProps<Theme> = {
   display: 'flex',
   alignItems: 'center',
-  gap: { xs: 0.5, md: 1 }
+  gap: { xs: 0.5, md: 1 },
+  marginLeft: 'auto' // Прижимаем к правому краю
 };

@@ -1,8 +1,7 @@
-import { Menu, Search } from '@mui/icons-material';
+import { Search } from '@mui/icons-material';
 import {
   AppBar,
   Box,
-  IconButton,
   InputBase,
   Toolbar,
   Typography,
@@ -16,13 +15,11 @@ import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { ThemeToggle } from '@/shared/ui';
 
 import LanguageSwitcher from '../language-switcher';
-import UserMenu from '../user-menu';
 import {
   appBarStyles,
   controlsContainerStyles,
   logoContainerStyles,
   logoTextStyles,
-  mobileMenuButtonStyles,
   searchContainerStyles,
   searchFormStyles,
   searchIconStyles,
@@ -31,15 +28,11 @@ import {
   toolbarStyles
 } from './header.styles';
 
-interface HeaderProps {
-  onMenuToggle?: () => void;
-}
-
 /**
  * Компонент шапки приложения с логотипом, поиском и навигацией
  * @param onMenuToggle - Обработчик открытия мобильного меню
  */
-const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
+const Header: React.FC = () => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
   const theme = useTheme();
@@ -60,19 +53,6 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
   return (
     <AppBar sx={appBarStyles}>
       <Toolbar sx={toolbarStyles}>
-        {/* Мобильное меню */}
-        {isMobile && (
-          <IconButton
-            edge="start"
-            color="inherit"
-            onClick={onMenuToggle}
-            sx={mobileMenuButtonStyles}
-            aria-label={t('layout.menu_toggle')}
-          >
-            <Menu />
-          </IconButton>
-        )}
-
         {/* Логотип */}
         <Box onClick={handleLogoClick} sx={logoContainerStyles}>
           <Typography variant="h5" component="h1" sx={logoTextStyles}>
@@ -95,12 +75,13 @@ const Header: React.FC<HeaderProps> = ({ onMenuToggle }) => {
           </Box>
         </Box>
 
-        {/* Правые элементы управления */}
-        <Box sx={controlsContainerStyles}>
-          <ThemeToggle size={isMobile ? 'small' : 'medium'} />
-          <LanguageSwitcher size={isMobile ? 'small' : 'medium'} />
-          <UserMenu size={isMobile ? 'small' : 'medium'} />
-        </Box>
+        {/* Правые элементы управления (только на десктопе) */}
+        {!isMobile && (
+          <Box sx={controlsContainerStyles}>
+            <ThemeToggle size="medium" />
+            <LanguageSwitcher size="medium" />
+          </Box>
+        )}
       </Toolbar>
     </AppBar>
   );

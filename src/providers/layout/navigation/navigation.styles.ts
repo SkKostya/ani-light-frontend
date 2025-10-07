@@ -9,7 +9,11 @@ export const navigationContainerStyles: SxProps<Theme> = {
   borderBottom: 1,
   borderColor: 'divider',
   backgroundColor: 'var(--color-background-paper)',
-  boxShadow: 'var(--shadow-small)'
+  boxShadow: 'var(--shadow-small)',
+  '& .MuiTabs-root': {
+    width: 'var(--container-width)',
+    margin: '0 auto'
+  }
 };
 
 export const mobileTabsStyles: SxProps<Theme> = {

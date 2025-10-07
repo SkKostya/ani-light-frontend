@@ -10,6 +10,7 @@ import { ROUTES } from '@/shared/constants';
 import { MainLoader } from '@/shared/ui';
 import ErrorTemplate from '@/shared/widgets/errors/error-template/error-template';
 
+import BottomNavigation from './bottom-navigation';
 import Header from './header';
 import { mainContentStyles } from './layout.styles';
 import MobileMenu from './mobile-menu';
@@ -32,13 +33,16 @@ const Layout: React.FC = () => {
   return (
     <div className="layout">
       {/* Шапка */}
-      <Header onMenuToggle={handleMobileMenuToggle} />
+      <Header />
 
       {/* Навигация (только на десктопе) */}
       {!isMobile && <Navigation />}
 
       {/* Мобильное меню */}
       <MobileMenu open={mobileMenuOpen} onClose={handleMobileMenuClose} />
+
+      {/* Нижняя навигация (только на мобильных) */}
+      <BottomNavigation onMenuToggle={handleMobileMenuToggle} />
 
       {/* Основной контент */}
       <main className="layout__main">

@@ -143,6 +143,17 @@ export const createMuiTheme = (mode: PaletteMode = 'light') => {
             backgroundImage: 'none'
           }
         }
+      },
+      MuiContainer: {
+        styleOverrides: {
+          root: {
+            width: 'var(--container-width)',
+            maxWidth: '1280px !important',
+            margin: '0 auto',
+            paddingLeft: '0 !important',
+            paddingRight: '0 !important'
+          }
+        }
       }
     }
   };

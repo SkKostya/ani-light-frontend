@@ -1,5 +1,12 @@
 import { Language } from '@mui/icons-material';
-import { IconButton, Menu, MenuItem, Tooltip } from '@mui/material';
+import {
+  IconButton,
+  Menu,
+  MenuItem,
+  Tooltip,
+  useMediaQuery,
+  useTheme
+} from '@mui/material';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -28,6 +35,8 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
 }) => {
   const { t } = useTranslation();
   const { changeLanguage, currentLang } = useAppNavigate();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const open = Boolean(anchorEl);
 
@@ -81,12 +90,12 @@ const LanguageSwitcher: React.FC<LanguageSwitcherProps> = ({
         open={open}
         onClose={handleClose}
         anchorOrigin={{
-          vertical: 'bottom',
-          horizontal: 'right'
+          vertical: isMobile ? 'top' : 'bottom',
+          horizontal: isMobile ? 'center' : 'right'
         }}
         transformOrigin={{
-          vertical: 'top',
-          horizontal: 'right'
+          vertical: isMobile ? 'bottom' : 'top',
+          horizontal: isMobile ? 'center' : 'right'
         }}
         sx={menuStyles}
       >

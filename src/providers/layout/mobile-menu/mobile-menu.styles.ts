@@ -70,12 +70,6 @@ export const controlsStyles: SxProps<Theme> = {
   borderTop: '1px solid var(--color-border)',
   display: 'flex',
   alignItems: 'center',
-  justifyContent: 'space-between',
+  justifyContent: 'center',
   gap: 2
-};
-
-export const controlsLeftStyles: SxProps<Theme> = {
-  display: 'flex',
-  alignItems: 'center',
-  gap: 1
 };
