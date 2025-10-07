@@ -89,13 +89,13 @@ import { LocalizedLink, LocalizedNavLink } from '@/shared/ui';
 
 ### Навигация с языком
 
-- Используй `useAppNavigation` для программной навигации
+- Используй `useAppNavigate` для программной навигации
 - Хук автоматически добавляет префикс языка к путям
 
 ```tsx
-import { useAppNavigation } from '@/shared/hooks/useAppNavigation';
+import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 
-const { navigate, changeLanguage, currentLang } = useAppNavigation();
+const { navigate, changeLanguage, currentLang } = useAppNavigate();
 
 // Навигация с языком
 navigate('/catalog');

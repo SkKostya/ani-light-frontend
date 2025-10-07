@@ -23,7 +23,7 @@ const ErrorTemplate: React.FC<IProps> = ({
     text: i18next.t('404_redirect-text-1', {
       defaultValue: 'Перейти на главную'
     }),
-    href: ROUTES.autoCredit
+    href: ROUTES.catalog
   }
 }) => {
   const { t } = useTranslation();

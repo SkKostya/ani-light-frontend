@@ -36,7 +36,7 @@ alwaysApply: true
 ```
 src/
 ├── api/                 # API слой и коннекторы
-├── pages/              # Страницы приложения
+├── pages/              # Страницы приложения (Страницы могут содержать свои types, hooks, widgets, features, entities, ui которые относятся локально к странице)
 ├── providers/          # React провайдеры и контексты
 ├── shared/             # Переиспользуемые компоненты и утилиты
 │   ├── constants/      # Константы и перечисления
@@ -161,6 +161,268 @@ const getUserById = (id: any): any => {
   Кнопка
 </Button>
 ```
+
+### Организация стилей
+
+#### Правила выбора способа стилизации
+
+- **SCSS файлы** - для сложных стилей с селекторами, псевдоэлементами, анимациями
+- **JS объекты стилей** - для простых стилей MUI компонентов с sx prop
+- **CSS переменные** - для глобальных значений (цвета, размеры, тени)
+
+#### Структура файлов стилей
+
+```
+component/
+├── component.tsx           # Основной компонент
+├── component.scss          # SCSS стили (если нужны)
+├── component.styles.ts     # JS объекты стилей (если нужны)
+└── index.ts               # Экспорт компонента
+```
+
+#### Правила создания JS объектов стилей
+
+- Создавай файл `component.styles.ts` для каждого компонента с sx стилями
+- Используй типизированные объекты с `SxProps<Theme>`
+- Группируй стили по элементам: `container`, `header`, `content`, `footer`
+- Используй функции для динамических стилей
+
+#### Примеры правильной организации
+
+```tsx
+// component.styles.ts
+import { SxProps, Theme } from '@mui/material';
+
+export const containerStyles: SxProps<Theme> = {
+  display: 'flex',
+  flexDirection: 'column',
+  minHeight: '100vh',
+  backgroundColor: 'var(--color-background)'
+};
+
+export const headerStyles: SxProps<Theme> = {
+  position: 'sticky',
+  top: 0,
+  zIndex: 1000,
+  backgroundColor: 'var(--color-background-paper)',
+  borderBottom: '1px solid var(--color-border)',
+  boxShadow: 'var(--shadow-small)'
+};
+
+export const getButtonStyles = (isActive: boolean): SxProps<Theme> => ({
+  color: isActive ? 'primary.main' : 'text.secondary',
+  fontWeight: isActive ? 600 : 400,
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    color: 'primary.main',
+    transform: 'translateY(-2px)'
+  }
+});
+```
+
+```tsx
+// component.tsx
+import { Box, Button } from '@mui/material';
+import { containerStyles, headerStyles, getButtonStyles } from './component.styles';
+
+const MyComponent = ({ isActive }: { isActive: boolean }) => {
+  return (
+    <Box sx={containerStyles}>
+      <Box sx={headerStyles}>
+        <Button sx={getButtonStyles(isActive)}>
+          Кнопка
+        </Button>
+      </Box>
+    </Box>
+  );
+};
+```
+
+#### Когда использовать SCSS vs JS объекты
+
+**Используй SCSS когда:**
+- Нужны сложные селекторы (`.class:hover`, `.parent .child`)
+- Псевдоэлементы (`::before`, `::after`)
+- Ключевые кадры анимаций (`@keyframes`)
+- Медиа-запросы с сложной логикой
+- CSS Grid или Flexbox с сложными правилами
+
+**Используй JS объекты когда:**
+- Простые стили для MUI компонентов
+- Условная стилизация на основе props
+- Стили, которые нужно переиспользовать
+- Динамические значения из темы
+
+#### Запрещенные практики
+
+```tsx
+// ❌ Плохо - сложные стили в sx
+<Box sx={{
+  '& .nested-element': {
+    '&:hover': {
+      '&::before': {
+        content: '""',
+        position: 'absolute',
+        // ... много CSS
+      }
+    }
+  }
+}}>
+
+// ✅ Хорошо - вынести в SCSS
+<Box className="complex-styles">
+```
+
+```tsx
+// ❌ Плохо - повторяющиеся стили
+<Button sx={{ color: 'primary.main', fontWeight: 600 }}>Button 1</Button>
+<Button sx={{ color: 'primary.main', fontWeight: 600 }}>Button 2</Button>
+
+// ✅ Хорошо - вынести в JS объект
+const buttonStyles = { color: 'primary.main', fontWeight: 600 };
+<Button sx={buttonStyles}>Button 1</Button>
+<Button sx={buttonStyles}>Button 2</Button>
+```
+
+## Адаптивность и мобильная версия
+
+### Приоритет мобильных устройств
+- **Основная аудитория** - мобильные устройства (смартфоны, планшеты)
+- **Mobile First** подход - сначала разрабатывай мобильную версию
+- Мобильная версия должна быть **красивой** и **удобной**
+- Все компоненты должны корректно работать на экранах от 320px
+
+### Breakpoints MUI
+```tsx
+// Используй стандартные breakpoints MUI
+const theme = createTheme({
+  breakpoints: {
+    values: {
+      xs: 0,      // мобильные (0-599px)
+      sm: 600,    // планшеты (600-899px) 
+      md: 900,    // десктоп (900-1199px)
+      lg: 1200,   // большой десктоп (1200-1535px)
+      xl: 1536    // очень большой экран (1536px+)
+    }
+  }
+});
+```
+
+### Правила адаптивности
+- **Минимальная ширина**: 320px (iPhone SE)
+- **Touch-friendly элементы**: минимум 44px для кнопок и ссылок
+- **Отступы**: 16px по бокам на мобильных, 24px на планшетах
+- **Шрифты**: читаемые на маленьких экранах (минимум 14px для основного текста)
+
+### Примеры адаптивных компонентов
+```tsx
+// ✅ Правильно - адаптивная сетка
+<Grid container spacing={{ xs: 2, md: 3 }}>
+  <Grid item xs={12} sm={6} md={4}>
+    <Card>Контент</Card>
+  </Grid>
+</Grid>
+
+// ✅ Правильно - адаптивные отступы
+<Box sx={{ 
+  p: { xs: 2, sm: 3, md: 4 },
+  mx: { xs: 1, sm: 2, md: 3 }
+}}>
+  Контент
+</Box>
+
+// ✅ Правильно - адаптивная типографика
+<Typography variant="h4" sx={{ 
+  fontSize: { xs: '1.5rem', sm: '2rem', md: '2.5rem' }
+}}>
+  Заголовок
+</Typography>
+```
+
+### Мобильная навигация
+- Используй **Bottom Navigation** или **Drawer** для мобильных
+- Главное меню должно быть доступно одним касанием
+- Показывай активную страницу в навигации
+- Используй иконки с подписями для лучшего UX
+
+### Touch-взаимодействие
+- **Минимальный размер** интерактивных элементов: 44x44px
+- Добавляй **достаточные отступы** между кнопками (минимум 8px)
+- Используй **swipe-жесты** где это уместно
+- **Отключай hover-эффекты** на мобильных устройствах
+
+### Адаптивные изображения
+```tsx
+// ✅ Правильно - адаптивные изображения
+<Box
+  component="img"
+  src="/image-mobile.jpg"
+  sx={{
+    width: '100%',
+    height: { xs: 200, sm: 300, md: 400 },
+    objectFit: 'cover'
+  }}
+/>
+
+// ✅ Правильно - разные изображения для разных экранов
+<picture>
+  <source media="(min-width: 900px)" srcSet="/image-desktop.jpg" />
+  <source media="(min-width: 600px)" srcSet="/image-tablet.jpg" />
+  <img src="/image-mobile.jpg" alt="Описание" />
+</picture>
+```
+
+### Производительность на мобильных
+- **Оптимизируй изображения** (WebP, сжатие)
+- Используй **ленивую загрузку** для тяжелых компонентов
+- **Минимизируй** количество HTTP запросов
+- **Кэшируй** статические ресурсы
+
+### Тестирование адаптивности
+- Тестируй на **реальных устройствах**, а не только в DevTools
+- Проверяй на **медленных соединениях** (3G)
+- Тестируй **разные ориентации** экрана
+- Проверяй **accessibility** на мобильных
+
+### Адаптивные паттерны
+```tsx
+// ✅ Правильно - адаптивная карточка
+<Card sx={{
+  width: { xs: '100%', sm: 'calc(50% - 8px)', md: 'calc(33.333% - 12px)' },
+  mb: { xs: 2, sm: 3 }
+}}>
+  <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+    <Typography variant="h6" sx={{ 
+      fontSize: { xs: '1.1rem', sm: '1.25rem' },
+      mb: { xs: 1, sm: 2 }
+    }}>
+      Заголовок
+    </Typography>
+  </CardContent>
+</Card>
+
+// ✅ Правильно - адаптивная форма
+<Stack spacing={{ xs: 2, sm: 3 }}>
+  <TextField
+    fullWidth
+    size={useMediaQuery(theme.breakpoints.down('sm')) ? 'small' : 'medium'}
+    label="Email"
+  />
+  <Button
+    fullWidth
+    size={useMediaQuery(theme.breakpoints.down('sm')) ? 'large' : 'medium'}
+    variant="contained"
+  >
+    Отправить
+  </Button>
+</Stack>
+```
+
+### Мобильные особенности
+- **Портретная ориентация** - основной режим просмотра
+- **Большие пальцы** - учитывай при размещении элементов
+- **Одна рука** - важные действия должны быть доступны одной рукой
+- **Быстрый доступ** - часто используемые функции должны быть на виду
 
 ## Управление состоянием
 

@@ -1,5 +1,3 @@
-import './catalog.scss';
-
 import { Search as SearchIcon, Star } from '@mui/icons-material';
 import {
   Box,

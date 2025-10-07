@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router';
 
-import useAppNavigate from '@/shared/hooks/useAppNavigation';
+import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { setNavigate } from '@/shared/services/helpers/navigate-helper';
 
 import { LanguageGuard } from './language.guard';

@@ -2,20 +2,47 @@
   display: flex;
   flex-direction: column;
   min-height: 100dvh;
+  background-color: var(--color-background);
 
   --container-width: min(calc(100% - 32px), 1280px);
 
   &__main {
-    display: contents;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
   }
 
   &__error {
     width: var(--container-width);
+    padding: 24px;
     margin-inline: auto;
     margin-top: 32px;
+    background-color: var(--color-background-paper);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-medium);
   }
 
+  // Анимации для плавных переходов
+  * {
+    transition:
+      color 0.3s ease-in-out,
+      background-color 0.3s ease-in-out,
+      border-color 0.3s ease-in-out,
+      box-shadow 0.3s ease-in-out;
+  }
+
+  // Стили для мобильных устройств
+  @media (max-width: 767px) {
+    --container-width: calc(100% - 16px);
+  }
+
+  // Стили для планшетов и десктопов
   @media (min-width: 768px) {
     --container-width: min(calc(100% - 48px), 1280px);
+  }
+
+  // Стили для больших экранов
+  @media (min-width: 1200px) {
+    --container-width: min(calc(100% - 64px), 1280px);
   }
 }

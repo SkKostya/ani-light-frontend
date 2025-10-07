@@ -24,13 +24,13 @@ const LanguageGuard: React.FC<{ children: React.ReactNode }> = ({
       );
 
       if (newPath.match(/^\/\w{2}\/?$/)) {
-        newPath += `/${ROUTES.autoCreditCreate}`;
+        newPath += `/${ROUTES.catalog}`;
       }
       newPath += location.search;
 
       navigate(newPath, { replace: true });
     } else if (location.pathname.match(/(^\/\w{2}\/?$)|(^\/$)/)) {
-      navigate(`/${Languages.ru}/${ROUTES.autoCreditCreate}`, {
+      navigate(`/${Languages.ru}/${ROUTES.catalog}`, {
         replace: true
       });
     } else if (lang && lang !== i18n.language) {

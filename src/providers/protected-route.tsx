@@ -13,9 +13,7 @@ const ProtectedRoute: React.FC = () => {
   if (!token?.accessToken) {
     removeClientToken();
     // TODO: Очистка данных клиента в store
-    return (
-      <Navigate to={`/${i18n.language}/${ROUTES.autoCreditCreate}`} replace />
-    );
+    return <Navigate to={`/${i18n.language}/${ROUTES.catalog}`} replace />;
   }
 
   return <Outlet />;

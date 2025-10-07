@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from 'react';
 
 import { debounce } from '@/shared/services/tools';
 
-const useDebouncedValue = (value: string, delay = 300) => {
+export const useDebouncedValue = (value: string, delay = 300) => {
   const [debouncedValue, setDebouncedValue] = useState(value);
 
   const handleValueChanged = useCallback(
@@ -16,5 +16,3 @@ const useDebouncedValue = (value: string, delay = 300) => {
 
   return debouncedValue;
 };
-
-export default useDebouncedValue;

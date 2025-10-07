@@ -1,1 +1,18 @@
-{}
+{
+  "layout": {
+    "logo": "AniLight",
+    "search_placeholder": "Поиск аниме...",
+    "nav_catalog": "Каталог",
+    "nav_favorites": "Избранное",
+    "nav_watchlist": "Смотрю",
+    "nav_history": "История",
+    "nav_profile": "Профиль",
+    "nav_settings": "Настройки",
+    "user_menu_profile": "Профиль",
+    "user_menu_settings": "Настройки",
+    "user_menu_logout": "Выйти",
+    "language_switch": "Сменить язык",
+    "theme_switch": "Сменить тему",
+    "menu_toggle": "Открыть меню"
+  }
+}

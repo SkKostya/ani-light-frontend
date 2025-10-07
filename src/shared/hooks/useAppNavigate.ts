@@ -9,7 +9,7 @@ import {
 
 import { Languages } from '@/shared/constants';
 
-const useAppNavigate = () => {
+export const useAppNavigate = () => {
   const navigate = useNavigate();
   const location = useLocation();
   const { i18n } = useTranslation();
@@ -72,5 +72,3 @@ const useAppNavigate = () => {
     currentLang
   };
 };
-
-export default useAppNavigate;

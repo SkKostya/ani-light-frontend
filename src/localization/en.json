@@ -1,1 +1,18 @@
-{}
+{
+  "layout": {
+    "logo": "AniLight",
+    "search_placeholder": "Search anime...",
+    "nav_catalog": "Catalog",
+    "nav_favorites": "Favorites",
+    "nav_watchlist": "Watchlist",
+    "nav_history": "History",
+    "nav_profile": "Profile",
+    "nav_settings": "Settings",
+    "user_menu_profile": "Profile",
+    "user_menu_settings": "Settings",
+    "user_menu_logout": "Logout",
+    "language_switch": "Change language",
+    "theme_switch": "Change theme",
+    "menu_toggle": "Open menu"
+  }
+}
