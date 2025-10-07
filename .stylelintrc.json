@@ -1,0 +1,22 @@
+{
+  "extends": [
+    "stylelint-config-standard-scss",
+    "stylelint-config-recess-order"
+  ],
+  "plugins": ["stylelint-prettier"],
+  "rules": {
+    "color-function-notation": "legacy",
+    "media-feature-range-notation": "prefix",
+    "selector-class-pattern": null,
+    "scss/load-no-partial-leading-underscore": null,
+    "alpha-value-notation": "number",
+    "color-function-alias-notation": null,
+    "prettier/prettier": [
+      true,
+      {
+        "endOfLine": "auto"
+      }
+    ],
+    "import-notation": null
+  }
+}

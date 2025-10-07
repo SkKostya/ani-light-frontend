@@ -1,0 +1,21 @@
+.layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100dvh;
+
+  --container-width: min(calc(100% - 32px), 1280px);
+
+  &__main {
+    display: contents;
+  }
+
+  &__error {
+    width: var(--container-width);
+    margin-inline: auto;
+    margin-top: 32px;
+  }
+
+  @media (min-width: 768px) {
+    --container-width: min(calc(100% - 48px), 1280px);
+  }
+}

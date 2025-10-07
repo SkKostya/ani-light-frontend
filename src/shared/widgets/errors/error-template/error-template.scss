@@ -1,0 +1,36 @@
+.error-template {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: min(100%, 1140px);
+  padding: 60px 32px;
+  margin: 0 auto;
+  text-align: left;
+  background-color: white;
+  border-radius: 16px;
+
+  &__title {
+    font-size: 20px;
+    font-weight: 700;
+    line-height: 28px;
+    text-align: center;
+  }
+
+  &__description {
+    max-width: 350px;
+    margin-inline: auto;
+    margin-top: 16px;
+    font-size: 14px;
+    line-height: 21px;
+  }
+
+  &__link {
+    font-weight: 700;
+    color: inherit;
+    text-underline-offset: 2px;
+  }
+
+  @media (max-width: 900px) {
+    padding: 32px 24px;
+  }
+}
