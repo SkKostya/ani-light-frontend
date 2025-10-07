@@ -2,4 +2,269 @@
 alwaysApply: true
 ---
 
-Весь текст на проекте должен иметь переводы в src/localization на доступные языки. Использование переводов должно быть осуществлено через хук useLocalization из библиотеки i18next или, если хук не доступен по ряду причин, с использованием утилиты из src/i18n.ts
+# Правила локализации и интернационализации
+
+## Общие принципы
+
+### Обязательность переводов
+
+- ВСЕ тексты, отображаемые пользователю, должны иметь переводы
+- Никакой хардкод текста в компонентах не допускается
+- Все строки должны быть вынесены в файлы локализации
+
+### Поддерживаемые языки
+
+- **ru** (русский) - основной язык
+- **en** (английский) - дополнительный язык
+- Языки определены в `src/shared/constants.ts` в enum `Languages`
+
+## Структура файлов локализации
+
+### Расположение файлов
+
+- `src/localization/ru.json` - русские переводы
+- `src/localization/en.json` - английские переводы
+- Каждый файл содержит объект с ключами-переводами
+
+### Структура ключей
+
+- Используй описательные имена ключей: `catalog_title`, `button_search`, `error_404_title`
+- Группируй по функциональности: `catalog_*`, `button_*`, `error_*`, `form_*`
+- Используй snake_case для ключей
+- Добавляй суффиксы для контекста: `_title`, `_description`, `_placeholder`, `_button`
+
+## Способы использования переводов
+
+### 1. Хук useTranslation (рекомендуемый)
+
+```tsx
+import { useTranslation } from 'react-i18next';
+
+const MyComponent = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div>
+      <h1>{t('catalog_title')}</h1>
+      <p>{t('catalog_description')}</p>
+    </div>
+  );
+};
+```
+
+### 2. Прямое использование i18next (для fallback значений)
+
+```tsx
+import i18next from '@/i18n';
+
+// В компонентах с fallback значениями
+const title = i18next.t('catalog_title', {
+  defaultValue: 'Каталог аниме'
+});
+```
+
+### 3. Интерполяция переменных
+
+```tsx
+const { t } = useTranslation();
+
+// В JSON: "welcome_message": "Привет, {{name}}!"
+const message = t('welcome_message', { name: 'Пользователь' });
+```
+
+## Специальные компоненты
+
+### Локализованные ссылки
+
+- Используй `LocalizedLink` вместо обычного `Link` из react-router
+- Используй `LocalizedNavLink` вместо `NavLink`
+- Компоненты автоматически добавляют префикс языка к путям
+
+```tsx
+import { LocalizedLink, LocalizedNavLink } from '@/shared/ui';
+
+// Автоматически станет /ru/catalog или /en/catalog
+<LocalizedLink to="/catalog">Каталог</LocalizedLink>;
+```
+
+### Навигация с языком
+
+- Используй `useAppNavigation` для программной навигации
+- Хук автоматически добавляет префикс языка к путям
+
+```tsx
+import { useAppNavigation } from '@/shared/hooks/useAppNavigation';
+
+const { navigate, changeLanguage, currentLang } = useAppNavigation();
+
+// Навигация с языком
+navigate('/catalog');
+
+// Смена языка
+changeLanguage(Languages.en);
+```
+
+## Правила именования ключей
+
+### Структура ключей
+
+```
+[компонент]_[элемент]_[контекст]
+```
+
+### Примеры правильных ключей
+
+- `catalog_title` - заголовок каталога
+- `catalog_search_placeholder` - placeholder для поиска
+- `button_save` - кнопка сохранения
+- `form_email_label` - лейбл поля email
+- `error_404_title` - заголовок ошибки 404
+- `error_404_description` - описание ошибки 404
+
+### Примеры неправильных ключей
+
+- `title` - слишком общий
+- `catalogTitle` - не snake_case
+- `catalog-title` - не snake_case
+- `btn_save` - сокращения нежелательны
+
+## Fallback значения
+
+### Когда использовать
+
+- Только для критически важных текстов
+- Когда отсутствие перевода может сломать UI
+- В качестве временного решения при разработке
+
+### Синтаксис
+
+```tsx
+const { t } = useTranslation();
+
+// С fallback значением
+const title = t('catalog_title', {
+  defaultValue: 'Каталог аниме'
+});
+
+// Без fallback (предпочтительно)
+const title = t('catalog_title');
+```
+
+## Работа с формами
+
+### Лейблы полей
+
+```tsx
+<TextField
+  label={t('form_email_label')}
+  placeholder={t('form_email_placeholder')}
+  helperText={t('form_email_helper')}
+/>
+```
+
+### Сообщения об ошибках
+
+```tsx
+const [error, setError] = useState('');
+
+// В обработчике ошибки
+setError(t('form_validation_email_required'));
+```
+
+## Множественные формы
+
+### Использование count
+
+```tsx
+// В JSON: "items_count": "{{count}} элемент", "items_count_plural": "{{count}} элементов"
+const count = 5;
+const text = t('items_count', { count }); // "5 элементов"
+```
+
+## SEO и мета-теги
+
+### Язык документа
+
+- Язык документа автоматически устанавливается в `LanguageGuard`
+- Не нужно вручную менять `document.documentElement.lang`
+
+### URL структура
+
+- Все URL содержат префикс языка: `/ru/catalog`, `/en/catalog`
+- `LanguageGuard` автоматически обрабатывает перенаправления
+- Невалидные языки перенаправляются на русский
+
+## Проверка и валидация
+
+### Обязательные проверки
+
+- Все ключи должны существовать в обоих языках
+- Не должно быть пустых значений в JSON файлах
+- Все используемые ключи должны быть определены
+
+### Отладка
+
+- Используй `i18next.t()` с `debug: true` для отладки
+- Проверяй консоль на отсутствующие ключи
+- Используй fallback значения для быстрой разработки
+
+## Примеры использования
+
+### Простой компонент
+
+```tsx
+import { useTranslation } from 'react-i18next';
+
+const CatalogHeader = () => {
+  const { t } = useTranslation();
+
+  return (
+    <div>
+      <h1>{t('catalog_title')}</h1>
+      <p>{t('catalog_description')}</p>
+      <button>{t('button_search')}</button>
+    </div>
+  );
+};
+```
+
+### Компонент с формой
+
+```tsx
+import { Button, TextField } from '@mui/material';
+import { useTranslation } from 'react-i18next';
+
+const SearchForm = () => {
+  const { t } = useTranslation();
+
+  return (
+    <form>
+      <TextField
+        label={t('search_label')}
+        placeholder={t('search_placeholder')}
+        helperText={t('search_helper')}
+      />
+      <Button type="submit">{t('button_search')}</Button>
+    </form>
+  );
+};
+```
+
+### Компонент с навигацией
+
+```tsx
+import { useTranslation } from 'react-i18next';
+
+import { LocalizedLink } from '@/shared/ui';
+
+const Navigation = () => {
+  const { t } = useTranslation();
+
+  return (
+    <nav>
+      <LocalizedLink to="/catalog">{t('nav_catalog')}</LocalizedLink>
+      <LocalizedLink to="/favorites">{t('nav_favorites')}</LocalizedLink>
+    </nav>
+  );
+};
+```

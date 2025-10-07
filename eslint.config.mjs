@@ -18,7 +18,7 @@ export default [
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
-      'prettier/prettier': 'error',
+      'prettier/prettier': ['error', { endOfLine: 'auto' }],
       '@typescript-eslint/no-unused-vars': 'error',
       '@typescript-eslint/no-require-imports': 'off',
       '@typescript-eslint/prefer-as-const': 'error',

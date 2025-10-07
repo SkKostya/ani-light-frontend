@@ -8,3 +8,6 @@ build/
 
 # Node modules
 node_modules/
+
+# Cursor
+.cursor/
