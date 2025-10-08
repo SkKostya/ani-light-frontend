@@ -60,5 +60,13 @@
   "wantlist_title": "Хочу посмотреть",
   "wantlist_description": "Аниме, которые вы планируете посмотреть",
   "wantlist_empty_title": "Список желаний пуст",
-  "wantlist_empty_description": "Добавьте аниме в список желаний, чтобы не забыть их посмотреть"
+  "wantlist_empty_description": "Добавьте аниме в список желаний, чтобы не забыть их посмотреть",
+  "history_title": "История просмотров",
+  "history_description": "Ваша история просмотренных серий и фильмов",
+  "history_empty_title": "История пуста",
+  "history_empty_description": "Начните смотреть аниме, чтобы здесь появилась история просмотров",
+  "history_season_episode": "{{season}} сезон, {{episode}} серия",
+  "history_episodes_count_1": "{{count}} серия",
+  "history_episodes_count_2": "{{count}} серии",
+  "history_episodes_count_5": "{{count}} серий"
 }

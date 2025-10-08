@@ -13,7 +13,7 @@ import { useLocation } from 'react-router';
 
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
-import { getCurrentNavigationTab } from '@/shared/services/helpers/navigation-helper';
+import { getCurrentNavigationTab } from '@/shared/services/helpers/navigate-helper';
 
 import {
   desktopTabIconStyles,

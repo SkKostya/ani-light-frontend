@@ -60,5 +60,13 @@
   "wantlist_title": "Want to Watch",
   "wantlist_description": "Anime you plan to watch",
   "wantlist_empty_title": "Want list is empty",
-  "wantlist_empty_description": "Add anime to your want list so you don't forget to watch them"
+  "wantlist_empty_description": "Add anime to your want list so you don't forget to watch them",
+  "history_title": "Watch History",
+  "history_description": "Your history of watched episodes and movies",
+  "history_empty_title": "History is empty",
+  "history_empty_description": "Start watching anime to see your watch history here",
+  "history_season_episode": "Season {{season}}, Episode {{episode}}",
+  "history_episodes_count_1": "{{count}} episode",
+  "history_episodes_count_2": "{{count}} episodes",
+  "history_episodes_count_5": "{{count}} episodes"
 }

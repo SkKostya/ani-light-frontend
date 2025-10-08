@@ -25,6 +25,7 @@
   /* Светлая тема (по умолчанию) */
   --color-background: #fafafa;
   --color-background-paper: #fff;
+  --color-background-secondary: #f5f5f5;
   --color-background-elevated: #f5f5f5;
   --color-text-primary: #212121;
   --color-text-secondary: #757575;
@@ -69,6 +70,7 @@
 [data-theme='dark'] {
   --color-background: #0a0a0a;
   --color-background-paper: #1a1a1a;
+  --color-background-secondary: #2a2a2a;
   --color-background-elevated: #2a2a2a;
   --color-text-primary: #fff;
   --color-text-secondary: #b0b0b0;
