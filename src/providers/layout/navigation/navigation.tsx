@@ -2,6 +2,7 @@ import {
   Bookmark,
   History,
   Home,
+  PlaylistAdd,
   PlaylistPlay,
   Settings
 } from '@mui/icons-material';
@@ -63,15 +64,18 @@ const Navigation: React.FC<NavigationProps> = ({
         navigate('/' + ROUTES.catalog);
         break;
       case 1:
-        navigate('/' + ROUTES.favorites);
+        navigate('/' + ROUTES.watchList);
         break;
       case 2:
-        navigate('/' + ROUTES.watchlist);
+        navigate('/' + ROUTES.wantList);
         break;
       case 3:
-        navigate('/' + ROUTES.history);
+        navigate('/' + ROUTES.favorites);
         break;
       case 4:
+        navigate('/' + ROUTES.history);
+        break;
+      case 5:
         navigate('/' + ROUTES.profile);
         break;
     }
@@ -84,24 +88,29 @@ const Navigation: React.FC<NavigationProps> = ({
       value: 0
     },
     {
-      label: t('layout.nav_favorites'),
-      icon: <Bookmark />,
+      label: t('layout.nav_watchlist'),
+      icon: <PlaylistPlay />,
       value: 1
     },
     {
-      label: t('layout.nav_watchlist'),
-      icon: <PlaylistPlay />,
+      label: t('layout.nav_wantlist'),
+      icon: <PlaylistAdd />,
       value: 2
+    },
+    {
+      label: t('layout.nav_favorites'),
+      icon: <Bookmark />,
+      value: 3
     },
     {
       label: t('layout.nav_history'),
       icon: <History />,
-      value: 3
+      value: 4
     },
     {
       label: t('layout.nav_profile'),
       icon: <Settings />,
-      value: 4
+      value: 5
     }
   ];
 

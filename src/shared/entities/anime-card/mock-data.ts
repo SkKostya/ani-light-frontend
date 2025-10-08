@@ -15,6 +15,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
     isFavorite: true,
+    isWantToWatch: false,
     genres: ['Экшен', 'Драма', 'Фэнтези'],
     themes: ['Военное', 'Постапокалипсис', 'Сверхъестественное'],
     year: 2013,
@@ -34,6 +35,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1613376023733-0a73315d9b06?w=400&h=600&fit=crop',
     isFavorite: false,
+    isWantToWatch: true,
     genres: ['Экшен', 'Приключения', 'Комедия'],
     themes: ['Ниндзя', 'Дружба', 'Семья'],
     year: 2002,
@@ -53,6 +55,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
     isFavorite: true,
+    isWantToWatch: false,
     genres: ['Экшен', 'Сверхъестественное', 'Драма'],
     themes: ['Семья', 'Месть', 'Демоны'],
     year: 2019,
@@ -69,6 +72,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1613376023733-0a73315d9b06?w=400&h=600&fit=crop',
     isFavorite: false,
+    isWantToWatch: true,
     genres: ['Экшен', 'Школа', 'Супергерои'],
     year: 2016,
     rating: 8.3,
@@ -84,6 +88,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
     isFavorite: true,
+    isWantToWatch: false,
     genres: ['Экшен', 'Приключения', 'Комедия'],
     year: 1999,
     rating: 9.2,
@@ -99,6 +104,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1613376023733-0a73315d9b06?w=400&h=600&fit=crop',
     isFavorite: false,
+    isWantToWatch: true,
     genres: ['Экшен', 'Приключения', 'Фантастика'],
     year: 1986,
     rating: 8.8,
@@ -114,6 +120,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
     isFavorite: true,
+    isWantToWatch: false,
     genres: ['Ужасы', 'Драма', 'Сверхъестественное'],
     year: 2014,
     rating: 8.1,
@@ -129,6 +136,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1613376023733-0a73315d9b06?w=400&h=600&fit=crop',
     isFavorite: false,
+    isWantToWatch: true,
     genres: ['Экшен', 'Фэнтези', 'Приключения'],
     year: 2014,
     rating: 8.0,
@@ -144,6 +152,7 @@ export const mockAnimeData: Anime[] = [
     imageUrl:
       'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=400&h=600&fit=crop',
     isFavorite: true,
+    isWantToWatch: false,
     genres: ['Экшен', 'Драма', 'Фэнтези'],
     year: 2020,
     rating: 9.5,

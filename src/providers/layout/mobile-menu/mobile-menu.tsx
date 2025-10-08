@@ -1,4 +1,12 @@
-import { Close } from '@mui/icons-material';
+import {
+  Bookmark,
+  Close,
+  History,
+  Home,
+  PlaylistAdd,
+  PlaylistPlay,
+  Settings
+} from '@mui/icons-material';
 import {
   Box,
   Drawer,
@@ -51,27 +59,32 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
     {
       label: t('layout.nav_catalog'),
       path: ROUTES.catalog,
-      icon: '🏠'
+      icon: <Home />
+    },
+    {
+      label: t('layout.nav_watchlist'),
+      path: ROUTES.watchList,
+      icon: <PlaylistPlay />
+    },
+    {
+      label: t('layout.nav_wantlist'),
+      path: ROUTES.wantList,
+      icon: <PlaylistAdd />
     },
     {
       label: t('layout.nav_favorites'),
       path: ROUTES.favorites,
-      icon: '⭐'
-    },
-    {
-      label: t('layout.nav_watchlist'),
-      path: ROUTES.watchlist,
-      icon: '📺'
+      icon: <Bookmark />
     },
     {
       label: t('layout.nav_history'),
       path: ROUTES.history,
-      icon: '📚'
+      icon: <History />
     },
     {
       label: t('layout.nav_profile'),
       path: ROUTES.profile,
-      icon: '👤'
+      icon: <Settings />
     }
   ];
 

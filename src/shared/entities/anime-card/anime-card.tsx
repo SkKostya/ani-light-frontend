@@ -1,4 +1,9 @@
-import { Favorite, FavoriteBorder } from '@mui/icons-material';
+import {
+  Favorite,
+  FavoriteBorder,
+  PlaylistAdd,
+  PlaylistAddCheck
+} from '@mui/icons-material';
 import {
   Box,
   Card,
@@ -39,6 +44,7 @@ import { AnimeInfoDropdown } from './anime-info-dropdown';
 export const AnimeCard: React.FC<AnimeCardProps> = ({
   anime,
   onToggleFavorite,
+  onToggleWantToWatch,
   onClick,
   variant = 'default'
 }) => {
@@ -51,6 +57,11 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
     onToggleFavorite?.(anime.id);
+  };
+
+  const handleWantToWatchClick = (event: React.MouseEvent) => {
+    event.stopPropagation();
+    onToggleWantToWatch?.(anime.id);
   };
 
   const isCompact = variant === 'compact';
@@ -78,6 +89,30 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
         />
         <AnimeInfoDropdown anime={anime} />
 
+        {/* Кнопка "Хочу посмотреть" */}
+        <IconButton
+          sx={{
+            ...favoriteButtonStyles,
+            top: 8,
+            right: 56, // Смещаем влево, чтобы освободить место для кнопки избранного
+            ...(anime.isWantToWatch && {
+              backgroundColor: 'var(--color-secondary)',
+              '&:hover': {
+                backgroundColor: 'var(--color-secondary-dark)'
+              }
+            })
+          }}
+          onClick={handleWantToWatchClick}
+          aria-label={
+            anime.isWantToWatch
+              ? t('anime_card_remove_from_want_list')
+              : t('anime_card_add_to_want_list')
+          }
+        >
+          {anime.isWantToWatch ? <PlaylistAddCheck /> : <PlaylistAdd />}
+        </IconButton>
+
+        {/* Кнопка "Избранное" */}
         <IconButton
           sx={{
             ...favoriteButtonStyles,

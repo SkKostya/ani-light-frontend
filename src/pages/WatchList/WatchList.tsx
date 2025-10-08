@@ -23,6 +23,16 @@ const WatchList: React.FC = () => {
     );
   };
 
+  const handleToggleWantToWatch = (animeId: string) => {
+    setAnimeList((prevList) =>
+      prevList.map((anime) =>
+        anime.id === animeId
+          ? { ...anime, isWantToWatch: !anime.isWantToWatch }
+          : anime
+      )
+    );
+  };
+
   const handleAnimeClick = () => {
     // TODO: Navigate to anime details page
     // console.log('Clicked anime:', animeId);
@@ -67,6 +77,7 @@ const WatchList: React.FC = () => {
                 key={anime.id}
                 anime={anime}
                 onToggleFavorite={handleToggleFavorite}
+                onToggleWantToWatch={handleToggleWantToWatch}
                 onClick={handleAnimeClick}
                 variant="compact"
               />

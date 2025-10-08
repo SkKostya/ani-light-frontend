@@ -4,7 +4,9 @@
     "search_placeholder": "Search anime...",
     "nav_catalog": "Catalog",
     "nav_favorites": "Favorites",
-    "nav_watchlist": "Watchlist",
+    "nav_watchlist": "Watch list",
+    "nav_wantlist": "Want to Watch",
+    "nav_wantlist_short": "Want list",
     "nav_history": "History",
     "nav_profile": "Profile",
     "nav_settings": "Settings",
@@ -26,6 +28,8 @@
   "404_redirect-text-1": "Go to Main Page",
   "anime_card_add_to_favorites": "Add to favorites",
   "anime_card_remove_from_favorites": "Remove from favorites",
+  "anime_card_add_to_want_list": "Add to want list",
+  "anime_card_remove_from_want_list": "Remove from want list",
   "catalog_title": "Anime Catalog",
   "catalog_description": "Find your favorite anime series and movies",
   "button_search": "Search",
@@ -52,5 +56,9 @@
   "watchlist_title": "Watchlist",
   "watchlist_description": "Anime you are currently watching",
   "watchlist_empty_title": "Watchlist is empty",
-  "watchlist_empty_description": "Add anime to your watchlist to track your progress"
+  "watchlist_empty_description": "Add anime to your watchlist to track your progress",
+  "wantlist_title": "Want to Watch",
+  "wantlist_description": "Anime you plan to watch",
+  "wantlist_empty_title": "Want list is empty",
+  "wantlist_empty_description": "Add anime to your want list so you don't forget to watch them"
 }

@@ -10,6 +10,7 @@ export interface Anime {
   fullDescription?: string;
   imageUrl: string;
   isFavorite: boolean;
+  isWantToWatch: boolean;
   genres?: string[];
   themes?: string[];
   year?: number;
@@ -22,6 +23,7 @@ export interface Anime {
 export interface AnimeCardProps {
   anime: Anime;
   onToggleFavorite?: (animeId: string) => void;
+  onToggleWantToWatch?: (animeId: string) => void;
   onClick?: (animeId: string) => void;
   variant?: 'default' | 'compact';
 }

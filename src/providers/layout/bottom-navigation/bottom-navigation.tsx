@@ -1,4 +1,4 @@
-import { Bookmark, Home, Menu, PlaylistPlay } from '@mui/icons-material';
+import { Home, Menu, PlaylistAdd, PlaylistPlay } from '@mui/icons-material';
 import {
   BottomNavigation,
   BottomNavigationAction,
@@ -35,8 +35,9 @@ const BottomNavigationComponent: React.FC<BottomNavigationProps> = ({
   // Определяем активную вкладку на основе текущего пути
   const getCurrentValue = (): number => {
     const path = location.pathname;
-    if (path.includes(ROUTES.favorites)) return 1;
-    if (path.includes(ROUTES.watchlist)) return 2;
+    if (path.includes(ROUTES.watchList)) return 1;
+    if (path.includes(ROUTES.wantList)) return 2;
+    if (path.includes(ROUTES.favorites)) return 3;
     return 0; // catalog по умолчанию
   };
 
@@ -57,10 +58,10 @@ const BottomNavigationComponent: React.FC<BottomNavigationProps> = ({
         navigate('/' + ROUTES.catalog);
         break;
       case 1:
-        navigate('/' + ROUTES.favorites);
+        navigate('/' + ROUTES.watchList);
         break;
       case 2:
-        navigate('/' + ROUTES.watchlist);
+        navigate('/' + ROUTES.wantList);
         break;
     }
   };
@@ -79,13 +80,13 @@ const BottomNavigationComponent: React.FC<BottomNavigationProps> = ({
           value={0}
         />
         <BottomNavigationAction
-          label={t('layout.nav_favorites')}
-          icon={<Bookmark />}
+          label={t('layout.nav_watchlist')}
+          icon={<PlaylistPlay />}
           value={1}
         />
         <BottomNavigationAction
-          label={t('layout.nav_watchlist')}
-          icon={<PlaylistPlay />}
+          label={t('layout.nav_wantlist_short')}
+          icon={<PlaylistAdd />}
           value={2}
         />
         <BottomNavigationAction

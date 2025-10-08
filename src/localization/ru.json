@@ -5,6 +5,8 @@
     "nav_catalog": "Каталог",
     "nav_favorites": "Избранное",
     "nav_watchlist": "Смотрю",
+    "nav_wantlist": "Хочу посмотреть",
+    "nav_wantlist_short": "К просмотру",
     "nav_history": "История",
     "nav_profile": "Профиль",
     "nav_settings": "Настройки",
@@ -26,6 +28,8 @@
   "404_redirect-text-1": "Перейти на главную",
   "anime_card_add_to_favorites": "Добавить в избранное",
   "anime_card_remove_from_favorites": "Убрать из избранного",
+  "anime_card_add_to_want_list": "Добавить в список желаний",
+  "anime_card_remove_from_want_list": "Убрать из списка желаний",
   "catalog_title": "Каталог аниме",
   "catalog_description": "Найдите свои любимые аниме сериалы и фильмы",
   "button_search": "Поиск",
@@ -52,5 +56,9 @@
   "watchlist_title": "Смотрю",
   "watchlist_description": "Аниме, которые вы сейчас смотрите",
   "watchlist_empty_title": "Список просмотра пуст",
-  "watchlist_empty_description": "Добавьте аниме в список просмотра, чтобы отслеживать прогресс"
+  "watchlist_empty_description": "Добавьте аниме в список просмотра, чтобы отслеживать прогресс",
+  "wantlist_title": "Хочу посмотреть",
+  "wantlist_description": "Аниме, которые вы планируете посмотреть",
+  "wantlist_empty_title": "Список желаний пуст",
+  "wantlist_empty_description": "Добавьте аниме в список желаний, чтобы не забыть их посмотреть"
 }

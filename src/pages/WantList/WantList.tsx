@@ -1,4 +1,4 @@
-import { Favorite as FavoriteIcon } from '@mui/icons-material';
+import { PlaylistAdd as WantListIcon } from '@mui/icons-material';
 import { Box, Container, Typography } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -6,13 +6,13 @@ import { useTranslation } from 'react-i18next';
 import { AnimeCard, mockAnimeData } from '@/shared/entities/anime-card';
 import type { Anime } from '@/shared/entities/anime-card/anime-card.types';
 
-const Favorites: React.FC = () => {
+const WantList: React.FC = () => {
   const { t } = useTranslation();
   const [animeList, setAnimeList] = useState<Anime[]>(mockAnimeData);
 
-  // Фильтруем только избранные аниме
-  const favoriteAnime = useMemo(
-    () => animeList.filter((anime) => anime.isFavorite),
+  // Фильтруем только аниме из списка желаний
+  const wantListAnime = useMemo(
+    () => animeList.filter((anime) => anime.isWantToWatch),
     [animeList]
   );
 
@@ -54,16 +54,16 @@ const Favorites: React.FC = () => {
           }}
         >
           <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 0 }}>
-            {t('favorites_title')}
+            {t('wantlist_title')}
           </Typography>
         </Box>
 
         <Typography variant="body1" color="text.secondary" paragraph>
-          {t('favorites_description')}
+          {t('wantlist_description')}
         </Typography>
 
         {/* Сетка карточек аниме */}
-        {favoriteAnime.length > 0 ? (
+        {wantListAnime.length > 0 ? (
           <Box
             sx={{
               display: 'grid',
@@ -75,7 +75,7 @@ const Favorites: React.FC = () => {
               gap: 3
             }}
           >
-            {favoriteAnime.map((anime) => (
+            {wantListAnime.map((anime) => (
               <AnimeCard
                 key={anime.id}
                 anime={anime}
@@ -98,7 +98,7 @@ const Favorites: React.FC = () => {
               textAlign: 'center'
             }}
           >
-            <FavoriteIcon
+            <WantListIcon
               sx={{
                 fontSize: 64,
                 color: 'var(--color-text-disabled)',
@@ -106,10 +106,10 @@ const Favorites: React.FC = () => {
               }}
             />
             <Typography variant="h5" component="h2" gutterBottom>
-              {t('favorites_empty_title')}
+              {t('wantlist_empty_title')}
             </Typography>
             <Typography variant="body1" color="text.secondary">
-              {t('favorites_empty_description')}
+              {t('wantlist_empty_description')}
             </Typography>
           </Box>
         )}
@@ -118,4 +118,4 @@ const Favorites: React.FC = () => {
   );
 };
 
-export default Favorites;
+export default WantList;

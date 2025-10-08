@@ -27,13 +27,13 @@ export const getCurrentNavigationTab = (pathname: string): number => {
   )
     return 4;
   if (
-    pathWithoutLang === `/${ROUTES.favorites}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.favorites}/`)
+    pathWithoutLang === `/${ROUTES.watchList}` ||
+    pathWithoutLang.startsWith(`/${ROUTES.watchList}/`)
   )
     return 1;
   if (
-    pathWithoutLang === `/${ROUTES.watchlist}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.watchlist}/`)
+    pathWithoutLang === `/${ROUTES.favorites}` ||
+    pathWithoutLang.startsWith(`/${ROUTES.favorites}/`)
   )
     return 2;
   if (
