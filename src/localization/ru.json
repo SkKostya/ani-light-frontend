@@ -48,5 +48,9 @@
   "favorites_title": "Избранное",
   "favorites_description": "Ваши любимые аниме сериалы и фильмы",
   "favorites_empty_title": "Список избранного пуст",
-  "favorites_empty_description": "Добавьте аниме в избранное, чтобы они появились здесь"
+  "favorites_empty_description": "Добавьте аниме в избранное, чтобы они появились здесь",
+  "watchlist_title": "Смотрю",
+  "watchlist_description": "Аниме, которые вы сейчас смотрите",
+  "watchlist_empty_title": "Список просмотра пуст",
+  "watchlist_empty_description": "Добавьте аниме в список просмотра, чтобы отслеживать прогресс"
 }

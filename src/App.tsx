@@ -9,6 +9,7 @@ import NotFound from './shared/widgets/errors/404';
 
 const Catalog = lazy(() => import('./pages/Catalog/Catalog'));
 const Favorites = lazy(() => import('./pages/Favorites/Favorites'));
+const WatchList = lazy(() => import('./pages/WatchList/WatchList'));
 
 const router = createBrowserRouter([
   {
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
               {
                 path: ROUTES.favorites,
                 element: <Favorites />
+              },
+              {
+                path: ROUTES.watchlist,
+                element: <WatchList />
               },
               {
                 path: '*',

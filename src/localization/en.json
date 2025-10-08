@@ -48,5 +48,9 @@
   "favorites_title": "Favorites",
   "favorites_description": "Your favorite anime series and movies",
   "favorites_empty_title": "Favorites list is empty",
-  "favorites_empty_description": "Add anime to favorites to see them here"
+  "favorites_empty_description": "Add anime to favorites to see them here",
+  "watchlist_title": "Watchlist",
+  "watchlist_description": "Anime you are currently watching",
+  "watchlist_empty_title": "Watchlist is empty",
+  "watchlist_empty_description": "Add anime to your watchlist to track your progress"
 }
