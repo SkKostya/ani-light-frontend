@@ -44,5 +44,9 @@
   "anime_statistics": "Statistics",
   "anime_genres": "Genres",
   "anime_themes": "Themes",
-  "anime_description": "Description"
+  "anime_description": "Description",
+  "favorites_title": "Favorites",
+  "favorites_description": "Your favorite anime series and movies",
+  "favorites_empty_title": "Favorites list is empty",
+  "favorites_empty_description": "Add anime to favorites to see them here"
 }

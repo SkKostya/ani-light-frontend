@@ -44,5 +44,9 @@
   "anime_statistics": "Статистика",
   "anime_genres": "Жанры",
   "anime_themes": "Темы",
-  "anime_description": "Описание"
+  "anime_description": "Описание",
+  "favorites_title": "Избранное",
+  "favorites_description": "Ваши любимые аниме сериалы и фильмы",
+  "favorites_empty_title": "Список избранного пуст",
+  "favorites_empty_description": "Добавьте аниме в избранное, чтобы они появились здесь"
 }

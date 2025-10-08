@@ -1,4 +1,4 @@
-import { Search as SearchIcon, Star } from '@mui/icons-material';
+import { Search as SearchIcon } from '@mui/icons-material';
 import { Box, Button, Container, Stack, Typography } from '@mui/material';
 import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -62,22 +62,6 @@ const Catalog: React.FC = () => {
             }}
           >
             {t('button_search')}
-          </Button>
-          <Button
-            variant="outlined"
-            startIcon={<Star />}
-            size="large"
-            sx={{
-              borderColor: 'primary.main',
-              color: 'primary.main',
-              '&:hover': {
-                borderColor: 'primary.dark',
-                backgroundColor: 'primary.light',
-                color: 'white'
-              }
-            }}
-          >
-            {t('layout.nav_favorites')}
           </Button>
         </Stack>
 
