@@ -10,7 +10,9 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
+import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
+import { getCurrentNavigationTab } from '@/shared/services/helpers/navigation-helper';
 
 import {
   desktopTabIconStyles,
@@ -42,15 +44,7 @@ const Navigation: React.FC<NavigationProps> = ({
 
   // Определяем активную вкладку на основе текущего пути
   const getCurrentTab = (): number => {
-    const path = location.pathname;
-    if (path.includes('/profile')) return 4;
-    if (path.includes('/settings')) return 5;
-    if (path.includes('/favorites')) return 1;
-    if (path.includes('/watchlist')) return 2;
-    if (path.includes('/history')) return 3;
-    if (path === '/' || path.includes('/anime') || path.includes('/catalog'))
-      return 0;
-    return 0; // catalog по умолчанию
+    return getCurrentNavigationTab(location.pathname);
   };
 
   const [value, setValue] = useState(getCurrentTab());
@@ -66,22 +60,19 @@ const Navigation: React.FC<NavigationProps> = ({
     // Навигация по разделам
     switch (newValue) {
       case 0:
-        navigate('/anime');
+        navigate('/' + ROUTES.catalog);
         break;
       case 1:
-        navigate('/favorites');
+        navigate('/' + ROUTES.favorites);
         break;
       case 2:
-        navigate('/watchlist');
+        navigate('/' + ROUTES.watchlist);
         break;
       case 3:
-        navigate('/history');
+        navigate('/' + ROUTES.history);
         break;
       case 4:
-        navigate('/profile');
-        break;
-      case 5:
-        navigate('/settings');
+        navigate('/' + ROUTES.profile);
         break;
     }
   };

@@ -10,6 +10,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
+import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 
 import { bottomNavigationStyles } from './bottom-navigation.styles';
@@ -34,8 +35,8 @@ const BottomNavigationComponent: React.FC<BottomNavigationProps> = ({
   // Определяем активную вкладку на основе текущего пути
   const getCurrentValue = (): number => {
     const path = location.pathname;
-    if (path.includes('/favorites')) return 1;
-    if (path.includes('/watchlist')) return 2;
+    if (path.includes(ROUTES.favorites)) return 1;
+    if (path.includes(ROUTES.watchlist)) return 2;
     return 0; // catalog по умолчанию
   };
 
@@ -53,13 +54,13 @@ const BottomNavigationComponent: React.FC<BottomNavigationProps> = ({
     // Навигация по разделам
     switch (newValue) {
       case 0:
-        navigate('/anime');
+        navigate('/' + ROUTES.catalog);
         break;
       case 1:
-        navigate('/favorites');
+        navigate('/' + ROUTES.favorites);
         break;
       case 2:
-        navigate('/watchlist');
+        navigate('/' + ROUTES.watchlist);
         break;
     }
   };

@@ -1,6 +1,11 @@
 export const ROUTES = {
   catalog: 'anime',
-  anime: (uuid = ':uuid') => `anime/${uuid}`
+  anime: (uuid = ':uuid') => `anime/${uuid}`,
+
+  favorites: 'favorites',
+  watchlist: 'watchlist',
+  history: 'history',
+  profile: 'profile'
 };
 
 export enum Languages {

@@ -1,19 +1,30 @@
 import { Search as SearchIcon, Star } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Card,
-  CardContent,
-  Chip,
-  Container,
-  Stack,
-  Typography
-} from '@mui/material';
-import React from 'react';
+import { Box, Button, Container, Stack, Typography } from '@mui/material';
+import React, { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 
-import { ThemeToggle } from '@/shared/ui';
+import { AnimeCard, mockAnimeData } from '@/shared/entities/anime-card';
+import type { Anime } from '@/shared/entities/anime-card/anime-card.types';
 
 const Catalog: React.FC = () => {
+  const { t } = useTranslation();
+  const [animeList, setAnimeList] = useState<Anime[]>(mockAnimeData);
+
+  const handleToggleFavorite = (animeId: string) => {
+    setAnimeList((prevList) =>
+      prevList.map((anime) =>
+        anime.id === animeId
+          ? { ...anime, isFavorite: !anime.isFavorite }
+          : anime
+      )
+    );
+  };
+
+  const handleAnimeClick = () => {
+    // TODO: Navigate to anime details page
+    // console.log('Clicked anime:', animeId);
+  };
+
   return (
     <Container>
       <Box sx={{ py: 4 }}>
@@ -23,17 +34,16 @@ const Catalog: React.FC = () => {
             display: 'flex',
             justifyContent: 'space-between',
             alignItems: 'center',
-            mb: 4
+            mb: 3
           }}
         >
           <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 0 }}>
-            Каталог аниме
+            {t('catalog_title')}
           </Typography>
-          <ThemeToggle size="large" />
         </Box>
 
         <Typography variant="body1" color="text.secondary" paragraph>
-          Найдите свои любимые аниме сериалы и фильмы
+          {t('catalog_description')}
         </Typography>
 
         {/* Кнопки действий */}
@@ -51,7 +61,7 @@ const Catalog: React.FC = () => {
               }
             }}
           >
-            Поиск
+            {t('button_search')}
           </Button>
           <Button
             variant="outlined"
@@ -67,122 +77,31 @@ const Catalog: React.FC = () => {
               }
             }}
           >
-            Избранное
+            {t('layout.nav_favorites')}
           </Button>
         </Stack>
 
-        {/* Пример карточки аниме */}
-        <Card
-          sx={{
-            mb: 3,
-            background: 'var(--gradient-sunset)',
-            color: 'white',
-            '&:hover': {
-              transform: 'translateY(-4px)',
-              boxShadow: 'var(--shadow-large)'
-            },
-            transition: 'all 0.3s ease-in-out'
-          }}
-        >
-          <CardContent>
-            <Box
-              sx={{
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'flex-start',
-                mb: 2
-              }}
-            >
-              <Typography variant="h5" component="h2" sx={{ fontWeight: 600 }}>
-                Attack on Titan
-              </Typography>
-              <Chip
-                label="9.5"
-                color="secondary"
-                icon={<Star />}
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white',
-                  '& .MuiChip-icon': { color: 'white' }
-                }}
-              />
-            </Box>
-            <Typography variant="body2" sx={{ mb: 2, opacity: 0.9 }}>
-              Эрен Йегер живет в мире, где человечество находится под угрозой со
-              стороны титанов...
-            </Typography>
-            <Stack direction="row" spacing={1}>
-              <Chip
-                label="Экшен"
-                size="small"
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white'
-                }}
-              />
-              <Chip
-                label="Драма"
-                size="small"
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white'
-                }}
-              />
-              <Chip
-                label="Фантастика"
-                size="small"
-                sx={{
-                  backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                  color: 'white'
-                }}
-              />
-            </Stack>
-          </CardContent>
-        </Card>
-
-        {/* Демонстрация CSS переменных */}
+        {/* Сетка карточек аниме */}
         <Box
           sx={{
-            p: 3,
-            borderRadius: 2,
-            backgroundColor: 'var(--color-background-elevated)',
-            border: '1px solid var(--color-border)',
-            mb: 3
+            display: 'grid',
+            gridTemplateColumns: {
+              xs: '1fr',
+              sm: 'repeat(2, 1fr)',
+              md: 'repeat(3, 1fr)'
+            },
+            gap: 3
           }}
         >
-          <Typography variant="h6" gutterBottom>
-            Демонстрация темы
-          </Typography>
-          <Typography variant="body2" color="text.secondary" paragraph>
-            Этот блок использует CSS переменные для адаптации к текущей теме.
-            Переключите тему с помощью кнопки выше, чтобы увидеть изменения.
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-            <Box
-              sx={{
-                width: 60,
-                height: 60,
-                borderRadius: 1,
-                background: 'var(--gradient-ocean)'
-              }}
+          {animeList.map((anime) => (
+            <AnimeCard
+              key={anime.id}
+              anime={anime}
+              onToggleFavorite={handleToggleFavorite}
+              onClick={handleAnimeClick}
+              variant="compact"
             />
-            <Box
-              sx={{
-                width: 60,
-                height: 60,
-                borderRadius: 1,
-                background: 'var(--gradient-forest)'
-              }}
-            />
-            <Box
-              sx={{
-                width: 60,
-                height: 60,
-                borderRadius: 1,
-                background: 'var(--gradient-night)'
-              }}
-            />
-          </Box>
+          ))}
         </Box>
       </Box>
     </Container>

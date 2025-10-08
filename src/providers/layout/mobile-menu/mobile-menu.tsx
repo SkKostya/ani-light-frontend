@@ -13,7 +13,9 @@ import {
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router';
 
+import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
+import { isNavigationItemActive } from '@/shared/services/helpers/navigation-helper';
 import { ThemeToggle } from '@/shared/ui';
 
 import LanguageSwitcher from '../language-switcher';
@@ -48,47 +50,34 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
   const menuItems = [
     {
       label: t('layout.nav_catalog'),
-      path: '/anime',
+      path: ROUTES.catalog,
       icon: '🏠'
     },
     {
       label: t('layout.nav_favorites'),
-      path: '/favorites',
+      path: ROUTES.favorites,
       icon: '⭐'
     },
     {
       label: t('layout.nav_watchlist'),
-      path: '/watchlist',
+      path: ROUTES.watchlist,
       icon: '📺'
     },
     {
       label: t('layout.nav_history'),
-      path: '/history',
+      path: ROUTES.history,
       icon: '📚'
     },
     {
       label: t('layout.nav_profile'),
-      path: '/profile',
+      path: ROUTES.profile,
       icon: '👤'
-    },
-    {
-      label: t('layout.nav_settings'),
-      path: '/settings',
-      icon: '⚙️'
     }
   ];
 
   // Определяем активный пункт меню на основе текущего пути
   const isActiveItem = (path: string): boolean => {
-    const currentPath = location.pathname;
-    if (path === '/anime') {
-      return (
-        currentPath === '/anime' ||
-        currentPath === '/' ||
-        currentPath.includes('/catalog')
-      );
-    }
-    return currentPath.startsWith(path);
+    return isNavigationItemActive(location.pathname, path);
   };
 
   const handleItemClick = (path: string) => {
