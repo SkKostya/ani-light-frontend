@@ -35,10 +35,6 @@ export const animeEpisodesPageStyles = {
     mb: { xs: 4, sm: 5, md: 6 }
   } as SxProps<Theme>,
 
-  relatedSection: {
-    mb: { xs: 2, sm: 3 }
-  } as SxProps<Theme>,
-
   sectionTitle: {
     color: 'var(--color-primary)',
     fontWeight: 600,
@@ -57,57 +53,5 @@ export const animeEpisodesPageStyles = {
       background: 'var(--anime-gradient-sunset)',
       borderRadius: '2px'
     }
-  } as SxProps<Theme>,
-
-  relatedGrid: {
-    display: 'grid',
-    gridTemplateColumns: {
-      xs: 'repeat(2, 1fr)',
-      sm: 'repeat(3, 1fr)',
-      md: 'repeat(4, 1fr)',
-      lg: 'repeat(5, 1fr)'
-    },
-    gap: { xs: 2, sm: 3 },
-    mt: 3
-  } as SxProps<Theme>,
-
-  relatedCard: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    p: 2,
-    backgroundColor: 'var(--color-background-paper)',
-    borderRadius: 'var(--border-radius-large)',
-    boxShadow: 'var(--shadow-medium)',
-    transition: 'all 0.3s ease-in-out',
-    cursor: 'pointer',
-    '&:hover': {
-      transform: 'translateY(-4px)',
-      boxShadow: 'var(--shadow-large)',
-      '& .anime-glow': {
-        animation: 'anime-glow 2s ease-in-out infinite'
-      }
-    }
-  } as SxProps<Theme>,
-
-  relatedPoster: {
-    width: '100%',
-    height: { xs: 120, sm: 140, md: 160 },
-    objectFit: 'cover',
-    borderRadius: 'var(--border-radius-medium)',
-    mb: 1,
-    boxShadow: 'var(--shadow-small)'
-  } as SxProps<Theme>,
-
-  relatedTitle: {
-    textAlign: 'center',
-    fontWeight: 500,
-    color: 'var(--color-text-primary)',
-    fontSize: { xs: '0.75rem', sm: '0.875rem' },
-    lineHeight: 1.3,
-    display: '-webkit-box',
-    WebkitLineClamp: 2,
-    WebkitBoxOrient: 'vertical',
-    overflow: 'hidden'
   } as SxProps<Theme>
 };

@@ -1,15 +1,7 @@
 import { CheckCircle, PlayArrow, Schedule } from '@mui/icons-material';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  Chip,
-  IconButton,
-  LinearProgress,
-  Typography
-} from '@mui/material';
-import { useTranslation } from 'react-i18next';
+import { Box, Card, CardContent, IconButton, Typography } from '@mui/material';
+
+import { ImageWithFallback } from '@/shared/ui';
 
 import type { OVAEpisode } from '../../types';
 import { ovaCardStyles } from './OVACard.styles';
@@ -19,8 +11,6 @@ interface OVACardProps {
 }
 
 const OVACard = ({ episode }: OVACardProps) => {
-  const { t } = useTranslation();
-
   const formatDuration = (seconds: number): string => {
     const minutes = Math.floor(seconds / 60);
     const hours = Math.floor(minutes / 60);
@@ -50,24 +40,14 @@ const OVACard = ({ episode }: OVACardProps) => {
     return <PlayArrow sx={ovaCardStyles.statusIcon} />;
   };
 
-  const getStatusColor = () => {
-    if (episode.isWatched) {
-      return 'success';
-    }
-    if (episode.progress && episode.progress > 0) {
-      return 'warning';
-    }
-    return 'default';
-  };
-
   return (
     <Card sx={ovaCardStyles.card}>
       <Box sx={ovaCardStyles.mediaContainer}>
-        <CardMedia
-          component="img"
-          image={episode.thumbnail}
+        <ImageWithFallback
+          src={episode.thumbnail}
           alt={episode.title}
           sx={ovaCardStyles.media}
+          fallbackIcon="🎬"
         />
         <Box sx={ovaCardStyles.overlay}>
           <IconButton
@@ -84,11 +64,6 @@ const OVACard = ({ episode }: OVACardProps) => {
           </Typography>
         </Box>
         <Box sx={ovaCardStyles.statusBadge}>{getStatusIcon()}</Box>
-        <Box sx={ovaCardStyles.ovaBadge}>
-          <Typography variant="caption" sx={ovaCardStyles.ovaText}>
-            OVA
-          </Typography>
-        </Box>
       </Box>
 
       <CardContent sx={ovaCardStyles.content}>
@@ -96,16 +71,6 @@ const OVACard = ({ episode }: OVACardProps) => {
           <Typography variant="h6" sx={ovaCardStyles.title}>
             {episode.title}
           </Typography>
-          <Chip
-            label={
-              episode.isWatched
-                ? t('anime_episodes_watched')
-                : t('anime_episodes_not_watched')
-            }
-            size="small"
-            color={getStatusColor()}
-            sx={ovaCardStyles.statusChip}
-          />
         </Box>
 
         <Typography variant="caption" sx={ovaCardStyles.airDate}>
@@ -115,27 +80,6 @@ const OVACard = ({ episode }: OVACardProps) => {
         {episode.description && (
           <Typography variant="body2" sx={ovaCardStyles.description}>
             {episode.description}
-          </Typography>
-        )}
-
-        {episode.progress && episode.progress > 0 && !episode.isWatched && (
-          <Box sx={ovaCardStyles.progressContainer}>
-            <LinearProgress
-              variant="determinate"
-              value={episode.progress}
-              sx={ovaCardStyles.progressBar}
-            />
-            <Typography variant="caption" sx={ovaCardStyles.progressText}>
-              {Math.round(episode.progress)}%
-            </Typography>
-          </Box>
-        )}
-
-        {episode.watchedAt && (
-          <Typography variant="caption" sx={ovaCardStyles.watchedDate}>
-            {t('anime_episodes_watched_on', {
-              date: formatDate(episode.watchedAt)
-            })}
           </Typography>
         )}
       </CardContent>

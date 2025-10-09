@@ -55,7 +55,7 @@ export const mockAnimeDetailedInfo: AnimeDetailedInfo = {
         {
           id: 'ep-1-2',
           title: 'Тот день',
-          episodeNumber: 2,
+          episodeNumber: 1154,
           seasonNumber: 1,
           duration: 1440,
           thumbnail: '/images/episodes/attack-on-titan-s1-ep2.jpg',

@@ -45,33 +45,6 @@ const AnimeEpisodes = () => {
             <OVASection ovaEpisodes={animeInfo.ovaEpisodes} />
           </Box>
         )}
-
-        {/* Связанные аниме */}
-        {animeInfo.relatedAnime.length > 0 && (
-          <Box sx={animeEpisodesPageStyles.relatedSection}>
-            <Typography variant="h5" sx={animeEpisodesPageStyles.sectionTitle}>
-              {t('anime_episodes_related_title')}
-            </Typography>
-            <Box sx={animeEpisodesPageStyles.relatedGrid}>
-              {animeInfo.relatedAnime.map((related) => (
-                <Box key={related.id} sx={animeEpisodesPageStyles.relatedCard}>
-                  <Box
-                    component="img"
-                    src={related.poster}
-                    alt={related.title}
-                    sx={animeEpisodesPageStyles.relatedPoster}
-                  />
-                  <Typography
-                    variant="body2"
-                    sx={animeEpisodesPageStyles.relatedTitle}
-                  >
-                    {related.title}
-                  </Typography>
-                </Box>
-              ))}
-            </Box>
-          </Box>
-        )}
       </Container>
     </Box>
   );

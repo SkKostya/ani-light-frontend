@@ -14,12 +14,24 @@ export const animeInfoStyles = {
       left: 0,
       right: 0,
       height: '4px',
-      background: 'var(--anime-gradient-magic)'
+      background: 'var(--gradient-magic)'
     }
   } as SxProps<Theme>,
 
   cardContent: {
     p: { xs: 2, sm: 3, md: 4 }
+  } as SxProps<Theme>,
+
+  mainContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: { xs: 2 }
+  } as SxProps<Theme>,
+
+  descriptionContainer: {
+    mt: { xs: 2 },
+    pt: { xs: 2 },
+    borderTop: '1px solid var(--color-border)'
   } as SxProps<Theme>,
 
   posterContainer: {
@@ -34,7 +46,7 @@ export const animeInfoStyles = {
 
   poster: {
     width: '100%',
-    height: { xs: 300, sm: 400, md: 500 },
+    height: { xs: 300 },
     objectFit: 'cover',
     transition: 'transform 0.3s ease-in-out',
     '&:hover': {
@@ -155,44 +167,6 @@ export const animeInfoStyles = {
     lineHeight: 1.6,
     fontSize: '0.875rem',
     textAlign: 'justify'
-  } as SxProps<Theme>,
-
-  progressHeader: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    mb: 1
-  } as SxProps<Theme>,
-
-  progressText: {
-    color: 'var(--color-text-secondary)',
-    fontSize: '0.875rem',
-    fontWeight: 500
-  } as SxProps<Theme>,
-
-  progressBar: {
-    height: 8,
-    borderRadius: 'var(--border-radius-small)',
-    backgroundColor: 'var(--color-background)',
-    '& .MuiLinearProgress-bar': {
-      background: 'var(--anime-gradient-sunset)',
-      borderRadius: 'var(--border-radius-small)'
-    }
-  } as SxProps<Theme>,
-
-  actionButton: {
-    background: 'var(--anime-gradient-magic)',
-    color: 'white',
-    fontWeight: 600,
-    px: 3,
-    py: 1.5,
-    borderRadius: 'var(--border-radius-medium)',
-    boxShadow: 'var(--shadow-medium)',
-    '&:hover': {
-      background: 'var(--anime-gradient-sunset)',
-      transform: 'translateY(-2px)',
-      boxShadow: 'var(--shadow-large)'
-    }
   } as SxProps<Theme>,
 
   actionIconButton: {

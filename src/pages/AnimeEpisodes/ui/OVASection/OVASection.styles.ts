@@ -12,9 +12,5 @@ export const ovaSectionStyles = {
     mb: 3,
     textAlign: 'center',
     fontStyle: 'italic'
-  } as SxProps<Theme>,
-
-  grid: {
-    mt: 1
   } as SxProps<Theme>
 };

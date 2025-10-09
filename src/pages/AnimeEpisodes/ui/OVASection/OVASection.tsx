@@ -1,5 +1,7 @@
-import { Box, Grid, Typography } from '@mui/material';
+import { Box, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+
+import { Grid } from '@/shared/ui';
 
 import type { OVAEpisode } from '../../types';
 import OVACard from '../OVACard';
@@ -18,11 +20,9 @@ const OVASection = ({ ovaEpisodes }: OVASectionProps) => {
         {t('anime_episodes_ova_description')}
       </Typography>
 
-      <Grid container spacing={2} sx={ovaSectionStyles.grid}>
+      <Grid maxColCount={3} minColSize={260}>
         {ovaEpisodes.map((episode) => (
-          <Grid size={{ xs: 12, sm: 6, md: 4, lg: 3 }} key={episode.id}>
-            <OVACard episode={episode} />
-          </Grid>
+          <OVACard key={episode.id} episode={episode} />
         ))}
       </Grid>
     </Box>

@@ -98,26 +98,9 @@ export const ovaCardStyles = {
     fontSize: '1rem'
   } as SxProps<Theme>,
 
-  ovaBadge: {
-    position: 'absolute',
-    bottom: 8,
-    right: 8,
-    backgroundColor: 'var(--color-primary)',
-    borderRadius: 'var(--border-radius-small)',
-    px: 1,
-    py: 0.5,
-    boxShadow: 'var(--shadow-small)'
-  } as SxProps<Theme>,
-
-  ovaText: {
-    color: 'white',
-    fontSize: '0.75rem',
-    fontWeight: 600
-  } as SxProps<Theme>,
-
   content: {
     p: 2,
-    height: 'calc(100% - 160px)',
+    pb: '12px !important',
     display: 'flex',
     flexDirection: 'column'
   } as SxProps<Theme>,
@@ -142,13 +125,6 @@ export const ovaCardStyles = {
     mr: 1
   } as SxProps<Theme>,
 
-  statusChip: {
-    fontSize: '0.625rem',
-    height: 20,
-    minWidth: 'auto',
-    px: 1
-  } as SxProps<Theme>,
-
   airDate: {
     color: 'var(--color-text-tertiary)',
     fontSize: '0.75rem',
@@ -165,33 +141,5 @@ export const ovaCardStyles = {
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
     flex: 1
-  } as SxProps<Theme>,
-
-  progressContainer: {
-    mt: 'auto',
-    pt: 1
-  } as SxProps<Theme>,
-
-  progressBar: {
-    height: 4,
-    borderRadius: 'var(--border-radius-small)',
-    backgroundColor: 'var(--color-background)',
-    mb: 0.5,
-    '& .MuiLinearProgress-bar': {
-      background: 'var(--anime-gradient-sunset)',
-      borderRadius: 'var(--border-radius-small)'
-    }
-  } as SxProps<Theme>,
-
-  progressText: {
-    color: 'var(--color-text-secondary)',
-    fontSize: '0.75rem',
-    textAlign: 'right'
-  } as SxProps<Theme>,
-
-  watchedDate: {
-    color: 'var(--color-text-tertiary)',
-    fontSize: '0.75rem',
-    fontStyle: 'italic'
   } as SxProps<Theme>
 };
