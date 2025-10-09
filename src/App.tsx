@@ -12,6 +12,7 @@ const WatchList = lazy(() => import('./pages/WatchList/WatchList'));
 const WantList = lazy(() => import('./pages/WantList/WantList'));
 const Favorites = lazy(() => import('./pages/Favorites/Favorites'));
 const History = lazy(() => import('./pages/History/History'));
+const Profile = lazy(() => import('./pages/Profile/Profile'));
 
 const router = createBrowserRouter([
   {
@@ -43,6 +44,10 @@ const router = createBrowserRouter([
               {
                 path: ROUTES.history,
                 element: <History />
+              },
+              {
+                path: ROUTES.profile,
+                element: <Profile />
               },
               {
                 path: '*',
