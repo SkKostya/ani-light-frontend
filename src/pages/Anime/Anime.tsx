@@ -43,7 +43,9 @@ const Anime = () => {
     onPlay: () => console.info('Video started playing'),
     onPause: () => console.info('Video paused'),
     onEnded: () => console.info('Video ended'),
-    onError: (error: Error) => console.error('Player error:', error)
+    onError: (error: Error) => console.error('Player error:', error),
+    onQualityChange: (quality: string) =>
+      console.info('Quality changed to:', quality)
   };
 
   return (

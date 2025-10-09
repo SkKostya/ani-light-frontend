@@ -215,11 +215,60 @@ button {
     }
   }
 
+  // Стили для качества видео
+  .artplayer-quality {
+    .artplayer-quality-panel {
+      background: rgba(0, 0, 0, 0.9) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: var(--border-radius-medium) !important;
+      backdrop-filter: blur(10px) !important;
+    }
+
+    .artplayer-quality-item {
+      padding: 8px 16px !important;
+      color: #fff !important;
+      cursor: pointer !important;
+      transition: all 0.3s ease !important;
+
+      &:hover {
+        color: var(--color-primary) !important;
+        background: rgba(233, 30, 99, 0.2) !important;
+      }
+
+      &.artplayer-quality-item-active {
+        font-weight: 600 !important;
+        color: var(--color-primary) !important;
+        background: rgba(233, 30, 99, 0.1) !important;
+      }
+    }
+  }
+
   // Стили для полноэкранного режима
   .artplayer-fullscreen {
     .artplayer-icon-fullscreen,
     .artplayer-icon-fullscreen-exit {
+      font-size: 20px !important;
       color: var(--color-primary) !important;
+      transition: all 0.3s ease !important;
+
+      &:hover {
+        color: var(--color-secondary) !important;
+        transform: scale(1.1) !important;
+      }
+    }
+  }
+
+  // Стили для полноэкранного режима
+  &.artplayer-fullscreen {
+    background: #000 !important;
+    border-radius: 0 !important;
+
+    .artplayer-controls {
+      border-radius: 0 !important;
+    }
+
+    video {
+      border-radius: 0 !important;
     }
   }
 

@@ -25,6 +25,7 @@ interface AnimePlayerProps {
   onPause?: () => void;
   onEnded?: () => void;
   onError?: (error: Error) => void;
+  onQualityChange?: (quality: string) => void;
 }
 
 const AnimePlayer = ({
@@ -37,7 +38,8 @@ const AnimePlayer = ({
   onPlay,
   onPause,
   onEnded,
-  onError
+  onError,
+  onQualityChange
 }: AnimePlayerProps) => {
   const { t } = useTranslation();
   const playerRef = useRef<HTMLDivElement>(null);
@@ -62,21 +64,48 @@ const AnimePlayer = ({
       screenshot: true,
       setting: true,
       loop: false,
-      flip: true,
       playbackRate: true,
-      aspectRatio: true,
       fullscreen: true,
-      fullscreenWeb: true,
+      fullscreenWeb: false, // Отключаем веб-полноэкранный режим
       mutex: true,
       backdrop: true,
       playsInline: true,
       airplay: true,
+      autoOrientation: true, // Включаем автоматический поворот экрана
       theme: '#e91e63',
-      lang: 'ru'
+      lang: 'ru',
+      // Добавляем управление качеством
+      quality: quality.map((q) => ({
+        name: q.name,
+        html: q.name,
+        url: q.url,
+        default: q.default
+      }))
     };
 
     return config;
   };
+
+  // Обработка изменения ориентации экрана
+  useEffect(() => {
+    const handleOrientationChange = () => {
+      if (artPlayerRef.current) {
+        // Обновляем размеры плеера при изменении ориентации
+        setTimeout(() => {
+          // ArtPlayer автоматически обновляет размеры
+          console.info('Orientation changed, player will auto-resize');
+        }, 100);
+      }
+    };
+
+    window.addEventListener('orientationchange', handleOrientationChange);
+    window.addEventListener('resize', handleOrientationChange);
+
+    return () => {
+      window.removeEventListener('orientationchange', handleOrientationChange);
+      window.removeEventListener('resize', handleOrientationChange);
+    };
+  }, []);
 
   // Инициализация плеера
   useEffect(() => {
@@ -144,6 +173,32 @@ const AnimePlayer = ({
 
           artPlayerRef.current.on('canplay', () => {
             setIsLoading(false);
+          });
+
+          // Обработчик изменения качества
+          artPlayerRef.current.on('video:quality', (quality: unknown) => {
+            console.info('Quality changed to:', quality);
+            onQualityChange?.(quality as string);
+          });
+
+          // Обработчик полноэкранного режима
+          artPlayerRef.current.on('fullscreen', (isFullscreen: unknown) => {
+            console.info('Fullscreen changed to:', isFullscreen);
+            if (isFullscreen) {
+              // Принудительно поворачиваем экран в ландшафт при полноэкранном режиме
+              if (screen.orientation && 'lock' in screen.orientation) {
+                (screen.orientation as any)
+                  .lock('landscape')
+                  .catch((err: unknown) => {
+                    console.warn('Could not lock orientation:', err);
+                  });
+              }
+            } else {
+              // Разблокируем поворот экрана при выходе из полноэкранного режима
+              if (screen.orientation && 'unlock' in screen.orientation) {
+                (screen.orientation as any).unlock();
+              }
+            }
           });
         }
       } catch (error) {
