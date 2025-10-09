@@ -1,5 +1,6 @@
 export const ROUTES = {
   catalog: 'anime',
+  animeEpisodes: (uuid = ':uuid') => `anime/${uuid}/episodes`,
   anime: (uuid = ':uuid') => `anime/${uuid}`,
 
   watchList: 'watch-list',
