@@ -41,3 +41,50 @@ button {
 .app-router-not-found {
   margin-top: 32px;
 }
+
+// Анимации для аниме стиля
+@keyframes anime-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(0deg);
+  }
+
+  50% {
+    transform: translateY(-20px) rotate(5deg);
+  }
+}
+
+@keyframes anime-glow {
+  0%,
+  100% {
+    box-shadow: 0 0 20px rgba(233, 30, 99, 0.3);
+  }
+
+  50% {
+    box-shadow: 0 0 40px rgba(233, 30, 99, 0.6);
+  }
+}
+
+@keyframes anime-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.05);
+  }
+}
+
+// Готовые классы анимаций
+.anime-glow {
+  animation: anime-glow 2s ease-in-out infinite;
+}
+
+.anime-pulse {
+  animation: anime-pulse 1.5s ease-in-out infinite;
+}
+
+.anime-float {
+  animation: anime-float 3s ease-in-out infinite;
+}

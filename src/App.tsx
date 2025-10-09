@@ -8,6 +8,7 @@ import { ROUTES } from './shared/constants';
 import NotFound from './shared/widgets/errors/404';
 
 const Catalog = lazy(() => import('./pages/Catalog/Catalog'));
+const Anime = lazy(() => import('./pages/Anime/Anime'));
 const WatchList = lazy(() => import('./pages/WatchList/WatchList'));
 const WantList = lazy(() => import('./pages/WantList/WantList'));
 const Favorites = lazy(() => import('./pages/Favorites/Favorites'));
@@ -28,6 +29,10 @@ const router = createBrowserRouter([
               {
                 path: ROUTES.catalog,
                 element: <Catalog />
+              },
+              {
+                path: ROUTES.anime(),
+                element: <Anime />
               },
               {
                 path: ROUTES.watchList,

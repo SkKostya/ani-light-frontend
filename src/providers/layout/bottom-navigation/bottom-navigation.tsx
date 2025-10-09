@@ -12,6 +12,7 @@ import { useLocation } from 'react-router';
 
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
+import { getCurrentNavigationTab } from '@/shared/services/helpers/navigate-helper';
 
 import { bottomNavigationStyles } from './bottom-navigation.styles';
 
@@ -32,20 +33,13 @@ const BottomNavigationComponent: React.FC<BottomNavigationProps> = ({
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-  // Определяем активную вкладку на основе текущего пути
-  const getCurrentValue = (): number | undefined => {
-    const path = location.pathname;
-    if (path.includes(ROUTES.watchList)) return 1;
-    if (path.includes(ROUTES.wantList)) return 2;
-    if (path.includes(ROUTES.favorites)) return 3;
-    if (path.includes(ROUTES.catalog)) return 0;
-  };
-
-  const [value, setValue] = useState(getCurrentValue());
+  const [value, setValue] = useState(
+    getCurrentNavigationTab(location.pathname)
+  );
 
   // Синхронизируем состояние с URL при изменении маршрута
   useEffect(() => {
-    setValue(getCurrentValue());
+    setValue(getCurrentNavigationTab(location.pathname));
   }, [location.pathname]);
 
   const handleChange = (_: React.SyntheticEvent, newValue: number) => {

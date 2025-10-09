@@ -33,36 +33,12 @@ export const getCurrentNavigationTab = (
 ): number | undefined => {
   const pathWithoutLang = removeLanguagePrefix(pathname);
 
-  if (
-    pathWithoutLang === `/${ROUTES.profile}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.profile}/`)
-  )
-    return 5;
-  if (
-    pathWithoutLang === `/${ROUTES.watchList}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.watchList}/`)
-  )
-    return 1;
-  if (
-    pathWithoutLang === `/${ROUTES.wantList}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.wantList}/`)
-  )
-    return 2;
-  if (
-    pathWithoutLang === `/${ROUTES.favorites}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.favorites}/`)
-  )
-    return 3;
-  if (
-    pathWithoutLang === `/${ROUTES.history}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.history}/`)
-  )
-    return 4;
-  if (
-    pathWithoutLang === '/' ||
-    pathWithoutLang === `/${ROUTES.catalog}` ||
-    pathWithoutLang.startsWith(`/${ROUTES.catalog}/`)
-  )
+  if (pathWithoutLang === `/${ROUTES.profile}`) return 5;
+  if (pathWithoutLang === `/${ROUTES.watchList}`) return 1;
+  if (pathWithoutLang === `/${ROUTES.wantList}`) return 2;
+  if (pathWithoutLang === `/${ROUTES.favorites}`) return 3;
+  if (pathWithoutLang === `/${ROUTES.history}`) return 4;
+  if (pathWithoutLang === '/' || pathWithoutLang === `/${ROUTES.catalog}`)
     return 0;
 };
 
