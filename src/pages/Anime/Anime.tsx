@@ -12,6 +12,40 @@ import {
 const Anime = () => {
   const { t } = useTranslation();
 
+  // Тестовые данные для плеера
+  const playerProps = {
+    videoUrl:
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+    poster:
+      'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/BigBuckBunny.jpg',
+    title: 'Attack on Titan - Episode 1',
+    subtitle: 'The Fall of Shiganshina',
+    quality: [
+      {
+        name: '1080p',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
+        default: true
+      },
+      {
+        name: '720p',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+      },
+      {
+        name: '480p',
+        url: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4'
+      }
+    ],
+    subtitles: [
+      { name: 'Русский', url: '', lang: 'ru' },
+      { name: 'English', url: '', lang: 'en' },
+      { name: '日本語', url: '', lang: 'ja' }
+    ],
+    onPlay: () => console.info('Video started playing'),
+    onPause: () => console.info('Video paused'),
+    onEnded: () => console.info('Video ended'),
+    onError: (error: Error) => console.error('Player error:', error)
+  };
+
   return (
     <Box sx={animePageStyles.container}>
       <Container maxWidth="lg">
@@ -24,7 +58,7 @@ const Anime = () => {
 
         {/* Плеер */}
         <Box sx={animePageStyles.playerContainer}>
-          <AnimePlayer />
+          <AnimePlayer {...playerProps} />
         </Box>
 
         {/* Кнопки управления */}
