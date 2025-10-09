@@ -1,5 +1,5 @@
 import { Box, LinearProgress, Typography } from '@mui/material';
-import React from 'react';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { HistoryCardProps } from '../../types';
@@ -8,9 +8,14 @@ import { historyCardStyles } from './HistoryCard.styles';
 
 const HistoryCard: React.FC<HistoryCardProps> = ({ entry, onClick }) => {
   const { t } = useTranslation();
+  const [imageError, setImageError] = useState(false);
 
   const handleClick = () => {
     onClick?.(entry);
+  };
+
+  const handleImageError = () => {
+    setImageError(true);
   };
 
   const progressPercentage = Math.round(entry.progress * 100);
@@ -39,12 +44,27 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ entry, onClick }) => {
       <Box sx={historyCardStyles.contentContainer}>
         {/* Изображение аниме */}
         <Box sx={historyCardStyles.imageContainer}>
-          <Box
-            component="img"
-            src={entry.animeImageUrl}
-            alt={entry.animeTitle}
-            sx={historyCardStyles.animeImage}
-          />
+          {!imageError ? (
+            <Box
+              component="img"
+              src={entry.animeImageUrl}
+              alt={entry.animeTitle}
+              sx={historyCardStyles.animeImage}
+              onError={handleImageError}
+            />
+          ) : (
+            <Box
+              sx={historyCardStyles.fallbackImage}
+              className="fallback-image"
+            >
+              <Box
+                sx={historyCardStyles.fallbackIcon}
+                className="fallback-icon"
+              >
+                🎬
+              </Box>
+            </Box>
+          )}
         </Box>
 
         {/* Информация о серии */}
@@ -66,13 +86,6 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ entry, onClick }) => {
             })}
           </Typography>
 
-          {/* Название серии (если есть) */}
-          {entry.episodeTitle && (
-            <Typography variant="body2" sx={historyCardStyles.episodeTitle}>
-              {entry.episodeTitle}
-            </Typography>
-          )}
-
           {/* Время просмотра */}
           <Typography
             variant="body2"
@@ -86,16 +99,11 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ entry, onClick }) => {
       </Box>
 
       {/* Прогресс-бар */}
-      <Box sx={historyCardStyles.progressContainer}>
-        <LinearProgress
-          variant="determinate"
-          value={progressPercentage}
-          sx={historyCardStyles.progressBar}
-        />
-        <Typography variant="caption" sx={historyCardStyles.progressText}>
-          {progressPercentage}%
-        </Typography>
-      </Box>
+      <LinearProgress
+        variant="determinate"
+        value={progressPercentage}
+        sx={historyCardStyles.progressBar}
+      />
     </Box>
   );
 };

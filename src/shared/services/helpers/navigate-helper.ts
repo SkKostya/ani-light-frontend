@@ -28,7 +28,9 @@ export const removeLanguagePrefix = (path: string): string => {
  * @param pathname - Текущий путь из location.pathname
  * @returns Номер активной вкладки (0-4)
  */
-export const getCurrentNavigationTab = (pathname: string): number => {
+export const getCurrentNavigationTab = (
+  pathname: string
+): number | undefined => {
   const pathWithoutLang = removeLanguagePrefix(pathname);
 
   if (
@@ -62,8 +64,6 @@ export const getCurrentNavigationTab = (pathname: string): number => {
     pathWithoutLang.startsWith(`/${ROUTES.catalog}/`)
   )
     return 0;
-
-  return 0; // catalog по умолчанию
 };
 
 /**

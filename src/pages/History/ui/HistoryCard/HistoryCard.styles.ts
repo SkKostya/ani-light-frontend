@@ -1,4 +1,4 @@
-import { SxProps, Theme } from '@mui/material';
+import { type SxProps, type Theme } from '@mui/material';
 
 export const historyCardStyles = {
   container: {
@@ -19,6 +19,15 @@ export const historyCardStyles = {
       borderColor: 'var(--color-primary)',
       '& .anime-image': {
         transform: 'scale(1.05)'
+      },
+      '& .fallback-image': {
+        borderColor: 'var(--color-primary)',
+        backgroundColor: 'var(--color-background-paper)',
+        '& .fallback-icon': {
+          opacity: 1,
+          filter: 'grayscale(0)',
+          transform: 'scale(1.1)'
+        }
       }
     },
     '&:focus': {
@@ -29,8 +38,8 @@ export const historyCardStyles = {
 
   timeContainer: {
     position: 'absolute',
-    top: 8,
-    right: 12,
+    top: 0,
+    right: 0,
     zIndex: 2,
     backgroundColor: 'rgba(0, 0, 0, 0.7)',
     borderRadius: 'var(--border-radius-small)',
@@ -54,8 +63,8 @@ export const historyCardStyles = {
 
   imageContainer: {
     flexShrink: 0,
-    width: { xs: 50, sm: 60 },
-    height: { xs: 70, sm: 80 },
+    width: { xs: 60, sm: 70 },
+    height: { xs: 60, sm: 70 },
     mr: { xs: 1.5, sm: 2 },
     borderRadius: 'var(--border-radius-medium)',
     overflow: 'hidden',
@@ -68,6 +77,31 @@ export const historyCardStyles = {
     objectFit: 'cover',
     transition: 'transform 0.3s ease-in-out',
     '&.anime-image': {
+      // Класс для hover эффекта
+    }
+  } as SxProps<Theme>,
+
+  fallbackImage: {
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'var(--color-background)',
+    border: '2px dashed var(--color-border)',
+    borderRadius: 'var(--border-radius-medium)',
+    transition: 'all 0.3s ease-in-out',
+    '&.fallback-image': {
+      // Класс для hover эффекта
+    }
+  } as SxProps<Theme>,
+
+  fallbackIcon: {
+    fontSize: { xs: '1.5rem', sm: '2rem' },
+    opacity: 0.6,
+    filter: 'grayscale(0.3)',
+    transition: 'all 0.3s ease-in-out',
+    '&.fallback-icon': {
       // Класс для hover эффекта
     }
   } as SxProps<Theme>,
@@ -96,34 +130,14 @@ export const historyCardStyles = {
     color: 'var(--color-text-secondary)'
   } as SxProps<Theme>,
 
-  episodeTitle: {
-    fontSize: { xs: '0.8rem', sm: '0.875rem' },
-    fontWeight: 500,
-    mb: 0.5,
-    color: 'var(--color-text-primary)',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
-  } as SxProps<Theme>,
-
   durationInfo: {
     fontSize: { xs: '0.75rem', sm: '0.8rem' },
     color: 'var(--color-text-secondary)',
     mt: 'auto'
   } as SxProps<Theme>,
 
-  progressContainer: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1,
-    p: { xs: 1.5, sm: 2 },
-    pt: 1,
-    backgroundColor: 'var(--color-background-secondary)'
-  } as SxProps<Theme>,
-
   progressBar: {
-    flex: 1,
-    height: 6,
+    height: 4,
     borderRadius: 3,
     backgroundColor: 'var(--color-border)',
     '& .MuiLinearProgress-bar': {
@@ -131,13 +145,5 @@ export const historyCardStyles = {
       background:
         'linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%)'
     }
-  } as SxProps<Theme>,
-
-  progressText: {
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    color: 'var(--color-text-secondary)',
-    minWidth: '35px',
-    textAlign: 'right'
   } as SxProps<Theme>
 };

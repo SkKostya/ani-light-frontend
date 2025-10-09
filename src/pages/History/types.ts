@@ -9,7 +9,6 @@ export interface HistoryEntry {
   animeImageUrl: string;
   season: number;
   episode: number;
-  episodeTitle?: string;
   watchedAt: string; // ISO date string
   watchedDuration: number; // в секундах
   totalDuration: number; // в секундах

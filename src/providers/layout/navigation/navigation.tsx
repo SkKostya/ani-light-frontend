@@ -44,7 +44,7 @@ const Navigation: React.FC<NavigationProps> = ({
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   // Определяем активную вкладку на основе текущего пути
-  const getCurrentTab = (): number => {
+  const getCurrentTab = (): number | undefined => {
     return getCurrentNavigationTab(location.pathname);
   };
 
