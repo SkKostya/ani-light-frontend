@@ -1,5 +1,6 @@
 import { Outlet } from 'react-router';
 
+import { ToastProvider } from '@/shared/entities';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { setNavigate } from '@/shared/services/helpers/navigate-helper';
 
@@ -14,9 +15,11 @@ const AppProvider: React.FC = () => {
   return (
     <ThemeProvider>
       <MuiProvider>
-        <LanguageGuard>
-          <Outlet />
-        </LanguageGuard>
+        <ToastProvider>
+          <LanguageGuard>
+            <Outlet />
+          </LanguageGuard>
+        </ToastProvider>
       </MuiProvider>
     </ThemeProvider>
   );

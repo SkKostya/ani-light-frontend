@@ -14,8 +14,10 @@ const MainLoader: React.FC<IProps> = ({ fullWidth, fullScreen }) => {
 
   return (
     <div className={rootClasses}>
-      <div className="main-loader__text">
-        <span>AniLight</span>
+      <div className={fullScreen ? 'main-loader__container' : ''}>
+        <div className="main-loader__text">
+          <span>AniLight</span>
+        </div>
       </div>
     </div>
   );

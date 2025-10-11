@@ -11,13 +11,21 @@
   &--fullscreen {
     position: fixed;
     inset: 0;
-    z-index: 1000;
+    z-index: 1500;
     display: flex;
     align-items: center;
     justify-content: center;
     width: 100vw;
     height: 100vh;
     background-color: rgba(0, 0, 0, 0.45);
+  }
+
+  &__container {
+    padding: 24px 32px;
+    background-color: var(--color-background-paper-blur);
+    border-radius: var(--border-radius-large);
+    box-shadow: var(--shadow-medium);
+    backdrop-filter: blur(10px);
   }
 
   &__text {
@@ -32,15 +40,10 @@
     color: transparent; /* Скрываем текстовый цвет */
     text-align: left;
     letter-spacing: -2px;
-    text-shadow: -1px -1px rgba(155, 28, 19, 0.1);
-    background: linear-gradient(
-      135deg,
-      var(--info-color),
-      var(--info-color),
-      rgba(var(--neutral-color-rgb), 1),
-      var(--info-color),
-      var(--info-color)
-    ); /* Глянцевая полоса в градиенте */
+    text-shadow: -1px -1px rgba(233, 30, 99, 0.1);
+    background: var(
+      --gradient-magic
+    ); /* Используем готовый магический градиент */
 
     background-clip: text; /* Обрезка цвета фона внутри текста */
     background-size: 200%;

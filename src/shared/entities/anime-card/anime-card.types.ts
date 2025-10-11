@@ -24,6 +24,5 @@ export interface AnimeCardProps {
   anime: Anime;
   onToggleFavorite?: (animeId: string) => void;
   onToggleWantToWatch?: (animeId: string) => void;
-  onClick?: (animeId: string) => void;
   variant?: 'default' | 'compact';
 }
