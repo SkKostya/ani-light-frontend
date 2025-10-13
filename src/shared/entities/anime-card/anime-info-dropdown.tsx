@@ -1,12 +1,7 @@
+import './anime-info-dropdown.scss';
+
 import { Close, Info } from '@mui/icons-material';
-import {
-  Box,
-  Chip,
-  IconButton,
-  Paper,
-  Popper,
-  Typography
-} from '@mui/material';
+import { Box, Chip, IconButton, Paper, Typography } from '@mui/material';
 import React, { useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -17,7 +12,6 @@ import {
   dropdownContentStyles,
   dropdownDescriptionStyles,
   dropdownPaperStyles,
-  infoButtonStyles,
   infoSectionStyles,
   ratingChipStyles,
   titleSectionStyles
@@ -35,7 +29,7 @@ export const AnimeInfoDropdown: React.FC<AnimeInfoDropdownProps> = ({
   anime
 }) => {
   const { t } = useTranslation();
-  const [open, setOpen] = useState(false);
+  const [, setOpen] = useState(false);
   const anchorRef = useRef<HTMLButtonElement>(null);
 
   const handleToggle = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -45,34 +39,21 @@ export const AnimeInfoDropdown: React.FC<AnimeInfoDropdownProps> = ({
   };
 
   return (
-    <>
+    <div className="anime-info-dropdown">
       <IconButton
         ref={anchorRef}
         onClick={handleToggle}
-        sx={infoButtonStyles}
+        className="anime-info-dropdown__info-button"
         aria-label={t('anime_info_dropdown_toggle')}
       >
         <Info />
       </IconButton>
 
-      <Popper
-        open={open}
-        anchorEl={anchorRef.current}
-        placement="bottom-start"
-        sx={{ zIndex: 1300 }}
-        modifiers={[
-          {
-            name: 'offset',
-            options: {
-              offset: [0, 8]
-            }
-          }
-        ]}
-      >
+      <div className="anime-info-dropdown__dropdown">
         <Paper sx={dropdownPaperStyles}>
           {/* Кнопка закрытия */}
           <IconButton
-            onClick={() => setOpen(false)}
+            onClick={handleToggle}
             sx={closeButtonStyles}
             size="small"
             aria-label={t('anime_info_dropdown_close')}
@@ -163,7 +144,7 @@ export const AnimeInfoDropdown: React.FC<AnimeInfoDropdownProps> = ({
             )}
           </Box>
         </Paper>
-      </Popper>
-    </>
+      </div>
+    </div>
   );
 };

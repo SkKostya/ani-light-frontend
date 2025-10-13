@@ -40,15 +40,6 @@ export interface Anime {
       };
     };
   }>;
-  genres?: Array<{
-    id: string;
-    external_id: number;
-    name: string;
-    image: {
-      optimized_preview: string;
-      preview: string;
-    };
-  }>;
   userAnime?: Omit<UserAnime, 'anime'>;
 }
 
@@ -72,6 +63,7 @@ export interface AnimeListResponse {
     total: number;
     totalPages: number;
   };
+  hasNext: boolean;
   shouldHideAds: boolean;
   user?: {
     id: string;

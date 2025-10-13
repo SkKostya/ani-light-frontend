@@ -11,6 +11,7 @@ export interface Anime {
   imageUrl: string;
   isFavorite: boolean;
   isWantToWatch: boolean;
+  onGoing: boolean;
   genres?: string[];
   themes?: string[];
   year?: number;

@@ -1,22 +1,18 @@
+import styles from './anime-card.module.scss';
+
 import {
   Favorite,
   FavoriteBorder,
   PlaylistAdd,
   PlaylistAddCheck
 } from '@mui/icons-material';
-import {
-  Box,
-  Card,
-  CardContent,
-  CardMedia,
-  IconButton,
-  Typography
-} from '@mui/material';
+import { Box, Card, CardContent, IconButton, Typography } from '@mui/material';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '@/shared/constants';
 import { getPluralForm } from '@/shared/services/helpers/strings';
+import ImageWithFallback from '@/shared/ui/image-with-fallback';
 import { LocalizedLink } from '@/shared/ui/localized-link';
 
 import {
@@ -37,7 +33,6 @@ import {
   titleStyles
 } from './anime-card.styles';
 import type { AnimeCardProps } from './anime-card.types';
-import { AnimeInfoDropdown } from './anime-info-dropdown';
 
 /**
  * Компонент карточки аниме
@@ -81,16 +76,20 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
     : process.env.PUBLIC_ANILIBRIA_URL + anime.imageUrl;
 
   return (
-    <LocalizedLink to={ROUTES.anime(anime.id)}>
+    <LocalizedLink
+      to={ROUTES.animeEpisodes(anime.id)}
+      className={styles.animeCard}
+    >
       <Card sx={cardStyle}>
         <Box sx={imageContainerStyle}>
-          <CardMedia
-            component="img"
-            image={imageUrl}
+          <ImageWithFallback
+            src={imageUrl}
             alt={anime.title}
             sx={imageStyles}
+            fallbackIcon="🎬"
           />
-          <AnimeInfoDropdown anime={anime} />
+          {/* TODO: Изменить стилизацию компонента, чтобы дропдаун работал корректно */}
+          {/* <AnimeInfoDropdown anime={anime} /> */}
 
           {/* Кнопка "Хочу посмотреть" */}
           <IconButton
@@ -165,6 +164,13 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
                   {t(
                     `anime_movies_${getPluralForm(anime.movies, ['1', '2', '5'])}`
                   )}
+                </Typography>
+              </Box>
+            )}
+            {anime.onGoing && (
+              <Box sx={infoItemStyle}>
+                <Typography variant="caption" component="span">
+                  {t('anime_on_going')}
                 </Typography>
               </Box>
             )}

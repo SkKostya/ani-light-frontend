@@ -30,13 +30,15 @@ const addLanguagePrefix = (
   return to;
 };
 
-export const LocalizedLink: React.FC<LinkProps> = ({ to, ...props }) => {
+export const LocalizedLink: React.FC<
+  LinkProps & { ref?: React.Ref<HTMLAnchorElement> }
+> = ({ to, ref, ...props }) => {
   const { i18n } = useTranslation();
   const currentLang = i18n.language;
 
   const localizedTo = addLanguagePrefix(to, currentLang);
 
-  return <Link to={localizedTo} {...props} />;
+  return <Link ref={ref} to={localizedTo} {...props} />;
 };
 
 export const LocalizedNavLink: React.FC<NavLinkProps> = ({ to, ...props }) => {

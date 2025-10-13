@@ -1,119 +1,157 @@
-import { Search as SearchIcon } from '@mui/icons-material';
-import { Box, Button, Container, Stack, Typography } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import { Box, Container, Typography } from '@mui/material';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { animeApi } from '@/api/anime.api';
 import { userApi } from '@/api/user.api';
 import { toast } from '@/shared/entities';
-import { AnimeCard, mockAnimeData } from '@/shared/entities/anime-card';
-import type { Anime } from '@/shared/entities/anime-card/anime-card.types';
+import { AnimeCard } from '@/shared/entities/anime-card';
+import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver';
 import { MainLoader } from '@/shared/ui';
+
+import { useCatalogPagination } from './hooks/useCatalogPagination';
+import { useUrlFilters } from './hooks/useUrlFilters';
+import type { CatalogFilters } from './types';
+import {
+  CatalogFilters as CatalogFiltersComponent,
+  LoadingIndicator
+} from './ui';
 
 const Catalog: React.FC = () => {
   const { t } = useTranslation();
 
-  const [animeList, setAnimeList] = useState<Anime[]>(mockAnimeData);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+  const { urlFilters, updateUrlFilters, resetUrlFilters } = useUrlFilters();
 
-  const handleToggleFavorite = async (animeId: string) => {
-    // Сначала находим исходное состояние
-    const originalAnime = animeList.find((a) => a.id === animeId);
-    if (!originalAnime) return;
-
-    const wasFavorite = originalAnime.isFavorite;
-
-    setAnimeList((prevList) =>
-      prevList.map((anime) =>
-        anime.id === animeId
-          ? { ...anime, isFavorite: !anime.isFavorite }
-          : anime
-      )
-    );
-
-    try {
-      await userApi.toggleFavoriteAnime(animeId);
-      // Показываем toast на основе исходного состояния
-      if (wasFavorite) {
-        toast.info('Аниме удалено из избранного', 'Информация');
-      } else {
-        toast.success('Аниме добавлено в избранное!', 'Успех');
-      }
-    } catch (err) {
-      const error = err as Error;
-      toast.error(error.message, 'Ошибка');
-      setAnimeList((prevList) =>
-        prevList.map((anime) =>
-          anime.id === animeId ? { ...anime, isFavorite: wasFavorite } : anime
-        )
-      );
-    }
-  };
-
-  const handleToggleWantToWatch = async (animeId: string) => {
-    const originalState = animeList.find(
-      (a) => a.id === animeId
-    )?.isWantToWatch;
-
-    setAnimeList((prevList) =>
-      prevList.map((anime) =>
-        anime.id === animeId
-          ? { ...anime, isWantToWatch: !anime.isWantToWatch }
-          : anime
-      )
-    );
-
-    try {
-      await userApi.toggleWantToWatchAnime(animeId);
-      // Показываем успешное уведомление
-      if (originalState) {
-        toast.success('Аниме удалено из списка "Хочу посмотреть"', 'Успех');
-      } else {
-        toast.success('Аниме добавлено в список "Хочу посмотреть"', 'Успех');
-      }
-    } catch (err) {
-      const error = err as Error;
-      toast.error(error.message, 'Ошибка');
-      setAnimeList((prevList) =>
-        prevList.map((anime) =>
-          anime.id === animeId
-            ? { ...anime, isWantToWatch: !anime.isWantToWatch }
-            : anime
-        )
-      );
-    }
-  };
-
-  useEffect(() => {
-    (async () => {
-      try {
-        setIsLoading(true);
-        const response = await animeApi.getAnimeList();
-        setAnimeList(
-          response.data.map((item) => ({
-            id: item.id,
-            title: item.title_ru,
-            description: item.description,
-            imageUrl: item.poster_url,
-            isFavorite: item.userAnime?.is_favorite || false,
-            isWantToWatch: item.userAnime?.want_to_watch || false,
-            genres: item.genres?.map((genre) => genre.name),
-            year: item.year,
-            episodes: item.episodes_total
-          }))
-        );
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+  const handleError = useCallback((error: string) => {
+    toast.error(error, 'Ошибка');
   }, []);
+
+  const { animeList, pagination, loadMore, resetAndLoad, updateAnimeInList } =
+    useCatalogPagination({
+      filters: urlFilters,
+      onError: handleError
+    });
+
+  console.info('🔍 Catalog render:', {
+    isInitialLoading,
+    paginationIsLoading: pagination.isLoading
+  });
+
+  const handleToggleFavorite = useCallback(
+    async (animeId: string) => {
+      // Сначала находим исходное состояние
+      const originalAnime = animeList.find((a) => a.id === animeId);
+      if (!originalAnime) return;
+
+      const wasFavorite = originalAnime.isFavorite;
+
+      // Оптимистичное обновление UI
+      updateAnimeInList(animeId, { isFavorite: !wasFavorite });
+
+      try {
+        await userApi.toggleFavoriteAnime(animeId);
+        // Показываем toast на основе исходного состояния
+        if (wasFavorite) {
+          toast.info('Аниме удалено из избранного', 'Информация');
+        } else {
+          toast.success('Аниме добавлено в избранное!', 'Успех');
+        }
+      } catch (err) {
+        const error = err as Error;
+        toast.error(error.message, 'Ошибка');
+        // В случае ошибки возвращаем исходное состояние
+        updateAnimeInList(animeId, { isFavorite: wasFavorite });
+      }
+    },
+    [animeList, updateAnimeInList]
+  );
+
+  const handleToggleWantToWatch = useCallback(
+    async (animeId: string) => {
+      const originalState = animeList.find(
+        (a) => a.id === animeId
+      )?.isWantToWatch;
+
+      // Оптимистичное обновление UI
+      updateAnimeInList(animeId, { isWantToWatch: !originalState });
+
+      try {
+        await userApi.toggleWantToWatchAnime(animeId);
+        // Показываем успешное уведомление
+        if (originalState) {
+          toast.success('Аниме удалено из списка "Хочу посмотреть"', 'Успех');
+        } else {
+          toast.success('Аниме добавлено в список "Хочу посмотреть"', 'Успех');
+        }
+      } catch (err) {
+        const error = err as Error;
+        toast.error(error.message, 'Ошибка');
+        // В случае ошибки возвращаем исходное состояние
+        updateAnimeInList(animeId, { isWantToWatch: originalState });
+      }
+    },
+    [animeList, updateAnimeInList]
+  );
+
+  // Настройка Intersection Observer для бесконечной прокрутки
+  const [ref, isIntersecting] = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '100px'
+  });
+
+  // Загружаем больше контента при пересечении с индикатором загрузки
+  useEffect(() => {
+    if (
+      isIntersecting &&
+      pagination.hasMore &&
+      !pagination.isLoading &&
+      animeList.length > 0 // Загружаем только если уже есть данные
+    ) {
+      loadMore();
+    }
+  }, [
+    isIntersecting,
+    pagination.hasMore,
+    pagination.isLoading,
+    animeList.length,
+    loadMore
+  ]);
+
+  // Загружаем начальные данные
+  useEffect(() => {
+    const loadInitialData = async () => {
+      setIsInitialLoading(true);
+      await resetAndLoad();
+      setIsInitialLoading(false);
+    };
+
+    loadInitialData();
+  }, []);
+
+  // Обработчики фильтров
+  const handleFiltersChange = useCallback(
+    (newFilters: CatalogFilters) => {
+      updateUrlFilters(newFilters);
+      resetAndLoad();
+    },
+    [updateUrlFilters]
+  );
+
+  const handleSearch = useCallback(() => {
+    resetAndLoad();
+  }, [resetAndLoad]);
+
+  const handleResetFilters = useCallback(() => {
+    resetUrlFilters();
+    resetAndLoad();
+  }, [resetUrlFilters, resetAndLoad]);
 
   return (
     <Container>
-      {isLoading && <MainLoader fullScreen={true} />}
+      {isInitialLoading && <MainLoader fullScreen={true} />}
 
       <Box sx={{ py: 4 }}>
-        {/* Заголовок с переключателем темы */}
+        {/* Заголовок */}
         <Box
           sx={{
             display: 'flex',
@@ -131,24 +169,13 @@ const Catalog: React.FC = () => {
           {t('catalog_description')}
         </Typography>
 
-        {/* Кнопки действий */}
-        <Stack direction="row" spacing={2} sx={{ mb: 4 }} flexWrap="wrap">
-          <Button
-            variant="contained"
-            startIcon={<SearchIcon />}
-            size="large"
-            className="anime-gradient-magic"
-            sx={{
-              color: 'white',
-              '&:hover': {
-                transform: 'translateY(-2px)',
-                boxShadow: '0 8px 25px rgba(233, 30, 99, 0.3)'
-              }
-            }}
-          >
-            {t('button_search')}
-          </Button>
-        </Stack>
+        {/* Фильтры */}
+        <CatalogFiltersComponent
+          filters={urlFilters}
+          onFiltersChange={handleFiltersChange}
+          onSearch={handleSearch}
+          onReset={handleResetFilters}
+        />
 
         {/* Сетка карточек аниме */}
         <Box
@@ -172,6 +199,17 @@ const Catalog: React.FC = () => {
             />
           ))}
         </Box>
+
+        {/* Индикатор загрузки и статус пагинации */}
+        {animeList.length > 0 && !isInitialLoading && !pagination.isLoading && (
+          <Box ref={ref}>
+            <LoadingIndicator
+              isLoading={pagination.isLoading}
+              hasMore={pagination.hasMore}
+              currentCount={animeList.length}
+            />
+          </Box>
+        )}
       </Box>
     </Container>
   );

@@ -156,9 +156,6 @@ export const compactInfoItemStyles: SxProps<Theme> = {
 };
 
 export const infoButtonStyles: SxProps<Theme> = {
-  position: 'absolute',
-  top: 8,
-  left: 8,
   backgroundColor: 'rgba(0, 0, 0, 0.5)',
   color: 'white',
   backdropFilter: 'blur(4px)',
@@ -169,8 +166,6 @@ export const infoButtonStyles: SxProps<Theme> = {
 };
 
 export const dropdownPaperStyles: SxProps<Theme> = {
-  maxWidth: 400,
-  minWidth: 300,
   backgroundColor: 'var(--color-background-paper)',
   border: '1px solid var(--color-border)',
   borderRadius: 'var(--border-radius-large)',
