@@ -2,6 +2,7 @@ import { Box, Container, Typography } from '@mui/material';
 import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { IGetAnimeListParams } from '@/api/types/anime.types';
 import { userApi } from '@/api/user.api';
 import { toast } from '@/shared/entities';
 import { AnimeCard } from '@/shared/entities/anime-card';
@@ -10,7 +11,6 @@ import { MainLoader } from '@/shared/ui';
 
 import { useCatalogPagination } from './hooks/useCatalogPagination';
 import { useUrlFilters } from './hooks/useUrlFilters';
-import type { CatalogFilters } from './types';
 import {
   CatalogFilters as CatalogFiltersComponent,
   LoadingIndicator
@@ -130,7 +130,7 @@ const Catalog: React.FC = () => {
 
   // Обработчики фильтров
   const handleFiltersChange = useCallback(
-    (newFilters: CatalogFilters) => {
+    (newFilters: IGetAnimeListParams) => {
       updateUrlFilters(newFilters);
       resetAndLoad();
     },

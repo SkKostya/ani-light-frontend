@@ -53,18 +53,33 @@ export const useCatalogPagination = ({
           limit: pagination.limit
         });
 
-        const newAnimeList = response.data.map((item) => ({
-          id: item.id,
-          title: item.title_ru,
-          description: item.description,
-          imageUrl: item.poster_url,
-          isFavorite: item.userAnime?.is_favorite || false,
-          isWantToWatch: item.userAnime?.want_to_watch || false,
-          genres: item.genres?.map((genre) => genre.name),
-          year: item.year,
-          episodes: item.episodes_total,
-          onGoing: item.is_ongoing
-        }));
+        const newAnimeList = response.data.map((item) => {
+          const firstRelease = item.animeReleases[0];
+          const userAnime = item.userAnime?.[0];
+          const isOnGoing = item.animeReleases.some(
+            (release) => release.is_ongoing
+          );
+          const genres = item.animeReleases
+            .flatMap(
+              (release) =>
+                release.animeGenres?.map((genre) => genre.genre.name) || ''
+            )
+            .filter(Boolean);
+          return {
+            id: item.id,
+            title: item.name,
+            originalTitle: item.name_english,
+            description: firstRelease.description,
+            imageUrl: item.image || firstRelease.poster_url,
+            isFavorite: userAnime?.is_favorite || false,
+            isWantToWatch: userAnime?.want_to_watch || false,
+            genres: genres,
+            year: item.last_year,
+            seasons: item.total_releases,
+            episodes: item.total_episodes,
+            onGoing: isOnGoing
+          };
+        });
 
         setAnimeList((prev) =>
           reset ? newAnimeList : [...prev, ...newAnimeList]
@@ -75,7 +90,7 @@ export const useCatalogPagination = ({
           page: response.pagination.page,
           total: response.pagination.total,
           totalPages: response.pagination.totalPages,
-          hasMore: response.hasNext,
+          hasMore: response.pagination.totalPages > response.pagination.page,
           isLoading: false
         }));
       } catch (error) {

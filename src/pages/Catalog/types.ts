@@ -1,7 +1,7 @@
-import type { GetAnimeListParams } from '@/api/types/anime.types';
+import type { GetAnimeReleaseListParams } from '@/api/types/anime-release.types';
 
 export interface CatalogFilters
-  extends Omit<GetAnimeListParams, 'page' | 'limit'> {
+  extends Omit<GetAnimeReleaseListParams, 'page' | 'limit'> {
   search?: string;
   genre?: string;
   year?: number;
@@ -14,10 +14,4 @@ export interface PaginationState {
   totalPages: number;
   hasMore: boolean;
   isLoading: boolean;
-}
-
-export interface CatalogState {
-  animeList: any[];
-  filters: CatalogFilters;
-  pagination: PaginationState;
 }

@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 
-import { animeApi } from '@/api/anime.api';
+import { animeReleaseApi } from '@/api/anime-release.api';
 import { MainLoader } from '@/shared/ui';
 
 import { animeEpisodesPageStyles } from './AnimeEpisodes.styles';
@@ -24,7 +24,7 @@ const AnimeEpisodes = () => {
   useEffect(() => {
     const loadAnimeInfo = async () => {
       if (!animeId) return;
-      const animeInfo = await animeApi.getAnimeDetails(animeId);
+      const animeInfo = await animeReleaseApi.getAnimeDetails(animeId);
 
       setAnimeInfo({
         id: animeInfo.id,
