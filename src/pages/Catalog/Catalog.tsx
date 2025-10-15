@@ -7,7 +7,7 @@ import { userApi } from '@/api/user.api';
 import { toast } from '@/shared/entities';
 import { AnimeCard } from '@/shared/entities/anime-card';
 import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver';
-import { MainLoader } from '@/shared/ui';
+import { Grid, MainLoader } from '@/shared/ui';
 
 import { useCatalogPagination } from './hooks/useCatalogPagination';
 import { useUrlFilters } from './hooks/useUrlFilters';
@@ -178,17 +178,7 @@ const Catalog: React.FC = () => {
         />
 
         {/* Сетка карточек аниме */}
-        <Box
-          sx={{
-            display: 'grid',
-            gridTemplateColumns: {
-              xs: '1fr',
-              sm: 'repeat(2, 1fr)',
-              md: 'repeat(3, 1fr)'
-            },
-            gap: 3
-          }}
-        >
+        <Grid maxColCount={3} minColSize={260} gap={16}>
           {animeList.map((anime) => (
             <AnimeCard
               key={anime.id}
@@ -198,7 +188,7 @@ const Catalog: React.FC = () => {
               variant="compact"
             />
           ))}
-        </Box>
+        </Grid>
 
         {/* Индикатор загрузки и статус пагинации */}
         {animeList.length > 0 && !isInitialLoading && !pagination.isLoading && (

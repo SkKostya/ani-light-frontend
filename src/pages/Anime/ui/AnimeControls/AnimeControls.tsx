@@ -52,6 +52,7 @@ const AnimeControls = ({ totalEpisodes }: IProps) => {
           variant="outlined"
           onClick={handlePrevious}
           sx={animeControlsStyles.controlButton}
+          disabled={Number(episodeNumber) === 1}
         >
           <SkipPrevious />
           <Typography
@@ -77,6 +78,7 @@ const AnimeControls = ({ totalEpisodes }: IProps) => {
           variant="contained"
           onClick={handleNext}
           sx={animeControlsStyles.controlButton}
+          disabled={Number(episodeNumber) === totalEpisodes}
         >
           <Typography
             variant="body1"

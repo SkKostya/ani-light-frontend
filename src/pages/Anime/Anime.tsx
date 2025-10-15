@@ -58,8 +58,10 @@ const Anime = () => {
     }
 
     return {
-      videoUrl: episode?.video_url,
-      poster: process.env.PUBLIC_ANILIBRIA_URL + episode?.preview_image,
+      videoUrl: episode?.video_url || undefined,
+      poster: episode?.preview_image
+        ? process.env.PUBLIC_ANILIBRIA_URL + episode.preview_image
+        : undefined,
       title: episode?.animeRelease.title_ru,
       subtitle: episode?.animeRelease.title_en,
       quality: qualityOptions
