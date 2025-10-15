@@ -1,0 +1,15 @@
+.anime-player {
+  &__timing-action {
+    position: absolute;
+    bottom: 64px;
+    z-index: 1000;
+
+    &--skip {
+      left: 10px;
+    }
+
+    &--next {
+      right: 10px;
+    }
+  }
+}

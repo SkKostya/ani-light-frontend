@@ -7,6 +7,7 @@ import { useParams } from 'react-router';
 import { episodeApi } from '@/api/episode.api';
 import type { EpisodeDetails } from '@/api/types/episode.types';
 import { ROUTES } from '@/shared/constants';
+import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { LocalizedLink, MainLoader } from '@/shared/ui';
 
 import { animePageStyles } from './Anime.styles';
@@ -19,8 +20,9 @@ import {
 
 const Anime = () => {
   const { t } = useTranslation();
+  const { navigate } = useAppNavigate();
 
-  const { releaseId, episodeNumber } = useParams<{
+  const { animeId, releaseId, episodeNumber } = useParams<{
     animeId: string;
     episodeNumber: string;
     releaseId: string;
@@ -147,6 +149,10 @@ const Anime = () => {
     );
   }
 
+  const handleNextEpisode = () => {
+    navigate(ROUTES.anime(animeId, releaseId, String(episode.number + 1)));
+  };
+
   return (
     <Box sx={animePageStyles.container}>
       <Container maxWidth="lg">
@@ -159,7 +165,16 @@ const Anime = () => {
 
         {/* Плеер */}
         <Box sx={animePageStyles.playerContainer}>
-          <AnimePlayer {...playerProps} />
+          <AnimePlayer
+            {...playerProps}
+            opening={episode.opening}
+            ending={episode.ending}
+            onNextEpisode={
+              episode.number < episode.animeRelease.episodes_total
+                ? handleNextEpisode
+                : undefined
+            }
+          />
         </Box>
 
         {/* Кнопки управления */}

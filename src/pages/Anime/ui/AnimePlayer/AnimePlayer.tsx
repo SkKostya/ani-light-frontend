@@ -1,3 +1,5 @@
+import './anime-player.scss';
+
 import { ErrorOutline, Refresh } from '@mui/icons-material';
 import { Box, Button, Typography } from '@mui/material';
 import ArtPlayer from 'artplayer';
@@ -11,22 +13,25 @@ interface AnimePlayerProps {
   videoUrl?: string;
   poster?: string;
   title?: string;
-  subtitle?: string;
   quality?: Array<{
     name: string;
     url: string;
     default?: boolean;
-  }>;
-  subtitles?: Array<{
-    name: string;
-    url: string;
-    lang: string;
   }>;
   onPlay?: () => void;
   onPause?: () => void;
   onEnded?: () => void;
   onError?: (error: Error) => void;
   onQualityChange?: (quality: string) => void;
+  opening: {
+    start: number;
+    stop: number;
+  };
+  ending: {
+    start: number;
+    stop: number;
+  };
+  onNextEpisode?: () => void;
 }
 
 const AnimePlayer = ({
@@ -38,7 +43,10 @@ const AnimePlayer = ({
   onPause,
   onEnded,
   onError,
-  onQualityChange
+  onQualityChange,
+  opening,
+  ending,
+  onNextEpisode
 }: AnimePlayerProps) => {
   const { t } = useTranslation();
   const playerRef = useRef<HTMLDivElement>(null);
@@ -47,6 +55,8 @@ const AnimePlayer = ({
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
   const [showPlaceholder, setShowPlaceholder] = useState(!videoUrl);
+
+  const [currentTime, setCurrentTime] = useState(0);
 
   // Проверяем, является ли URL HLS потоком
   const isHlsUrl = (url: string) => {
@@ -137,27 +147,6 @@ const AnimePlayer = ({
 
     return config;
   };
-
-  // Обработка изменения ориентации экрана
-  useEffect(() => {
-    const handleOrientationChange = () => {
-      if (artPlayerRef.current) {
-        // Обновляем размеры плеера при изменении ориентации
-        setTimeout(() => {
-          // ArtPlayer автоматически обновляет размеры
-          console.info('Orientation changed, player will auto-resize');
-        }, 100);
-      }
-    };
-
-    window.addEventListener('orientationchange', handleOrientationChange);
-    window.addEventListener('resize', handleOrientationChange);
-
-    return () => {
-      window.removeEventListener('orientationchange', handleOrientationChange);
-      window.removeEventListener('resize', handleOrientationChange);
-    };
-  }, []);
 
   // Инициализация плеера
   useEffect(() => {
@@ -307,6 +296,11 @@ const AnimePlayer = ({
             onQualityChange?.(quality as string);
           });
 
+          artPlayerRef.current.on('video:timeupdate', () => {
+            console.info('Time updated');
+            setCurrentTime(artPlayerRef.current?.currentTime || 0);
+          });
+
           // Обработчик полноэкранного режима
           artPlayerRef.current.on('fullscreen', (isFullscreen: unknown) => {
             console.info('Fullscreen changed to:', isFullscreen);
@@ -399,6 +393,28 @@ const AnimePlayer = ({
       {/* Контейнер для плеера */}
       <Box sx={animePlayerStyles.playerWrapper}>
         <div ref={playerRef} style={{ width: '100%', height: '100%' }} />
+        {currentTime >= opening?.start && currentTime < opening?.stop && (
+          <Button
+            className="anime-player__timing-action anime-player__timing-action--skip"
+            variant="contained"
+            onClick={() => {
+              if (artPlayerRef.current)
+                artPlayerRef.current.video.currentTime = opening.stop;
+            }}
+          >
+            Пропустить
+          </Button>
+        )}
+
+        {currentTime >= ending.start && onNextEpisode && (
+          <Button
+            className="anime-player__timing-action anime-player__timing-action--next"
+            variant="contained"
+            onClick={onNextEpisode}
+          >
+            Следующая
+          </Button>
+        )}
       </Box>
 
       {/* Overlay загрузки */}
