@@ -113,9 +113,9 @@ export interface UserEpisode {
   user_id: string;
   episode_id: string;
   status: 'not_watched' | 'watching' | 'watched';
-  progress_percentage?: number;
-  watched_at?: string;
-  notes?: string;
+  last_watched_at?: string;
+  watched_until_end_at?: string;
+  rating?: number;
   created_at: string;
   updated_at: string;
   episode: {

@@ -1,4 +1,5 @@
 // Типы для Episode API
+import type { UserEpisode } from './user.types';
 
 export interface Episode {
   id: string;
@@ -22,16 +23,23 @@ export interface Episode {
 }
 
 export interface EpisodeDetails extends Episode {
-  anime: {
+  animeRelease: {
     id: string;
     title_ru: string;
     title_en: string;
     poster_url: string;
+    episodes_total: number;
   };
+  userEpisode: Omit<UserEpisode, 'episode'>;
 }
 
 export interface GetEpisodesParams {
   animeId: string;
+}
+
+export interface GetEpisodeDetailsParams {
+  animeId: string;
+  number: number;
 }
 
 // Типы для рейтингов эпизодов

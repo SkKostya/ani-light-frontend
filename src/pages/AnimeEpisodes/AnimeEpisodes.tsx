@@ -34,6 +34,9 @@ const AnimeEpisodes = () => {
             release.animeGenres?.map((genre) => genre.genre.name) || ''
         )
         .filter(Boolean);
+      const isOnGoing = animeInfo.animeReleases.some(
+        (release) => release.is_ongoing
+      );
 
       setAnimeInfo({
         id: animeInfo.id,
@@ -41,48 +44,20 @@ const AnimeEpisodes = () => {
         originalTitle: animeInfo.name_english,
         description: firstRelease?.description || '',
         poster: animeInfo.image || firstRelease?.poster_url || '',
-        banner: '',
-        year: animeInfo.last_year || new Date().getFullYear(),
-        status: 'completed',
-        genres: genres,
-        themes: [],
-        rating: animeInfo.rating || 0,
-        totalEpisodes: animeInfo.total_episodes,
-        totalSeasons: animeInfo.total_releases,
-        duration: 0,
-        studio: '',
-        director: '',
-        writer: '',
-        music: '',
+        firstYear: animeInfo.first_year || new Date().getFullYear(),
+        lastYear: animeInfo.last_year || new Date().getFullYear(),
+        isOnGoing,
+        genres,
         isFavorite: userAnime?.is_favorite || false,
         isInWatchList: userAnime?.want_to_watch || false,
         isInWantList: userAnime?.want_to_watch || false,
-        userRating: userAnime?.rating || 0,
-        userStatus: 'completed',
         seasons: animeInfo.animeReleases.map((release, index) => ({
           id: release.id,
           seasonNumber: index + 1,
           title: release.title_ru,
           description: release.description,
-          year: release.year,
-          episodes: release.episodes.map((episode) => ({
-            id: episode.id,
-            title: animeInfo.name,
-            episodeNumber: episode.number,
-            seasonNumber: index + 1,
-            thumbnail: animeInfo.image || firstRelease?.poster_url || '',
-            videoUrl: episode.video_url || '',
-            description: release.description,
-            airedAt: new Date(animeInfo.first_year || new Date().getFullYear()),
-            isWatched: false,
-            duration: episode.duration
-          })),
-          totalEpisodes: release.episodes_total,
-          watchedEpisodes: 0,
-          isCompleted: false
-        })),
-        ovaEpisodes: [],
-        relatedAnime: []
+          totalEpisodes: release.episodes_total
+        }))
       });
       setIsLoading(false);
     };

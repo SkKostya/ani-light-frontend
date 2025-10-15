@@ -48,5 +48,10 @@ export const seasonSectionStyles = {
     '& > *': {
       height: '100%'
     }
+  } as SxProps<Theme>,
+
+  noEpisodes: {
+    color: 'var(--color-text-secondary)',
+    fontSize: { xs: '1rem', sm: '1.125rem' }
   } as SxProps<Theme>
 };

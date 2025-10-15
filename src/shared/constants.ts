@@ -1,8 +1,11 @@
 export const ROUTES = {
   catalog: 'anime',
   animeEpisodes: (animeId = ':animeId') => `anime/${animeId}`,
-  anime: (animeId = ':animeId', episodeId = ':episodeId') =>
-    `anime/${animeId}/${episodeId}`,
+  anime: (
+    animeId = ':animeId',
+    releaseId = ':releaseId',
+    episodeNumber = ':episodeNumber'
+  ) => `anime/${animeId}/${releaseId}/${episodeNumber}`,
 
   watchList: 'watch-list',
   wantList: 'want-list',

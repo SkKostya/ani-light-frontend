@@ -1,17 +1,43 @@
 import { PlaylistPlay, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
+
+import { ROUTES } from '@/shared/constants';
+import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 
 import { animeControlsStyles } from './AnimeControls.styles';
 
-const AnimeControls = () => {
+interface IProps {
+  totalEpisodes: number;
+}
+
+const AnimeControls = ({ totalEpisodes }: IProps) => {
   const { t } = useTranslation();
+  const { navigate } = useAppNavigate();
+  const { animeId, releaseId, episodeNumber } = useParams<{
+    animeId: string;
+    releaseId: string;
+    episodeNumber: string;
+  }>();
 
-  const handlePrevious = () => {};
+  const handlePrevious = () => {
+    if (Number(episodeNumber) === 1) return;
+    navigate(
+      ROUTES.anime(animeId, releaseId, String(Number(episodeNumber) - 1))
+    );
+  };
 
-  const handleNext = () => {};
+  const handleNext = () => {
+    if (Number(episodeNumber) === totalEpisodes) return;
+    navigate(
+      ROUTES.anime(animeId, releaseId, String(Number(episodeNumber) + 1))
+    );
+  };
 
-  const handleAllEpisodes = () => {};
+  const handleAllEpisodes = () => {
+    navigate(ROUTES.animeEpisodes(animeId));
+  };
 
   return (
     <Box sx={animeControlsStyles.container}>

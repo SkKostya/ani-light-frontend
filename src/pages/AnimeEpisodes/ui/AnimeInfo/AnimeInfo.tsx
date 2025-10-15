@@ -3,9 +3,7 @@ import {
   FavoriteBorder,
   PlayArrow,
   PlaylistAdd,
-  PlaylistAddCheck,
-  Star,
-  StarBorder
+  PlaylistAddCheck
 } from '@mui/icons-material';
 import {
   Box,
@@ -14,7 +12,6 @@ import {
   Chip,
   Grid,
   IconButton,
-  Rating,
   Stack,
   Typography
 } from '@mui/material';
@@ -31,32 +28,6 @@ interface AnimeInfoProps {
 
 const AnimeInfo = ({ anime }: AnimeInfoProps) => {
   const { t } = useTranslation();
-
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
-
-    if (hours > 0) {
-      return `${hours}ч ${remainingMinutes}м`;
-    }
-    return `${minutes}м`;
-  };
-
-  const getStatusText = (status: string): string => {
-    switch (status) {
-      case 'ongoing':
-        return t('anime_status_ongoing');
-      case 'completed':
-        return t('anime_status_completed');
-      case 'upcoming':
-        return t('anime_status_upcoming');
-      case 'cancelled':
-        return t('anime_status_cancelled');
-      default:
-        return status;
-    }
-  };
 
   return (
     <Card sx={animeInfoStyles.card}>
@@ -97,71 +68,43 @@ const AnimeInfo = ({ anime }: AnimeInfoProps) => {
                       {anime.originalTitle}
                     </Typography>
                   )}
-                  <Typography variant="body1" sx={animeInfoStyles.year}>
-                    {anime.year} • {getStatusText(anime.status)}
-                  </Typography>
-                </Box>
-
-                {/* Рейтинг и статистика */}
-                <Box sx={animeInfoStyles.ratingContainer}>
-                  <Box sx={animeInfoStyles.rating}>
-                    <Rating
-                      value={anime.rating / 2}
-                      precision={0.1}
-                      readOnly
-                      size="large"
-                      icon={<Star sx={animeInfoStyles.starIcon} />}
-                      emptyIcon={<StarBorder sx={animeInfoStyles.starIcon} />}
-                    />
-                    <Typography variant="h6" sx={animeInfoStyles.ratingText}>
-                      {anime.rating}/10
+                  <Box sx={animeInfoStyles.yearContainer}>
+                    <Typography variant="body2" sx={animeInfoStyles.yearLabel}>
+                      Дата выхода:
+                    </Typography>
+                    <Typography variant="body1" sx={animeInfoStyles.year}>
+                      {anime.firstYear}
+                      {anime.firstYear !== anime.lastYear
+                        ? ` - ${anime.lastYear}`
+                        : ''}
+                      {anime.isOnGoing ? ' • ' + t('anime_status_ongoing') : ''}
                     </Typography>
                   </Box>
-                  <Typography variant="body2" sx={animeInfoStyles.stats}>
-                    {t('anime_episodes_total_episodes', {
-                      count: anime.totalEpisodes
-                    })}{' '}
-                    •{' '}
-                    {t('anime_episodes_total_seasons', {
-                      count: anime.totalSeasons
-                    })}{' '}
-                    • {formatDuration(anime.duration)}
-                  </Typography>
                 </Box>
 
                 {/* Жанры и темы */}
-                <Box>
-                  <Typography variant="body2" sx={animeInfoStyles.label}>
-                    {t('anime_genres')}
-                  </Typography>
-                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                    {anime.genres.map((genre) => (
-                      <Chip
-                        key={genre}
-                        label={genre}
-                        size="small"
-                        sx={animeInfoStyles.genreChip}
-                      />
-                    ))}
-                  </Stack>
-                </Box>
-
-                <Box>
-                  <Typography variant="body2" sx={animeInfoStyles.label}>
-                    {t('anime_themes')}
-                  </Typography>
-                  <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                    {anime.themes.map((theme) => (
-                      <Chip
-                        key={theme}
-                        label={theme}
-                        size="small"
-                        variant="outlined"
-                        sx={animeInfoStyles.themeChip}
-                      />
-                    ))}
-                  </Stack>
-                </Box>
+                {anime.genres.length > 0 && (
+                  <Box>
+                    <Typography variant="body2" sx={animeInfoStyles.label}>
+                      {t('anime_genres')}
+                    </Typography>
+                    <Stack
+                      direction="row"
+                      spacing={1}
+                      flexWrap="wrap"
+                      useFlexGap
+                    >
+                      {anime.genres.map((genre) => (
+                        <Chip
+                          key={genre}
+                          label={genre}
+                          size="small"
+                          sx={animeInfoStyles.genreChip}
+                        />
+                      ))}
+                    </Stack>
+                  </Box>
+                )}
 
                 {/* Кнопки действий */}
                 <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>

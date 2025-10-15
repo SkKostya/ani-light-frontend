@@ -11,6 +11,7 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '@/shared/constants';
+import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver';
 import { getPluralForm } from '@/shared/services/helpers/strings';
 import ImageWithFallback from '@/shared/ui/image-with-fallback';
 import { LocalizedLink } from '@/shared/ui/localized-link';
@@ -45,6 +46,9 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
   variant = 'default'
 }) => {
   const { t } = useTranslation();
+  const { ref, isIntersecting } = useIntersectionObserver({
+    freezeOnceVisible: true
+  });
 
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -71,23 +75,23 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
     ? compactInfoOverlayStyles
     : infoOverlayStyles;
   const infoItemStyle = isCompact ? compactInfoItemStyles : infoItemStyles;
-  const imageUrl = anime.imageUrl.includes('http')
-    ? anime.imageUrl
-    : process.env.PUBLIC_ANILIBRIA_URL + anime.imageUrl;
 
   return (
     <LocalizedLink
+      ref={ref}
       to={ROUTES.animeEpisodes(anime.id)}
       className={styles.animeCard}
     >
       <Card sx={cardStyle}>
         <Box sx={imageContainerStyle}>
-          <ImageWithFallback
-            src={imageUrl}
-            alt={anime.title}
-            sx={imageStyles}
-            fallbackIcon="🎬"
-          />
+          {isIntersecting && (
+            <ImageWithFallback
+              src={anime.imageUrl}
+              alt={anime.title}
+              sx={imageStyles}
+              fallbackIcon="🎬"
+            />
+          )}
           {/* TODO: Изменить стилизацию компонента, чтобы дропдаун работал корректно */}
           {/* <AnimeInfoDropdown anime={anime} /> */}
 

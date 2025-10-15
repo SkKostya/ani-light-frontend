@@ -18,11 +18,7 @@ export interface AnimeSeason {
   seasonNumber: number;
   title: string;
   description?: string;
-  year: number;
-  episodes: AnimeEpisode[];
   totalEpisodes: number;
-  watchedEpisodes: number;
-  isCompleted: boolean;
 }
 
 export interface OVAEpisode {
@@ -44,45 +40,14 @@ export interface AnimeDetailedInfo {
   originalTitle?: string;
   description: string;
   poster: string;
-  banner?: string;
-  year: number;
-  status: 'ongoing' | 'completed' | 'upcoming' | 'cancelled';
+  firstYear: number;
+  lastYear: number;
+  isOnGoing: boolean;
   genres: string[];
-  themes: string[];
-  rating: number;
-  totalEpisodes: number;
-  totalSeasons: number;
-  duration: number; // средняя длительность серии в секундах
-  studio: string;
-  director: string;
-  writer: string;
-  music: string;
   isFavorite: boolean;
   isInWatchList: boolean;
   isInWantList: boolean;
-  userRating?: number;
-  userStatus?:
-    | 'watching'
-    | 'completed'
-    | 'on_hold'
-    | 'dropped'
-    | 'plan_to_watch';
   seasons: AnimeSeason[];
-  ovaEpisodes: OVAEpisode[];
-  relatedAnime: {
-    id: string;
-    title: string;
-    poster: string;
-    relation:
-      | 'parody'
-      | 'prequel'
-      | 'sequel'
-      | 'side_story'
-      | 'alternative_setting'
-      | 'alternative_version'
-      | 'summary'
-      | 'other';
-  }[];
 }
 
 export interface EpisodeProgress {

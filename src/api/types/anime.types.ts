@@ -1,5 +1,4 @@
 import type { AnimeRelease } from './anime-release.types';
-import type { Episode } from './episode.types';
 import type { UserAnime } from './user.types';
 
 // Интерфейс для сущности Anime
@@ -31,7 +30,7 @@ export interface IAnimeListResponse {
 }
 
 export interface IAnimeDetails extends IAnime {
-  animeReleases: (AnimeRelease & { episodes: Episode[] })[];
+  animeReleases: AnimeRelease[];
 }
 
 // Интерфейс для запроса списка аниме

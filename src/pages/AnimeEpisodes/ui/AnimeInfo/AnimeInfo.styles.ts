@@ -46,7 +46,7 @@ export const animeInfoStyles = {
 
   poster: {
     width: '100%',
-    height: { xs: 300 },
+    height: { xs: 240 },
     objectFit: 'cover',
     transition: 'transform 0.3s ease-in-out',
     '&:hover': {
@@ -67,6 +67,18 @@ export const animeInfoStyles = {
     opacity: 0,
     transition: 'opacity 0.3s ease-in-out',
     className: 'poster-overlay'
+  } as SxProps<Theme>,
+
+  yearContainer: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: 1
+  } as SxProps<Theme>,
+
+  yearLabel: {
+    fontSize: '1rem',
+    fontWeight: 500,
+    color: 'var(--color-text-primary)'
   } as SxProps<Theme>,
 
   playButton: {

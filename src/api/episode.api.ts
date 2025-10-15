@@ -5,12 +5,12 @@ import type {
   CommentStats,
   CreateEpisodeCommentDto,
   CreateEpisodeRatingDto,
-  Episode,
   EpisodeComment,
   EpisodeCommentsResponse,
   EpisodeDetails,
   EpisodeRating,
   EpisodeRatingResponse,
+  GetEpisodeDetailsParams,
   GetEpisodesParams,
   UpdateEpisodeCommentDto,
   UpdateEpisodeRatingDto
@@ -20,8 +20,8 @@ class EpisodeApi extends ApiConnector {
   /**
    * Получить список эпизодов для аниме
    */
-  getEpisodes(params: GetEpisodesParams): Promise<Episode[]> {
-    return this.call<GetEpisodesParams, Episode[]>({
+  getEpisodes(params: GetEpisodesParams): Promise<EpisodeDetails[]> {
+    return this.call<GetEpisodesParams, EpisodeDetails[]>({
       path: 'episodes',
       method: 'get',
       params
@@ -31,10 +31,11 @@ class EpisodeApi extends ApiConnector {
   /**
    * Получить детали эпизода по ID
    */
-  getEpisodeDetails(id: string): Promise<EpisodeDetails> {
-    return this.call<never, EpisodeDetails>({
-      path: `episodes/${id}`,
-      method: 'get'
+  getEpisodeDetails(params: GetEpisodeDetailsParams): Promise<EpisodeDetails> {
+    return this.call<GetEpisodeDetailsParams, EpisodeDetails>({
+      path: `episodes/by-number`,
+      method: 'get',
+      params
     });
   }
 

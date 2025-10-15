@@ -65,7 +65,13 @@ const ImageWithFallback = ({
   }
 
   return (
-    <Box component="img" src={src} alt={alt} sx={sx} onError={handleError} />
+    <Box
+      component="img"
+      src={`${process.env.PUBLIC_ANILIBRIA_URL}${src}`}
+      alt={alt}
+      sx={sx}
+      onError={handleError}
+    />
   );
 };
 
