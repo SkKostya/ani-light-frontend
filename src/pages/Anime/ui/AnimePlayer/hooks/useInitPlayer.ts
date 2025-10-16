@@ -46,20 +46,88 @@ const useInitPlayer = ({
     );
   };
 
+  // Проверяем, является ли устройство мобильным или планшетом
+  const isMobile = () => {
+    return window.innerWidth <= 1024;
+  };
+
+  // Функция для добавления кастомных настроек
+  const addCustomSettings = () => {
+    if (!artPlayerRef.current) return;
+
+    // Добавляем настройки качества (всегда доступны)
+    if (quality.length > 0) {
+      artPlayerRef.current.setting.add({
+        html: t('anime_player_quality'),
+        width: 200,
+        tooltip: t('anime_player_quality_tooltip'),
+        selector: quality.map((q) => ({
+          html: q.name,
+          value: q.url,
+          default: q.default
+        })),
+        onSelect: function (item) {
+          if (artPlayerRef.current && 'value' in item) {
+            artPlayerRef.current.switchUrl(item.value as string);
+          }
+          return item.html;
+        }
+      });
+    }
+
+    // Добавляем настройки звука (только для мобильных устройств)
+    if (isMobile()) {
+      artPlayerRef.current.setting.add({
+        html: t('anime_player_volume'),
+        width: 200,
+        tooltip: t('anime_player_volume_tooltip'),
+        selector: [
+          {
+            html: '0%',
+            value: 0
+          },
+          {
+            html: '25%',
+            value: 0.25
+          },
+          {
+            html: '50%',
+            value: 0.5
+          },
+          {
+            html: '75%',
+            value: 0.75
+          },
+          {
+            html: '100%',
+            value: 1
+          }
+        ],
+        onSelect: function (item) {
+          if (artPlayerRef.current && 'value' in item) {
+            artPlayerRef.current.volume = item.value as number;
+          }
+          return item.html;
+        }
+      });
+    }
+  };
+
   // Создаем конфигурацию для ArtPlayer
   const createPlayerConfig = () => {
+    const mobile = isMobile();
+
     const config = {
       container: playerRef.current!,
       url: videoUrl!,
       poster: poster,
       title: title,
-      volume: 0.8,
+      volume: 1,
       muted: false,
       autoplay: false,
-      pip: true,
+      pip: !mobile, // Отключаем PIP на мобильных устройствах
       autoSize: true,
       screenshot: false,
-      setting: true,
       loop: false,
       playbackRate: true,
       fullscreen: true,
@@ -71,13 +139,11 @@ const useInitPlayer = ({
       autoOrientation: true, // Включаем автоматический поворот экрана
       theme: '#e91e63',
       lang: 'ru',
-      // Добавляем управление качеством
-      quality: quality.map((q) => ({
-        name: q.name,
-        html: q.name,
-        url: q.url,
-        default: q.default
-      })),
+      // Управление качеством перенесено в кастомные настройки
+      // Настройки для мобильных устройств - используем стандартные контролы
+      // но скрываем ненужные через CSS
+      // Используем стандартные настройки
+      setting: true,
       // Добавляем поддержку HLS
       customType: {
         m3u8: (video: HTMLVideoElement, url: string) => {
@@ -128,6 +194,32 @@ const useInitPlayer = ({
 
     return config;
   };
+
+  // Обработчик изменения размера окна
+  useEffect(() => {
+    const handleResize = () => {
+      if (artPlayerRef.current) {
+        const mobile = isMobile();
+        // Обновляем PIP настройку при изменении размера
+        if (mobile) {
+          // Скрываем PIP кнопку на мобильных
+          const pipButton = document.querySelector('.artplayer-pip');
+          if (pipButton) {
+            (pipButton as HTMLElement).style.display = 'none';
+          }
+        } else {
+          // Показываем PIP кнопку на десктопе
+          const pipButton = document.querySelector('.artplayer-pip');
+          if (pipButton) {
+            (pipButton as HTMLElement).style.display = '';
+          }
+        }
+      }
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   // Инициализация плеера
   useEffect(() => {
@@ -188,8 +280,21 @@ const useInitPlayer = ({
             setIsLoading(false);
             setShowPlaceholder(false);
 
+            // Скрываем PIP кнопку на мобильных устройствах
+            if (isMobile()) {
+              setTimeout(() => {
+                const pipButton = document.querySelector('.artplayer-pip');
+                if (pipButton) {
+                  (pipButton as HTMLElement).style.display = 'none';
+                }
+              }, 100);
+            }
+
             // Добавляем кнопки в layers после готовности плеера
             addButtonsToLayers();
+
+            // Добавляем кастомные настройки
+            addCustomSettings();
           });
 
           artPlayerRef.current.on('ended', () => {
