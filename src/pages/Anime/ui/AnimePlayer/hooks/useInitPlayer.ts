@@ -160,7 +160,6 @@ const useInitPlayer = ({
           ) {
             throw new Error('HLS формат не поддерживается в этом браузере');
           }
-          console.info('HLS URL detected:', videoUrl);
         }
 
         // Уничтожаем предыдущий экземпляр плеера
@@ -172,7 +171,6 @@ const useInitPlayer = ({
         // Создаем новый экземпляр плеера
         if (playerRef.current) {
           const config = createPlayerConfig();
-          console.info('Creating ArtPlayer with config:', config);
 
           try {
             const player = new ArtPlayer(config);
@@ -187,7 +185,6 @@ const useInitPlayer = ({
 
           // Обработчики событий
           artPlayerRef.current.on('ready', () => {
-            console.info('Player ready');
             setIsLoading(false);
             setShowPlaceholder(false);
 
@@ -245,22 +242,18 @@ const useInitPlayer = ({
           });
 
           artPlayerRef.current.on('loadstart', () => {
-            console.info('Video load started');
             setIsLoading(true);
           });
 
           artPlayerRef.current.on('canplay', () => {
-            console.info('Video can play');
             setIsLoading(false);
           });
 
           artPlayerRef.current.on('loadeddata', () => {
-            console.info('Video data loaded');
             setIsLoading(false);
           });
 
           artPlayerRef.current.on('waiting', () => {
-            console.info('Video waiting for data');
             setIsLoading(true);
           });
 

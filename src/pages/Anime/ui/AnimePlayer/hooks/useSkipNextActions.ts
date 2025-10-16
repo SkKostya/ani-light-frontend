@@ -156,6 +156,11 @@ const useSkipNextActions = ({
   const addButtonsToLayers = () => {
     if (!artPlayerRef.current) return;
 
+    if (skipButtonRef.current)
+      artPlayerRef.current.layers.remove('skip-opening');
+    if (nextButtonRef.current)
+      artPlayerRef.current.layers.remove('next-episode');
+
     // Добавляем кнопку пропуска опенинга
     artPlayerRef.current.layers.add({
       name: 'skip-opening',
