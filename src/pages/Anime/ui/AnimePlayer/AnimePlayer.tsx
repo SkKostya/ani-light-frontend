@@ -56,13 +56,148 @@ const AnimePlayer = ({
   const [errorMessage, setErrorMessage] = useState('');
   const [showPlaceholder, setShowPlaceholder] = useState(!videoUrl);
 
-  const [currentTime, setCurrentTime] = useState(0);
+  const skipButtonRef = useRef<HTMLButtonElement>(null);
+  const nextButtonRef = useRef<HTMLButtonElement>(null);
 
   // Проверяем, является ли URL HLS потоком
   const isHlsUrl = (url: string) => {
     return (
       url.includes('.m3u8') || url.includes('application/vnd.apple.mpegurl')
     );
+  };
+
+  // Функция для создания HTML кнопки пропуска опенинга
+  const createSkipOpeningButton = () => {
+    const button = document.createElement('button');
+    skipButtonRef.current = button;
+    button.className =
+      'anime-player__timing-action anime-player__timing-action--skip';
+    button.innerHTML = t('anime_player_skip_opening');
+    button.style.cssText = `
+      display: none;
+      position: absolute;
+      bottom: 64px;
+      left: 10px;
+      z-index: 1000;
+      background: var(--gradient-magic);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--border-radius-medium);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-glow);
+      transition: all 0.3s ease-in-out;
+      text-transform: none;
+    `;
+
+    button.addEventListener('click', () => {
+      if (artPlayerRef.current) {
+        artPlayerRef.current.video.currentTime = opening.stop;
+      }
+    });
+
+    button.addEventListener('mouseenter', () => {
+      button.style.transform = 'translateY(-2px)';
+      button.style.boxShadow = '0 8px 25px rgba(233, 30, 99, 0.4)';
+    });
+
+    button.addEventListener('mouseleave', () => {
+      button.style.transform = 'translateY(0)';
+      button.style.boxShadow = 'var(--shadow-glow)';
+    });
+
+    return button;
+  };
+
+  // Функция для создания HTML кнопки следующей серии
+  const createNextEpisodeButton = () => {
+    const button = document.createElement('button');
+    nextButtonRef.current = button;
+    button.className =
+      'anime-player__timing-action anime-player__timing-action--next';
+    button.innerHTML = t('anime_player_next_episode');
+    button.style.cssText = `
+      display: none;
+      position: absolute;
+      bottom: 64px;
+      right: 10px;
+      z-index: 1000;
+      background: var(--gradient-magic);
+      color: white;
+      border: none;
+      padding: 12px 24px;
+      border-radius: var(--border-radius-medium);
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: var(--shadow-glow);
+      transition: all 0.3s ease-in-out;
+      text-transform: none;
+    `;
+
+    button.addEventListener('click', () => {
+      onNextEpisode?.();
+    });
+
+    button.addEventListener('mouseenter', () => {
+      button.style.transform = 'translateY(-2px)';
+      button.style.boxShadow = '0 8px 25px rgba(233, 30, 99, 0.4)';
+    });
+
+    button.addEventListener('mouseleave', () => {
+      button.style.transform = 'translateY(0)';
+      button.style.boxShadow = 'var(--shadow-glow)';
+    });
+
+    return button;
+  };
+
+  // Функция для добавления кнопок в layers
+  const addButtonsToLayers = () => {
+    if (!artPlayerRef.current) return;
+
+    // Добавляем кнопку пропуска опенинга
+    artPlayerRef.current.layers.add({
+      name: 'skip-opening',
+      html: createSkipOpeningButton()
+    });
+
+    // Добавляем кнопку следующей серии
+    artPlayerRef.current.layers.add({
+      name: 'next-episode',
+      html: createNextEpisodeButton()
+    });
+  };
+
+  // Функция для обновления видимости кнопок
+  const updateButtonsVisibility = (currentTime: number) => {
+    if (!artPlayerRef.current) return;
+
+    try {
+      const skipButton = skipButtonRef.current;
+      const nextButton = nextButtonRef.current;
+
+      if (skipButton && skipButton instanceof HTMLElement) {
+        const shouldShowSkip =
+          currentTime >= opening?.start && currentTime < opening?.stop;
+        const display = shouldShowSkip ? 'block' : 'none';
+        if (skipButton.style.display !== display) {
+          skipButton.style.display = display;
+        }
+      }
+
+      if (nextButton && nextButton instanceof HTMLElement) {
+        const shouldShowNext = currentTime >= ending.start && !!onNextEpisode;
+        const display = shouldShowNext ? 'block' : 'none';
+        if (nextButton.style.display !== display) {
+          nextButton.style.display = display;
+        }
+      }
+    } catch (error) {
+      console.warn('Error updating button visibility:', error);
+    }
   };
 
   // Создаем конфигурацию для ArtPlayer
@@ -210,6 +345,9 @@ const AnimePlayer = ({
             console.info('Player ready');
             setIsLoading(false);
             setShowPlaceholder(false);
+
+            // Добавляем кнопки в layers после готовности плеера
+            addButtonsToLayers();
           });
 
           artPlayerRef.current.on('play', () => {
@@ -297,13 +435,13 @@ const AnimePlayer = ({
           });
 
           artPlayerRef.current.on('video:timeupdate', () => {
-            console.info('Time updated');
-            setCurrentTime(artPlayerRef.current?.currentTime || 0);
+            const newTime = artPlayerRef.current?.currentTime || 0;
+            // Обновляем видимость кнопок при изменении времени
+            updateButtonsVisibility(newTime);
           });
 
           // Обработчик полноэкранного режима
           artPlayerRef.current.on('fullscreen', (isFullscreen: unknown) => {
-            console.info('Fullscreen changed to:', isFullscreen);
             if (isFullscreen) {
               // Принудительно поворачиваем экран в ландшафт при полноэкранном режиме
               if (screen.orientation && 'lock' in screen.orientation) {
@@ -313,11 +451,20 @@ const AnimePlayer = ({
                     console.warn('Could not lock orientation:', err);
                   });
               }
+
+              if (skipButtonRef.current)
+                skipButtonRef.current.style.bottom = '82px';
+              if (nextButtonRef.current)
+                nextButtonRef.current.style.bottom = '82px';
             } else {
               // Разблокируем поворот экрана при выходе из полноэкранного режима
               if (screen.orientation && 'unlock' in screen.orientation) {
                 (screen.orientation as ScreenOrientation).unlock();
               }
+              if (skipButtonRef.current)
+                skipButtonRef.current.style.bottom = '64px';
+              if (nextButtonRef.current)
+                nextButtonRef.current.style.bottom = '64px';
             }
           });
         }
@@ -337,8 +484,8 @@ const AnimePlayer = ({
       if (artPlayerRef.current) {
         // Очищаем HLS если используется
         const video = artPlayerRef.current.video;
-        if (video && (video as any).hls) {
-          (video as any).hls.destroy();
+        if (video && 'hls' in video && video.hls) {
+          (video.hls as Hls).destroy();
         }
         artPlayerRef.current.destroy();
         artPlayerRef.current = null;
@@ -393,28 +540,6 @@ const AnimePlayer = ({
       {/* Контейнер для плеера */}
       <Box sx={animePlayerStyles.playerWrapper}>
         <div ref={playerRef} style={{ width: '100%', height: '100%' }} />
-        {currentTime >= opening?.start && currentTime < opening?.stop && (
-          <Button
-            className="anime-player__timing-action anime-player__timing-action--skip"
-            variant="contained"
-            onClick={() => {
-              if (artPlayerRef.current)
-                artPlayerRef.current.video.currentTime = opening.stop;
-            }}
-          >
-            Пропустить
-          </Button>
-        )}
-
-        {currentTime >= ending.start && onNextEpisode && (
-          <Button
-            className="anime-player__timing-action anime-player__timing-action--next"
-            variant="contained"
-            onClick={onNextEpisode}
-          >
-            Следующая
-          </Button>
-        )}
       </Box>
 
       {/* Overlay загрузки */}
