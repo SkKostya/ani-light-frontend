@@ -448,3 +448,18 @@ button {
     }
   }
 }
+
+.art-settings {
+  & .art-setting-item {
+    gap: 8px;
+  }
+}
+
+.art-bottom {
+  @media (max-width: 1024px) {
+    .art-control-pip,
+    .art-control-volume {
+      display: none !important;
+    }
+  }
+}

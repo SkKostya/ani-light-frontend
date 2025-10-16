@@ -122,7 +122,12 @@ const useSkipNextActions = ({
       const skipButton = skipButtonRef.current;
       const nextButton = nextButtonRef.current;
 
-      if (skipButton && skipButton instanceof HTMLElement) {
+      if (
+        typeof opening.start === 'number' &&
+        typeof opening.stop === 'number' &&
+        skipButton &&
+        skipButton instanceof HTMLElement
+      ) {
         const shouldShowSkip =
           currentTime >= opening?.start && currentTime < opening?.stop;
         const display = shouldShowSkip ? 'block' : 'none';
@@ -131,7 +136,11 @@ const useSkipNextActions = ({
         }
       }
 
-      if (nextButton && nextButton instanceof HTMLElement) {
+      if (
+        typeof ending.start === 'number' &&
+        nextButton &&
+        nextButton instanceof HTMLElement
+      ) {
         const shouldShowNext = currentTime >= ending.start && !!onNextEpisode;
         const display = shouldShowNext ? 'block' : 'none';
         if (nextButton.style.display !== display) {
