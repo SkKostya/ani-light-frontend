@@ -74,43 +74,6 @@ const useInitPlayer = ({
         }
       });
     }
-
-    // Добавляем настройки звука (только для мобильных устройств)
-    if (isMobile()) {
-      artPlayerRef.current.setting.add({
-        html: t('anime_player_volume'),
-        width: 200,
-        tooltip: t('anime_player_volume_tooltip'),
-        selector: [
-          {
-            html: '0%',
-            value: 0
-          },
-          {
-            html: '25%',
-            value: 0.25
-          },
-          {
-            html: '50%',
-            value: 0.5
-          },
-          {
-            html: '75%',
-            value: 0.75
-          },
-          {
-            html: '100%',
-            value: 1
-          }
-        ],
-        onSelect: function (item) {
-          if (artPlayerRef.current && 'value' in item) {
-            artPlayerRef.current.volume = item.value as number;
-          }
-          return item.html;
-        }
-      });
-    }
   };
 
   // Создаем конфигурацию для ArtPlayer
@@ -195,32 +158,6 @@ const useInitPlayer = ({
     return config;
   };
 
-  // Обработчик изменения размера окна
-  useEffect(() => {
-    const handleResize = () => {
-      if (artPlayerRef.current) {
-        const mobile = isMobile();
-        // Обновляем PIP настройку при изменении размера
-        if (mobile) {
-          // Скрываем PIP кнопку на мобильных
-          const pipButton = document.querySelector('.artplayer-pip');
-          if (pipButton) {
-            (pipButton as HTMLElement).style.display = 'none';
-          }
-        } else {
-          // Показываем PIP кнопку на десктопе
-          const pipButton = document.querySelector('.artplayer-pip');
-          if (pipButton) {
-            (pipButton as HTMLElement).style.display = '';
-          }
-        }
-      }
-    };
-
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []);
-
   // Инициализация плеера
   useEffect(() => {
     if (!playerRef.current || !videoUrl) return;
@@ -279,16 +216,6 @@ const useInitPlayer = ({
           artPlayerRef.current.on('ready', () => {
             setIsLoading(false);
             setShowPlaceholder(false);
-
-            // Скрываем PIP кнопку на мобильных устройствах
-            if (isMobile()) {
-              setTimeout(() => {
-                const pipButton = document.querySelector('.artplayer-pip');
-                if (pipButton) {
-                  (pipButton as HTMLElement).style.display = 'none';
-                }
-              }, 100);
-            }
 
             // Добавляем кнопки в layers после готовности плеера
             addButtonsToLayers();

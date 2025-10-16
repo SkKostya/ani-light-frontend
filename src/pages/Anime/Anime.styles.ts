@@ -24,6 +24,8 @@ export const animePageStyles = {
   } as SxProps<Theme>,
 
   playerContainer: {
+    maxWidth: '768px',
+    margin: '0 auto',
     mb: { xs: 3, sm: 4 },
     borderRadius: 'var(--border-radius-large)',
     overflow: 'hidden',
