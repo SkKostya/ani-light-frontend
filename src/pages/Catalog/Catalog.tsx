@@ -32,11 +32,6 @@ const Catalog: React.FC = () => {
       onError: handleError
     });
 
-  console.info('🔍 Catalog render:', {
-    isInitialLoading,
-    paginationIsLoading: pagination.isLoading
-  });
-
   const handleToggleFavorite = useCallback(
     async (animeId: string) => {
       // Сначала находим исходное состояние

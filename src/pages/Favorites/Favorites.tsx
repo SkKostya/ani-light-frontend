@@ -36,11 +36,6 @@ const Favorites: React.FC = () => {
     );
   };
 
-  const handleAnimeClick = () => {
-    // TODO: Navigate to anime details page
-    // console.log('Clicked anime:', animeId);
-  };
-
   return (
     <Container>
       <Box sx={{ py: 4 }}>
@@ -81,7 +76,6 @@ const Favorites: React.FC = () => {
                 anime={anime}
                 onToggleFavorite={handleToggleFavorite}
                 onToggleWantToWatch={handleToggleWantToWatch}
-                onClick={handleAnimeClick}
                 variant="compact"
               />
             ))}

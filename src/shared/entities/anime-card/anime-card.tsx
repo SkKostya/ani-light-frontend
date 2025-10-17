@@ -141,7 +141,7 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
 
           {/* Информационный блок */}
           <Box sx={infoOverlayStyle}>
-            {anime.seasons && (
+            {anime.seasons && anime.seasons > 0 ? (
               <Box sx={infoItemStyle}>
                 <Typography variant="caption" component="span">
                   {anime.seasons}{' '}
@@ -150,8 +150,8 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
                   )}
                 </Typography>
               </Box>
-            )}
-            {anime.episodes && (
+            ) : null}
+            {anime.episodes && anime.episodes > 0 ? (
               <Box sx={infoItemStyle}>
                 <Typography variant="caption" component="span">
                   {anime.episodes}{' '}
@@ -160,8 +160,8 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
                   )}
                 </Typography>
               </Box>
-            )}
-            {anime.movies && anime.movies > 0 && (
+            ) : null}
+            {anime.movies && anime.movies > 0 ? (
               <Box sx={infoItemStyle}>
                 <Typography variant="caption" component="span">
                   {anime.movies}{' '}
@@ -170,7 +170,7 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
                   )}
                 </Typography>
               </Box>
-            )}
+            ) : null}
             {anime.onGoing && (
               <Box sx={infoItemStyle}>
                 <Typography variant="caption" component="span">
