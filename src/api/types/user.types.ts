@@ -121,11 +121,12 @@ export interface UserEpisode {
   episode: {
     id: string;
     anime_id: string;
+    anime_release_id?: string;
     number: number;
     title: string;
     duration: number;
     video_url: string;
-    anime: {
+    animeRelease: {
       id: string;
       title_ru: string;
       title_en: string;

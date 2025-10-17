@@ -217,6 +217,16 @@ class UserApi extends ApiConnector {
   }
 
   /**
+   * Получить последние просмотренные эпизоды
+   */
+  getRecentEpisodes(): Promise<UserEpisode[]> {
+    return this.call<never, UserEpisode[]>({
+      path: 'user/episodes/recent',
+      method: 'get'
+    });
+  }
+
+  /**
    * Получить информацию об эпизоде пользователя
    */
   getUserEpisode(episodeId: string): Promise<UserEpisode> {

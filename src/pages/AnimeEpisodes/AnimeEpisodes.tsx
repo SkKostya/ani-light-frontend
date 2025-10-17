@@ -14,8 +14,6 @@ const AnimeEpisodes = () => {
   const { t } = useTranslation();
   const { animeId } = useParams<{ animeId: string }>();
 
-  // В реальном приложении данные будут загружаться через API
-
   const [animeInfo, setAnimeInfo] = useState<AnimeDetailedInfo | undefined>(
     undefined
   );

@@ -183,12 +183,7 @@ const Anime = () => {
         </Box>
 
         {/* Последние просмотренные серии */}
-        <Box sx={animePageStyles.recentContainer}>
-          <Typography variant="h6" sx={animePageStyles.recentTitle}>
-            {t('anime_recent_episodes')}
-          </Typography>
-          <RecentEpisodes />
-        </Box>
+        <RecentEpisodes />
 
         {/* Комментарии */}
         <AnimeComments />
