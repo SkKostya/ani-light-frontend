@@ -103,9 +103,7 @@ export interface UpdateUserEpisodeDto {
 }
 
 export interface MarkEpisodeWatchedDto {
-  progress_percentage?: number;
-  watched_at?: string;
-  notes?: string;
+  watched_until_end: boolean;
 }
 
 export interface UserEpisode {

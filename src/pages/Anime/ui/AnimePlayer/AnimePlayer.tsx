@@ -11,6 +11,7 @@ import useInitPlayer from './hooks/useInitPlayer';
 import useSkipNextActions from './hooks/useSkipNextActions';
 
 interface AnimePlayerProps {
+  episodeId: string;
   videoUrl?: string;
   poster?: string;
   title?: string;
@@ -19,7 +20,6 @@ interface AnimePlayerProps {
     url: string;
     default?: boolean;
   }>;
-  onEnded?: () => void;
   opening: {
     start: number;
     stop: number;
@@ -32,11 +32,11 @@ interface AnimePlayerProps {
 }
 
 const AnimePlayer = ({
+  episodeId,
   videoUrl,
   poster,
   title,
   quality = [],
-  onEnded,
   opening,
   ending,
   onNextEpisode
@@ -50,7 +50,7 @@ const AnimePlayer = ({
     handleSkipNextPosition,
     addButtonsToLayers
   } = useSkipNextActions({
-    artPlayerRef: artPlayerRef,
+    artPlayerRef,
     opening,
     ending,
     onNextEpisode
@@ -58,16 +58,17 @@ const AnimePlayer = ({
 
   const { isLoading, hasError, errorMessage, showPlaceholder, handleRetry } =
     useInitPlayer({
+      episodeId,
       videoUrl,
       poster,
       title,
       quality,
       playerRef,
       artPlayerRef,
+      ending,
       updateButtonsVisibility,
       handleSkipNextPosition,
-      addButtonsToLayers,
-      onEnded
+      addButtonsToLayers
     });
 
   // Если нет URL видео, показываем placeholder

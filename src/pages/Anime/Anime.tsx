@@ -11,12 +11,7 @@ import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { LocalizedLink, MainLoader } from '@/shared/ui';
 
 import { animePageStyles } from './Anime.styles';
-import {
-  AnimeComments,
-  AnimeControls,
-  AnimePlayer,
-  RecentEpisodes
-} from './ui';
+import { AnimeControls, AnimePlayer, RecentEpisodes } from './ui';
 
 const Anime = () => {
   const { t } = useTranslation();
@@ -167,6 +162,7 @@ const Anime = () => {
         <Box sx={animePageStyles.playerContainer}>
           <AnimePlayer
             {...playerProps}
+            episodeId={episode.id}
             opening={episode.opening}
             ending={episode.ending}
             onNextEpisode={
@@ -186,7 +182,7 @@ const Anime = () => {
         <RecentEpisodes />
 
         {/* Комментарии */}
-        <AnimeComments />
+        {/* <AnimeComments episodeId={episode.id} /> */}
       </Container>
     </Box>
   );

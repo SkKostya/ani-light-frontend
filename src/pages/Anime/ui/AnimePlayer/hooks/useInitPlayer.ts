@@ -3,7 +3,10 @@ import Hls from 'hls.js';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import useUserVideo from './useUserVideo';
+
 interface UseInitPlayerProps {
+  episodeId: string;
   videoUrl?: string;
   poster?: string;
   title?: string;
@@ -14,25 +17,31 @@ interface UseInitPlayerProps {
   }>;
   playerRef: React.RefObject<HTMLDivElement | null>;
   artPlayerRef: React.RefObject<ArtPlayer | null>;
+  ending: {
+    start: number;
+    stop: number;
+  };
   updateButtonsVisibility: (currentTime: number) => void;
   handleSkipNextPosition: (isFullscreen: boolean) => void;
   addButtonsToLayers: () => void;
-  onEnded?: () => void;
 }
 
 const useInitPlayer = ({
+  episodeId,
   videoUrl,
   poster,
   title,
   quality = [],
   playerRef,
   artPlayerRef,
+  ending,
   updateButtonsVisibility,
   handleSkipNextPosition,
-  addButtonsToLayers,
-  onEnded
+  addButtonsToLayers
 }: UseInitPlayerProps) => {
   const { t } = useTranslation();
+
+  const { handleStartWatching, handleMarkEpisodeWatched } = useUserVideo();
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
@@ -225,7 +234,7 @@ const useInitPlayer = ({
           });
 
           artPlayerRef.current.on('ended', () => {
-            onEnded?.();
+            handleMarkEpisodeWatched(episodeId);
           });
 
           artPlayerRef.current.on('error', (error: unknown) => {
@@ -293,6 +302,10 @@ const useInitPlayer = ({
             const newTime = artPlayerRef.current?.currentTime || 0;
             // Обновляем видимость кнопок при изменении времени
             updateButtonsVisibility(newTime);
+
+            if (newTime >= 30) handleStartWatching(episodeId);
+            if (typeof ending.start === 'number' && newTime >= ending.start)
+              handleMarkEpisodeWatched(episodeId);
           });
 
           // Обработчик полноэкранного режима

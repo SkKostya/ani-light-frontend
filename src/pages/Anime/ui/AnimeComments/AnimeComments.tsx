@@ -1,8 +1,9 @@
-import { Reply, Send, ThumbDown, ThumbUp } from '@mui/icons-material';
+import { Send, ThumbDown, ThumbUp } from '@mui/icons-material';
 import {
   Avatar,
   Box,
   Button,
+  CircularProgress,
   Divider,
   IconButton,
   Stack,
@@ -14,29 +15,25 @@ import { useTranslation } from 'react-i18next';
 
 import { mockComments } from '../../mock-data';
 import { animeCommentsStyles } from './AnimeComments.styles';
+import useCommentActions from './hooks/useCommentActions';
 
-const AnimeComments = () => {
+interface IProps {
+  episodeId: string;
+}
+
+const AnimeComments = ({ episodeId }: IProps) => {
   const { t } = useTranslation();
   const [newComment, setNewComment] = useState('');
   const [comments] = useState(mockComments);
 
-  const handleSubmitComment = () => {
-    if (newComment.trim()) {
-      setNewComment('');
-    }
-  };
-
-  const handleLike = (commentId: string) => {
-    console.info('Like comment:', commentId);
-  };
-
-  const handleDislike = (commentId: string) => {
-    console.info('Dislike comment:', commentId);
-  };
-
-  const handleReply = (commentId: string) => {
-    console.info('Reply to comment:', commentId);
-  };
+  const {
+    commentSubmitting,
+    likeSubmitting,
+    dislikeSubmitting,
+    handleSubmitComment,
+    handleLikeComment,
+    handleDislikeComment
+  } = useCommentActions();
 
   const getTimeAgo = (date: Date): string => {
     const now = new Date();
@@ -81,9 +78,17 @@ const AnimeComments = () => {
             >
               <Button
                 variant="contained"
-                startIcon={<Send />}
-                onClick={handleSubmitComment}
-                disabled={!newComment.trim()}
+                startIcon={
+                  commentSubmitting ? (
+                    <CircularProgress size={16} color="inherit" />
+                  ) : (
+                    <Send />
+                  )
+                }
+                onClick={() =>
+                  handleSubmitComment(episodeId, { text: newComment.trim() })
+                }
+                disabled={!newComment.trim() || commentSubmitting}
                 sx={animeCommentsStyles.submitButton}
               >
                 {t('anime_comments_submit')}
@@ -139,10 +144,15 @@ const AnimeComments = () => {
                 >
                   <IconButton
                     size="small"
-                    onClick={() => handleLike(comment.id)}
+                    onClick={() => handleLikeComment(episodeId, comment.id)}
                     sx={animeCommentsStyles.actionButton(comment.isLiked)}
+                    disabled={likeSubmitting === comment.id}
                   >
-                    <ThumbUp fontSize="small" />
+                    {likeSubmitting === comment.id ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      <ThumbUp fontSize="small" />
+                    )}
                   </IconButton>
                   <Typography
                     variant="caption"
@@ -153,10 +163,15 @@ const AnimeComments = () => {
 
                   <IconButton
                     size="small"
-                    onClick={() => handleDislike(comment.id)}
+                    onClick={() => handleDislikeComment(episodeId, comment.id)}
                     sx={animeCommentsStyles.actionButton(comment.isDisliked)}
+                    disabled={dislikeSubmitting === comment.id}
                   >
-                    <ThumbDown fontSize="small" />
+                    {dislikeSubmitting === comment.id ? (
+                      <CircularProgress size={16} />
+                    ) : (
+                      <ThumbDown fontSize="small" />
+                    )}
                   </IconButton>
                   <Typography
                     variant="caption"
@@ -164,14 +179,6 @@ const AnimeComments = () => {
                   >
                     {comment.dislikes}
                   </Typography>
-
-                  <IconButton
-                    size="small"
-                    onClick={() => handleReply(comment.id)}
-                    sx={animeCommentsStyles.replyButton}
-                  >
-                    <Reply fontSize="small" />
-                  </IconButton>
                 </Stack>
               </Box>
             </Stack>
