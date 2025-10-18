@@ -3,12 +3,12 @@ import { Box, Container, Typography } from '@mui/material';
 import React, { useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AnimeCard, mockAnimeData } from '@/shared/entities/anime-card';
+import { AnimeCard } from '@/shared/entities/anime-card';
 import type { Anime } from '@/shared/entities/anime-card/anime-card.types';
 
 const WatchList: React.FC = () => {
   const { t } = useTranslation();
-  const [animeList, setAnimeList] = useState<Anime[]>(mockAnimeData);
+  const [animeList, setAnimeList] = useState<Anime[]>([]);
 
   // Фильтруем аниме для списка просмотра (показываем все, так как нет отдельного поля isWatching)
   const watchListAnime = useMemo(() => animeList, [animeList]);

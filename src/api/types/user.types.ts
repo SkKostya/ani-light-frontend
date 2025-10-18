@@ -126,12 +126,16 @@ export interface UserEpisode {
     video_url: string;
     animeRelease: {
       id: string;
+      alias: string;
+      sort_order: number;
       title_ru: string;
       title_en: string;
       poster_url: string;
     };
   };
 }
+
+export type UserHistoryListResponse = IPaginatedResponse<UserEpisode>;
 
 // === УВЕДОМЛЕНИЯ ===
 

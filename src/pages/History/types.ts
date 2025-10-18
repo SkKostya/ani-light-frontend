@@ -9,10 +9,12 @@ export interface HistoryEntry {
   animeImageUrl: string;
   season: number;
   episode: number;
+  episodeTitle: string;
   watchedAt: string; // ISO date string
   watchedDuration: number; // в секундах
   totalDuration: number; // в секундах
   progress: number; // от 0 до 1
+  rating?: number; // рейтинг пользователя
 }
 
 export interface HistoryCardProps {

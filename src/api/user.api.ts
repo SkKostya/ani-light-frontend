@@ -18,6 +18,7 @@ import type {
   UserAnime,
   UserAnimeListResponse,
   UserEpisode,
+  UserHistoryListResponse,
   UserNotifications,
   UserResponse
 } from './types/user.types';
@@ -239,6 +240,19 @@ class UserApi extends ApiConnector {
     return this.call<never, UserEpisode>({
       path: `user/episodes/${episodeId}`,
       method: 'get'
+    });
+  }
+
+  /**
+   * Получить историю просмотра
+   */
+  getUserEpisodesHistory(
+    params: IPaginationParams
+  ): Promise<UserHistoryListResponse> {
+    return this.call<IPaginationParams, UserHistoryListResponse>({
+      path: 'user/episodes/history',
+      method: 'get',
+      params
     });
   }
 

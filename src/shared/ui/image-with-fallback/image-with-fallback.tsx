@@ -1,4 +1,4 @@
-import { Box } from '@mui/material';
+import { Box, Skeleton } from '@mui/material';
 import { useState } from 'react';
 
 interface ImageWithFallbackProps {
@@ -17,12 +17,18 @@ const ImageWithFallback = ({
   fallbackIcon = '🎬'
 }: ImageWithFallbackProps) => {
   const [hasError, setHasError] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
 
   const handleError = () => {
     if (!hasError) {
       setHasError(true);
       onError?.();
     }
+    setIsLoading(false);
+  };
+
+  const handleLoad = () => {
+    setIsLoading(false);
   };
 
   if (hasError) {
@@ -65,13 +71,40 @@ const ImageWithFallback = ({
   }
 
   return (
-    <Box
-      component="img"
-      src={`${process.env.PUBLIC_ANILIBRIA_URL}${src}`}
-      alt={alt}
-      sx={sx}
-      onError={handleError}
-    />
+    <Box sx={{ position: 'relative' }}>
+      {/* Skeleton загрузчик */}
+      {isLoading && (
+        <Skeleton
+          animation="wave"
+          variant="rectangular"
+          sx={{
+            display: 'block',
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: 0,
+            zIndex: 1,
+            height: '100%',
+            borderRadius: sx?.borderRadius || '0'
+          }}
+        />
+      )}
+
+      {/* Изображение */}
+      <Box
+        component="img"
+        src={`${process.env.PUBLIC_ANILIBRIA_URL}${src}`}
+        alt={alt}
+        sx={{
+          ...sx,
+          opacity: isLoading ? 0 : 1,
+          transition: 'opacity 0.3s ease-in-out'
+        }}
+        onError={handleError}
+        onLoad={handleLoad}
+      />
+    </Box>
   );
 };
 

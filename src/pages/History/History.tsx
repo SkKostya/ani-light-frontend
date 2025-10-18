@@ -1,34 +1,67 @@
 import { Box, Container, Typography } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { mockHistoryData } from './mock-data';
-import type { HistoryEntry } from './types';
+import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver';
+import { getClientToken } from '@/shared/services/user-hash';
+import { LoadingIndicator, MainLoader } from '@/shared/ui';
+
+import { useHistoryPagination } from './hooks';
 import { HistorySection } from './ui/HistorySection';
 
 const History: React.FC = () => {
   const { t } = useTranslation();
 
-  // Группируем данные по датам
-  const groupedHistory = mockHistoryData.reduce(
-    (acc, entry) => {
-      const date = new Date(entry.watchedAt).toDateString();
-      if (!acc[date]) {
-        acc[date] = [];
-      }
-      acc[date].push(entry);
-      return acc;
-    },
-    {} as Record<string, HistoryEntry[]>
-  );
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
 
-  // Сортируем даты в убывающем порядке (новые сверху)
-  const sortedDates = Object.keys(groupedHistory).sort(
-    (a, b) => new Date(b).getTime() - new Date(a).getTime()
-  );
+  const { groupedHistory, sortedDates, pagination, loadMore, resetAndLoad } =
+    useHistoryPagination();
+
+  // Настройка Intersection Observer для бесконечной прокрутки
+  const [ref, isIntersecting] = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '100px'
+  });
+
+  // Загружаем больше контента при пересечении с индикатором загрузки
+  useEffect(() => {
+    if (
+      isIntersecting &&
+      pagination.hasMore &&
+      !pagination.isLoading &&
+      sortedDates.length > 0 // Загружаем только если уже есть данные
+    ) {
+      loadMore();
+    }
+  }, [
+    isIntersecting,
+    pagination.hasMore,
+    pagination.isLoading,
+    sortedDates.length,
+    loadMore
+  ]);
+
+  // Загружаем начальные данные
+  useEffect(() => {
+    const accessToken = getClientToken();
+    if (!accessToken) {
+      setIsInitialLoading(false);
+      return;
+    }
+
+    const loadInitialData = async () => {
+      setIsInitialLoading(true);
+      await resetAndLoad();
+      setIsInitialLoading(false);
+    };
+
+    loadInitialData();
+  }, []);
 
   return (
     <Container>
+      {isInitialLoading && <MainLoader fullScreen={true} />}
+
       <Box sx={{ py: 4 }}>
         {/* Заголовок страницы */}
         <Box sx={{ mb: 3 }}>
@@ -51,8 +84,21 @@ const History: React.FC = () => {
           ))}
         </Box>
 
+        {/* Индикатор загрузки и статус пагинации */}
+        {sortedDates.length > 0 &&
+          !isInitialLoading &&
+          !pagination.isLoading && (
+            <Box ref={ref}>
+              <LoadingIndicator
+                isLoading={pagination.isLoading}
+                hasMore={pagination.hasMore}
+                currentCount={sortedDates.length}
+              />
+            </Box>
+          )}
+
         {/* Пустое состояние */}
-        {sortedDates.length === 0 && (
+        {sortedDates.length === 0 && !isInitialLoading && (
           <Box
             sx={{
               display: 'flex',

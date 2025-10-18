@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import type { HistoryCardProps } from '../../types';
-import { formatDuration, formatTime } from '../../utils';
+import { formatTime } from '../../utils';
 import { historyCardStyles } from './HistoryCard.styles';
 
 const HistoryCard: React.FC<HistoryCardProps> = ({ entry, onClick }) => {
@@ -84,16 +84,6 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ entry, onClick }) => {
               season: entry.season,
               episode: entry.episode
             })}
-          </Typography>
-
-          {/* Время просмотра */}
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={historyCardStyles.durationInfo}
-          >
-            {formatDuration(entry.watchedDuration)} /{' '}
-            {formatDuration(entry.totalDuration)}
           </Typography>
         </Box>
       </Box>

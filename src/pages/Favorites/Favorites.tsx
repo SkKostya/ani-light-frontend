@@ -7,6 +7,7 @@ import { userApi } from '@/api/user.api';
 import { toast } from '@/shared/entities';
 import { AnimeCard } from '@/shared/entities/anime-card';
 import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver';
+import { getClientToken } from '@/shared/services/user-hash';
 import { Grid, LoadingIndicator, MainLoader } from '@/shared/ui';
 
 import { useFavoritesPagination } from './hooks';
@@ -98,6 +99,12 @@ const Favorites: React.FC = () => {
 
   // Загружаем начальные данные
   useEffect(() => {
+    const accessToken = getClientToken();
+    if (!accessToken) {
+      setIsInitialLoading(false);
+      return;
+    }
+
     const loadInitialData = async () => {
       setIsInitialLoading(true);
       await resetAndLoad();

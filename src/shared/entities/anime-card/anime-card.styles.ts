@@ -10,7 +10,6 @@ export const cardStyles: SxProps<Theme> = {
   display: 'flex',
   flexDirection: 'column',
   borderRadius: 'var(--border-radius-large)',
-  overflow: 'hidden',
   backgroundColor: 'var(--color-background-paper)',
   boxShadow: 'var(--shadow-medium)',
   transition: 'all 0.3s ease-in-out',
