@@ -193,5 +193,28 @@ export const animeInfoStyles = {
       transform: 'translateY(-2px)',
       boxShadow: 'var(--shadow-medium)'
     }
+  } as SxProps<Theme>,
+
+  ageRatingLabel: {
+    position: 'absolute',
+    top: 12,
+    left: 12,
+    backgroundColor: 'rgba(0, 0, 0, 0.8)',
+    color: 'white',
+    padding: '6px 8px',
+    borderRadius: 'var(--border-radius-small)',
+    fontSize: '1rem',
+    fontWeight: 600,
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase',
+    zIndex: 2,
+    backdropFilter: 'blur(4px)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+      backgroundColor: 'rgba(0, 0, 0, 0.9)',
+      transform: 'scale(1.05)',
+      boxShadow: 'var(--shadow-glow)'
+    }
   } as SxProps<Theme>
 };

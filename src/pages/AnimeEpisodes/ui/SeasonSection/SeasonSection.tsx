@@ -26,9 +26,7 @@ interface SeasonSectionProps {
 
 const SeasonSection = ({ season }: SeasonSectionProps) => {
   const { t } = useTranslation();
-  const { animeId } = useParams<{
-    animeId: string;
-  }>();
+  const { alias } = useParams<{ alias: string }>();
   const { ref, isIntersecting } = useIntersectionObserver({
     freezeOnceVisible: true
   });
@@ -62,7 +60,9 @@ const SeasonSection = ({ season }: SeasonSectionProps) => {
         sx={seasonSectionStyles.accordionSummary}
       >
         <Typography variant="h6" sx={seasonSectionStyles.title}>
-          {t('anime_season_number', { number: season.seasonNumber })}
+          {season.seasonNumber > 0
+            ? t('anime_season_number', { number: season.seasonNumber })
+            : t('anime_all_episodes')}
         </Typography>
       </AccordionSummary>
 
@@ -78,7 +78,15 @@ const SeasonSection = ({ season }: SeasonSectionProps) => {
                   number: episode.number,
                   isWatched: episode.userEpisode?.status === 'watched'
                 }}
-                href={ROUTES.anime(animeId, season.id, String(episode.number))}
+                href={
+                  season.seasonNumber > 0
+                    ? ROUTES.animeWithSeason(
+                        alias,
+                        String(season.seasonNumber),
+                        String(episode.number)
+                      )
+                    : ROUTES.anime(alias, String(episode.number))
+                }
               />
             ))}
           </Box>

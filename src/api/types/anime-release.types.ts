@@ -3,6 +3,17 @@ import type { IPaginatedResponse } from './api.types';
 import type { Episode } from './episode.types';
 import type { UserAnime } from './user.types';
 
+export enum ReleaseType {
+  TV = 'TV',
+  ONA = 'ONA',
+  WEB = 'WEB',
+  OVA = 'OVA',
+  OAD = 'OAD',
+  MOVIE = 'MOVIE',
+  DORAMA = 'DORAMA',
+  SPECIAL = 'SPECIAL'
+}
+
 export interface AnimeRelease {
   id: string;
   external_id?: number;
@@ -14,6 +25,8 @@ export interface AnimeRelease {
   alias: string;
   is_blocked_by_geo: boolean;
   is_ongoing: boolean;
+  sort_order: number;
+  type: ReleaseType;
   publish_day: {
     value: number;
     description: string;
@@ -21,7 +34,7 @@ export interface AnimeRelease {
   episodes_total: number;
   average_duration_of_episode: number;
   external_created_at: string;
-  age_rating: {
+  ageRating: {
     id: string;
     value: string;
     label: string;

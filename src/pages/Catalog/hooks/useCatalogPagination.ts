@@ -67,6 +67,7 @@ export const useCatalogPagination = ({
             .filter(Boolean);
           return {
             id: item.id,
+            alias: item.alias,
             title: item.name,
             originalTitle: item.name_english,
             description: firstRelease?.description || '',

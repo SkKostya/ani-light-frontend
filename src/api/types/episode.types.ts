@@ -38,7 +38,8 @@ export interface GetEpisodesParams {
 }
 
 export interface GetEpisodeDetailsParams {
-  animeId: string;
+  alias: string;
+  seasonNumber: number;
   number: number;
 }
 

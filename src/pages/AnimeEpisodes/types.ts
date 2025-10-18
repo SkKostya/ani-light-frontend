@@ -48,6 +48,10 @@ export interface AnimeDetailedInfo {
   isInWatchList: boolean;
   isInWantList: boolean;
   seasons: AnimeSeason[];
+  ageRating: {
+    label: string;
+    description: string;
+  };
 }
 
 export interface EpisodeProgress {

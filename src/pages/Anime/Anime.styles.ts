@@ -51,6 +51,8 @@ export const animePageStyles = {
     mb: { xs: 3, sm: 4 },
     display: 'flex',
     justifyContent: 'center',
+    maxWidth: '768px',
+    margin: '0 auto',
     gap: { xs: 2, sm: 3 }
   } as SxProps<Theme>,
 

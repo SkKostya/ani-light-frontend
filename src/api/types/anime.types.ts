@@ -7,6 +7,7 @@ export interface IAnime {
   external_id?: string;
   name: string;
   name_english: string;
+  alias: string;
   image?: string;
   rating?: number;
   last_year?: number;

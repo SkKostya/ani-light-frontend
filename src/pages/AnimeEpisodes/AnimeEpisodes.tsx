@@ -12,7 +12,7 @@ import { AnimeInfo, SeasonSection } from './ui';
 
 const AnimeEpisodes = () => {
   const { t } = useTranslation();
-  const { animeId } = useParams<{ animeId: string }>();
+  const { alias } = useParams<{ alias: string }>();
 
   const [animeInfo, setAnimeInfo] = useState<AnimeDetailedInfo | undefined>(
     undefined
@@ -21,8 +21,8 @@ const AnimeEpisodes = () => {
 
   useEffect(() => {
     const loadAnimeInfo = async () => {
-      if (!animeId) return;
-      const animeInfo = await animeApi.getAnimeReleases(animeId);
+      if (!alias) return;
+      const animeInfo = await animeApi.getAnimeReleases(alias);
 
       const firstRelease = animeInfo.animeReleases[0];
       const userAnime = animeInfo.userAnime?.[0];
@@ -49,13 +49,17 @@ const AnimeEpisodes = () => {
         isFavorite: userAnime?.is_favorite || false,
         isInWatchList: userAnime?.want_to_watch || false,
         isInWantList: userAnime?.want_to_watch || false,
-        seasons: animeInfo.animeReleases.map((release, index) => ({
+        seasons: animeInfo.animeReleases.map((release) => ({
           id: release.id,
-          seasonNumber: index + 1,
+          seasonNumber: release.sort_order,
           title: release.title_ru,
           description: release.description,
           totalEpisodes: release.episodes_total
-        }))
+        })),
+        ageRating: {
+          label: firstRelease?.ageRating.label || '',
+          description: firstRelease?.ageRating.description || ''
+        }
       });
       setIsLoading(false);
     };

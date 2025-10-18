@@ -17,10 +17,10 @@ const Anime = () => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
 
-  const { animeId, releaseId, episodeNumber } = useParams<{
-    animeId: string;
+  const { alias, seasonNumber, episodeNumber } = useParams<{
+    alias: string;
+    seasonNumber: string;
     episodeNumber: string;
-    releaseId: string;
   }>();
 
   const [episode, setEpisode] = useState<EpisodeDetails | null>(null);
@@ -66,12 +66,13 @@ const Anime = () => {
   }, [episode]);
 
   useEffect(() => {
-    if (!releaseId || !episodeNumber) return;
+    if (!alias || !seasonNumber || !episodeNumber) return;
     const loadEpisode = async () => {
       try {
         setIsLoading(true);
         const episode = await episodeApi.getEpisodeDetails({
-          animeId: releaseId,
+          alias,
+          seasonNumber: parseInt(seasonNumber),
           number: parseInt(episodeNumber)
         });
         setEpisode(episode);
@@ -82,7 +83,7 @@ const Anime = () => {
       }
     };
     loadEpisode();
-  }, [releaseId, episodeNumber]);
+  }, [alias, seasonNumber, episodeNumber]);
 
   if (isLoading) return <MainLoader fullWidth />;
 
@@ -145,7 +146,11 @@ const Anime = () => {
   }
 
   const handleNextEpisode = () => {
-    navigate(ROUTES.anime(animeId, releaseId, String(episode.number + 1)));
+    if (seasonNumber)
+      navigate(
+        ROUTES.animeWithSeason(alias, seasonNumber, String(episode.number + 1))
+      );
+    else navigate(ROUTES.anime(alias, String(episode.number + 1)));
   };
 
   return (

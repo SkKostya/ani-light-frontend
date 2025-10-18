@@ -10,13 +10,18 @@ import {
   Card,
   CardContent,
   Chip,
+  CircularProgress,
   Grid,
   IconButton,
   Stack,
+  Tooltip,
   Typography
 } from '@mui/material';
+import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { userApi } from '@/api/user.api';
+import { toast } from '@/shared/entities';
 import { ImageWithFallback } from '@/shared/ui';
 
 import type { AnimeDetailedInfo } from '../../types';
@@ -28,6 +33,46 @@ interface AnimeInfoProps {
 
 const AnimeInfo = ({ anime }: AnimeInfoProps) => {
   const { t } = useTranslation();
+
+  const [isFavorite, setIsFavorite] = useState(false);
+  const [isWantList, setIsWantList] = useState(false);
+  const [favoriteUpdating, setFavoriteUpdating] = useState(false);
+  const [wantListUpdating, setWantListUpdating] = useState(false);
+
+  const handleToggleFavorite = async () => {
+    const wasFavorite = isFavorite;
+    try {
+      setFavoriteUpdating(true);
+      await userApi.toggleFavoriteAnime(anime.id);
+      setIsFavorite(!wasFavorite);
+    } catch (err) {
+      const error = err as Error;
+      toast.error(error.message, 'Ошибка');
+      setIsFavorite(wasFavorite);
+    } finally {
+      setFavoriteUpdating(false);
+    }
+  };
+
+  const handleToggleWatchList = async () => {
+    const wasWantList = isWantList;
+    try {
+      setWantListUpdating(true);
+      await userApi.toggleWantToWatchAnime(anime.id);
+      setIsWantList(!wasWantList);
+    } catch (err) {
+      const error = err as Error;
+      toast.error(error.message, 'Ошибка');
+      setIsWantList(wasWantList);
+    } finally {
+      setWantListUpdating(false);
+    }
+  };
+
+  useEffect(() => {
+    setIsFavorite(anime.isFavorite);
+    setIsWantList(anime.isInWatchList);
+  }, [anime.id]);
 
   return (
     <Card sx={animeInfoStyles.card}>
@@ -43,6 +88,15 @@ const AnimeInfo = ({ anime }: AnimeInfoProps) => {
                   sx={animeInfoStyles.poster}
                   fallbackIcon="🎭"
                 />
+                <Tooltip
+                  title={anime.ageRating.description}
+                  arrow
+                  placement="bottom-start"
+                >
+                  <Box sx={animeInfoStyles.ageRatingLabel}>
+                    {anime.ageRating.label}
+                  </Box>
+                </Tooltip>
                 <Box sx={animeInfoStyles.posterOverlay}>
                   <IconButton
                     sx={animeInfoStyles.playButton}
@@ -109,16 +163,26 @@ const AnimeInfo = ({ anime }: AnimeInfoProps) => {
                 {/* Кнопки действий */}
                 <Stack direction="row" spacing={2} flexWrap="wrap" useFlexGap>
                   <IconButton
-                    color={anime.isFavorite ? 'error' : 'default'}
+                    color={isFavorite ? 'error' : 'default'}
                     sx={animeInfoStyles.actionIconButton}
+                    onClick={handleToggleFavorite}
                   >
-                    {anime.isFavorite ? <Favorite /> : <FavoriteBorder />}
+                    {favoriteUpdating ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : isFavorite ? (
+                      <Favorite />
+                    ) : (
+                      <FavoriteBorder />
+                    )}
                   </IconButton>
                   <IconButton
-                    color={anime.isInWatchList ? 'primary' : 'default'}
+                    color={isWantList ? 'primary' : 'default'}
                     sx={animeInfoStyles.actionIconButton}
+                    onClick={handleToggleWatchList}
                   >
-                    {anime.isInWatchList ? (
+                    {wantListUpdating ? (
+                      <CircularProgress size={24} color="inherit" />
+                    ) : isWantList ? (
                       <PlaylistAddCheck />
                     ) : (
                       <PlaylistAdd />

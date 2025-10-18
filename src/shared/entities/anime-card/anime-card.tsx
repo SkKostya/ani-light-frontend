@@ -79,7 +79,7 @@ export const AnimeCard: React.FC<AnimeCardProps> = ({
   return (
     <LocalizedLink
       ref={ref}
-      to={ROUTES.animeEpisodes(anime.id)}
+      to={ROUTES.animeEpisodes(anime.alias)}
       className={styles.animeCard}
     >
       <Card sx={cardStyle}>

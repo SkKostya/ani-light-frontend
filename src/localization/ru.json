@@ -270,5 +270,6 @@
   "anime_user_status_on_hold": "Отложено",
   "anime_user_status_dropped": "Брошено",
   "anime_user_status_plan_to_watch": "Планирую смотреть",
-  "anime_user_status_not_added": "Не добавлено"
+  "anime_user_status_not_added": "Не добавлено",
+  "anime_all_episodes": "Все серии"
 }

@@ -15,28 +15,40 @@ interface IProps {
 const AnimeControls = ({ totalEpisodes }: IProps) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
-  const { animeId, releaseId, episodeNumber } = useParams<{
-    animeId: string;
-    releaseId: string;
+  const { alias, seasonNumber, episodeNumber } = useParams<{
+    alias: string;
+    seasonNumber: string;
     episodeNumber: string;
   }>();
 
   const handlePrevious = () => {
     if (Number(episodeNumber) === 1) return;
-    navigate(
-      ROUTES.anime(animeId, releaseId, String(Number(episodeNumber) - 1))
-    );
+    if (seasonNumber)
+      navigate(
+        ROUTES.animeWithSeason(
+          alias,
+          seasonNumber,
+          String(Number(episodeNumber) - 1)
+        )
+      );
+    else navigate(ROUTES.anime(alias, String(Number(episodeNumber) - 1)));
   };
 
   const handleNext = () => {
     if (Number(episodeNumber) === totalEpisodes) return;
-    navigate(
-      ROUTES.anime(animeId, releaseId, String(Number(episodeNumber) + 1))
-    );
+    if (seasonNumber)
+      navigate(
+        ROUTES.animeWithSeason(
+          alias,
+          seasonNumber,
+          String(Number(episodeNumber) + 1)
+        )
+      );
+    else navigate(ROUTES.anime(alias, String(Number(episodeNumber) + 1)));
   };
 
   const handleAllEpisodes = () => {
-    navigate(ROUTES.animeEpisodes(animeId));
+    navigate(ROUTES.animeEpisodes(alias));
   };
 
   return (

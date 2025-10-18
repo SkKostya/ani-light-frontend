@@ -13,7 +13,7 @@ import {
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { mockComments } from '../../mock-data';
+import type { Comment } from '../../types';
 import { animeCommentsStyles } from './AnimeComments.styles';
 import useCommentActions from './hooks/useCommentActions';
 
@@ -24,7 +24,7 @@ interface IProps {
 const AnimeComments = ({ episodeId }: IProps) => {
   const { t } = useTranslation();
   const [newComment, setNewComment] = useState('');
-  const [comments] = useState(mockComments);
+  const [comments] = useState<Comment[]>([]);
 
   const {
     commentSubmitting,
