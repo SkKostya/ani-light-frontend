@@ -1,0 +1,1 @@
+export { useWantListPagination } from './useWantListPagination';

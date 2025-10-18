@@ -7,14 +7,11 @@ import { userApi } from '@/api/user.api';
 import { toast } from '@/shared/entities';
 import { AnimeCard } from '@/shared/entities/anime-card';
 import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver';
-import { Grid, MainLoader } from '@/shared/ui';
+import { Grid, LoadingIndicator, MainLoader } from '@/shared/ui';
 
 import { useCatalogPagination } from './hooks/useCatalogPagination';
 import { useUrlFilters } from './hooks/useUrlFilters';
-import {
-  CatalogFilters as CatalogFiltersComponent,
-  LoadingIndicator
-} from './ui';
+import { CatalogFilters as CatalogFiltersComponent } from './ui';
 
 const Catalog: React.FC = () => {
   const { t } = useTranslation();

@@ -1,48 +1,116 @@
 import { PlaylistAdd as WantListIcon } from '@mui/icons-material';
 import { Box, Container, Typography } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import { AnimeCard, mockAnimeData } from '@/shared/entities/anime-card';
-import type { Anime } from '@/shared/entities/anime-card/anime-card.types';
+import { userApi } from '@/api/user.api';
+import { toast } from '@/shared/entities';
+import { AnimeCard } from '@/shared/entities/anime-card';
+import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver';
+import { Grid, LoadingIndicator, MainLoader } from '@/shared/ui';
+
+import { useWantListPagination } from './hooks';
 
 const WantList: React.FC = () => {
   const { t } = useTranslation();
-  const [animeList, setAnimeList] = useState<Anime[]>(mockAnimeData);
 
-  // Фильтруем только аниме из списка желаний
-  const wantListAnime = useMemo(
-    () => animeList.filter((anime) => anime.isWantToWatch),
-    [animeList]
+  const [isInitialLoading, setIsInitialLoading] = useState(true);
+
+  const { animeList, pagination, loadMore, resetAndLoad, updateAnimeInList } =
+    useWantListPagination();
+
+  const handleToggleFavorite = useCallback(
+    async (animeId: string) => {
+      // Сначала находим исходное состояние
+      const originalAnime = animeList.find((a) => a.id === animeId);
+      if (!originalAnime) return;
+
+      const wasFavorite = originalAnime.isFavorite;
+
+      // Оптимистичное обновление UI
+      updateAnimeInList(animeId, { isFavorite: !wasFavorite });
+
+      try {
+        await userApi.toggleFavoriteAnime(animeId);
+        // Показываем toast на основе исходного состояния
+        if (wasFavorite) {
+          toast.info('Аниме удалено из избранного', 'Информация');
+        } else {
+          toast.success('Аниме добавлено в избранное!', 'Успех');
+        }
+      } catch (err) {
+        const error = err as Error;
+        toast.error(error.message, 'Ошибка');
+        // В случае ошибки возвращаем исходное состояние
+        updateAnimeInList(animeId, { isFavorite: wasFavorite });
+      }
+    },
+    [animeList, updateAnimeInList]
   );
 
-  const handleToggleFavorite = (animeId: string) => {
-    setAnimeList((prevList) =>
-      prevList.map((anime) =>
-        anime.id === animeId
-          ? { ...anime, isFavorite: !anime.isFavorite }
-          : anime
-      )
-    );
-  };
+  const handleToggleWantToWatch = useCallback(
+    async (animeId: string) => {
+      const originalState = animeList.find(
+        (a) => a.id === animeId
+      )?.isWantToWatch;
 
-  const handleToggleWantToWatch = (animeId: string) => {
-    setAnimeList((prevList) =>
-      prevList.map((anime) =>
-        anime.id === animeId
-          ? { ...anime, isWantToWatch: !anime.isWantToWatch }
-          : anime
-      )
-    );
-  };
+      try {
+        await userApi.toggleWantToWatchAnime(animeId);
+        // Показываем toast на основе исходного состояния
+        if (originalState) {
+          toast.success('Аниме удалено из списка "Хочу посмотреть"', 'Успех');
+        } else {
+          toast.success('Аниме добавлено в список "Хочу посмотреть"', 'Успех');
+        }
+      } catch (err) {
+        const error = err as Error;
+        toast.error(error.message, 'Ошибка');
+        // В случае ошибки возвращаем аниме в список
+        updateAnimeInList(animeId, { isWantToWatch: originalState });
+      }
+    },
+    [animeList, updateAnimeInList]
+  );
 
-  const handleAnimeClick = () => {
-    // TODO: Navigate to anime details page
-    // console.log('Clicked anime:', animeId);
-  };
+  // Настройка Intersection Observer для бесконечной прокрутки
+  const [ref, isIntersecting] = useIntersectionObserver({
+    threshold: 0.1,
+    rootMargin: '100px'
+  });
+
+  // Загружаем больше контента при пересечении с индикатором загрузки
+  useEffect(() => {
+    if (
+      isIntersecting &&
+      pagination.hasMore &&
+      !pagination.isLoading &&
+      animeList.length > 0 // Загружаем только если уже есть данные
+    ) {
+      loadMore();
+    }
+  }, [
+    isIntersecting,
+    pagination.hasMore,
+    pagination.isLoading,
+    animeList.length,
+    loadMore
+  ]);
+
+  // Загружаем начальные данные
+  useEffect(() => {
+    const loadInitialData = async () => {
+      setIsInitialLoading(true);
+      await resetAndLoad();
+      setIsInitialLoading(false);
+    };
+
+    loadInitialData();
+  }, [resetAndLoad]);
 
   return (
     <Container>
+      {isInitialLoading && <MainLoader fullScreen={true} />}
+
       <Box sx={{ py: 4 }}>
         {/* Заголовок */}
         <Box
@@ -63,55 +131,59 @@ const WantList: React.FC = () => {
         </Typography>
 
         {/* Сетка карточек аниме */}
-        {wantListAnime.length > 0 ? (
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)'
-              },
-              gap: 3
-            }}
-          >
-            {wantListAnime.map((anime) => (
-              <AnimeCard
-                key={anime.id}
-                anime={anime}
-                onToggleFavorite={handleToggleFavorite}
-                onToggleWantToWatch={handleToggleWantToWatch}
-                onClick={handleAnimeClick}
-                variant="compact"
-              />
-            ))}
-          </Box>
+        {animeList.length > 0 ? (
+          <>
+            <Grid maxColCount={3} minColSize={260} gap={16}>
+              {animeList.map((anime) => (
+                <AnimeCard
+                  key={anime.id}
+                  anime={anime}
+                  onToggleFavorite={handleToggleFavorite}
+                  onToggleWantToWatch={handleToggleWantToWatch}
+                  variant="compact"
+                />
+              ))}
+            </Grid>
+
+            {/* Индикатор загрузки и статус пагинации */}
+            {!isInitialLoading && !pagination.isLoading && (
+              <Box ref={ref}>
+                <LoadingIndicator
+                  isLoading={pagination.isLoading}
+                  hasMore={pagination.hasMore}
+                  currentCount={animeList.length}
+                />
+              </Box>
+            )}
+          </>
         ) : (
           /* Пустое состояние */
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              py: 8,
-              textAlign: 'center'
-            }}
-          >
-            <WantListIcon
+          !isInitialLoading && (
+            <Box
               sx={{
-                fontSize: 64,
-                color: 'var(--color-text-disabled)',
-                mb: 2
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                py: 8,
+                textAlign: 'center'
               }}
-            />
-            <Typography variant="h5" component="h2" gutterBottom>
-              {t('wantlist_empty_title')}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {t('wantlist_empty_description')}
-            </Typography>
-          </Box>
+            >
+              <WantListIcon
+                sx={{
+                  fontSize: 64,
+                  color: 'var(--color-text-disabled)',
+                  mb: 2
+                }}
+              />
+              <Typography variant="h5" component="h2" gutterBottom>
+                {t('wantlist_empty_title')}
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                {t('wantlist_empty_description')}
+              </Typography>
+            </Box>
+          )
         )}
       </Box>
     </Container>

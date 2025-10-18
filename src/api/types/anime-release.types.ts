@@ -1,4 +1,5 @@
 // Типы для Anime API
+import type { IPaginatedResponse } from './api.types';
 import type { Episode } from './episode.types';
 import type { UserAnime } from './user.types';
 
@@ -55,15 +56,8 @@ export interface SearchAnimeReleaseParams {
   q: string;
 }
 
-export interface AnimeReleaseListResponse {
-  data: AnimeRelease[];
-  pagination: {
-    page: number;
-    limit: number;
-    total: number;
-    totalPages: number;
-  };
-  hasNext: boolean;
+export interface AnimeReleaseListResponse
+  extends IPaginatedResponse<AnimeRelease> {
   shouldHideAds: boolean;
   user?: {
     id: string;

@@ -1,4 +1,5 @@
 import { ApiConnector } from './api.connector';
+import type { IPaginationParams } from './types/api.types';
 import type {
   AnimeRating,
   AnimeRatingResponse,
@@ -15,6 +16,7 @@ import type {
   UpdateUserEpisodeDto,
   UpdateUserNotificationsDto,
   UserAnime,
+  UserAnimeListResponse,
   UserEpisode,
   UserNotifications,
   UserResponse
@@ -102,20 +104,24 @@ class UserApi extends ApiConnector {
   /**
    * Получить избранные аниме
    */
-  getFavoriteAnime(): Promise<UserAnime[]> {
-    return this.call<never, UserAnime[]>({
+  getFavoriteAnime(params: IPaginationParams): Promise<UserAnimeListResponse> {
+    return this.call<IPaginationParams, UserAnimeListResponse>({
       path: 'user/anime/favorites',
-      method: 'get'
+      method: 'get',
+      params
     });
   }
 
   /**
    * Получить список "Хочу посмотреть"
    */
-  getWantToWatchAnime(): Promise<UserAnime[]> {
-    return this.call<never, UserAnime[]>({
+  getWantToWatchAnime(
+    params: IPaginationParams
+  ): Promise<UserAnimeListResponse> {
+    return this.call<IPaginationParams, UserAnimeListResponse>({
       path: 'user/anime/want-to-watch',
-      method: 'get'
+      method: 'get',
+      params
     });
   }
 

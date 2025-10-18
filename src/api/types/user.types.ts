@@ -1,4 +1,7 @@
 // Типы для User API
+import type { AnimeRelease } from './anime-release.types';
+import type { IAnime } from './anime.types';
+import type { IPaginatedResponse } from './api.types';
 
 export interface User {
   id: string;
@@ -75,15 +78,12 @@ export interface UserAnime {
   notifications_email: boolean;
   created_at: string;
   updated_at: string;
-  anime: {
-    id: string;
-    title_ru: string;
-    title_en: string;
-    poster_url: string;
-    year: number;
-    episodes_total: number;
+  anime: Omit<IAnime, 'userAnime'> & {
+    animeReleases?: Omit<AnimeRelease, 'userAnime'>[];
   };
 }
+
+export type UserAnimeListResponse = IPaginatedResponse<UserAnime>;
 
 // === ПОЛЬЗОВАТЕЛЬСКИЕ ЭПИЗОДЫ ===
 
