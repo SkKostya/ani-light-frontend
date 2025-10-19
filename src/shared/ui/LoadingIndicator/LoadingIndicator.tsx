@@ -5,23 +5,21 @@ import { useTranslation } from 'react-i18next';
 interface LoadingIndicatorProps {
   isLoading: boolean;
   hasMore: boolean;
-  currentCount: number;
 }
 
 export const LoadingIndicator: React.FC<LoadingIndicatorProps> = ({
   isLoading,
-  hasMore,
-  currentCount
+  hasMore
 }) => {
   const { t } = useTranslation();
 
   // Не показываем индикатор, если нет данных или нет больше данных для загрузки
-  if (currentCount === 0 || !hasMore) {
+  if (!hasMore) {
     return null;
   }
 
   // Показываем индикатор загрузки только если есть данные и идет загрузка
-  if (isLoading && currentCount > 0) {
+  if (isLoading) {
     return (
       <Box
         sx={{

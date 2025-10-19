@@ -18,12 +18,13 @@ import {
   TextField,
   Typography
 } from '@mui/material';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useSearchParams } from 'react-router';
 
 import type { IGetAnimeListParams } from '@/api/types/anime.types';
-import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 
+import { useUrlFilters } from '../../hooks/useUrlFilters';
 import {
   actionsRowStyles,
   applyButtonStyles,
@@ -35,88 +36,59 @@ import {
   filtersPanelStyles,
   formControlStyles,
   resetButtonStyles,
-  searchButtonStyles,
   searchFieldStyles,
   searchRowStyles,
   sectionTitleStyles
 } from './CatalogFilters.styles';
 
 interface CatalogFiltersProps {
-  filters: IGetAnimeListParams;
-  onFiltersChange: (filters: IGetAnimeListParams) => void;
-  onSearch: () => void;
-  onReset: () => void;
+  onApplyFilters: () => void;
 }
 
-const YEARS = Array.from({ length: 30 }, (_, i) => 2024 - i);
+const YEARS = Array.from(
+  { length: 30 },
+  (_, i) => new Date().getFullYear() - i
+);
 const RATINGS = Array.from({ length: 10 }, (_, i) => (i + 1) * 0.5);
 
-const GENRES = [
-  'Action',
-  'Adventure',
-  'Comedy',
-  'Drama',
-  'Fantasy',
-  'Horror',
-  'Mystery',
-  'Romance',
-  'Sci-Fi',
-  'Slice of Life',
-  'Sports',
-  'Supernatural',
-  'Thriller'
-];
-
 export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
-  filters,
-  onFiltersChange,
-  onSearch,
-  onReset
+  onApplyFilters
 }) => {
   const { t } = useTranslation();
+  const [searchParams, setSearchParams] = useSearchParams();
+  const params = new URLSearchParams(searchParams);
+
+  const initialFilters = useUrlFilters();
+
+  const [filters, setFilters] = useState<IGetAnimeListParams>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
-  const [searchValue, setSearchValue] = useState(filters.search || '');
 
-  const debouncedSearchValue = useDebouncedValue(searchValue, 300);
-
-  // Синхронизируем локальное состояние с внешними изменениями фильтров
-  useEffect(() => {
-    if (filters.search !== searchValue) {
-      setSearchValue(filters.search || '');
-    }
-  }, [filters.search]);
-
-  // Автоматически применяем поиск при изменении debounced значения
-  useEffect(() => {
-    if (debouncedSearchValue !== filters.search) {
-      onFiltersChange({
-        ...filters,
-        search: debouncedSearchValue || undefined
-      });
-    }
-  }, [debouncedSearchValue, JSON.stringify(filters)]);
+  const searchValue = initialFilters.search || '';
 
   const handleFilterChange = (
     key: keyof IGetAnimeListParams,
     value: string | number | boolean | undefined
   ) => {
-    onFiltersChange({
-      ...filters,
-      [key]: value || undefined
+    setFilters((prev) => ({ ...prev, [key]: value }));
+  };
+
+  const handleApplyFilters = () => {
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.set(key, value.toString());
+      else params.delete(key);
     });
+    setSearchParams(params);
+    setTimeout(onApplyFilters, 100);
   };
 
   const handleSearchChange = (value: string) => {
-    setSearchValue(value);
-  };
-
-  const handleReset = () => {
-    setSearchValue('');
-    onReset();
+    if (value) params.set('search', value);
+    else params.delete('search');
+    setSearchParams(params);
   };
 
   const hasActiveFilters =
-    filters.search ||
+    filters.debouncedSearch ||
     filters.genre ||
     filters.year_from ||
     filters.year_to ||
@@ -126,13 +98,29 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 
   const getActiveFiltersCount = () => {
     let count = 0;
-    if (filters.search) count++;
+    if (filters.debouncedSearch) count++;
     if (filters.genre) count++;
     if (filters.year_from || filters.year_to) count++;
     if (filters.min_rating || filters.max_rating) count++;
     if (filters.is_ongoing) count++;
     return count;
   };
+
+  // Сбрасываем фильтры в URL
+  const resetFilters = useCallback(() => {
+    params.delete('search');
+    params.delete('genre');
+    params.delete('year_from');
+    params.delete('year_to');
+    params.delete('min_rating');
+    params.delete('max_rating');
+    params.delete('is_ongoing');
+    setSearchParams(params, { replace: true });
+  }, []);
+
+  useEffect(() => {
+    setFilters(initialFilters);
+  }, [initialFilters]);
 
   return (
     <Box sx={filtersContainerStyles}>
@@ -143,13 +131,14 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
           placeholder={t('catalog_search_placeholder')}
           value={searchValue}
           onChange={(e) => handleSearchChange(e.target.value)}
-          onKeyPress={(e) => e.key === 'Enter' && onSearch()}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <SearchIcon color="primary" />
-              </InputAdornment>
-            )
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <SearchIcon color="primary" />
+                </InputAdornment>
+              )
+            }
           }}
           sx={searchFieldStyles}
         />
@@ -171,15 +160,6 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
             />
           )}
         </Button>
-
-        <Button
-          variant="contained"
-          onClick={onSearch}
-          className="anime-gradient-magic"
-          sx={searchButtonStyles}
-        >
-          {t('button_search')}
-        </Button>
       </Stack>
 
       {/* Панель фильтров */}
@@ -192,25 +172,6 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 
           {/* Основные фильтры */}
           <Box sx={filtersGridStyles}>
-            {/* Жанр */}
-            <FormControl sx={formControlStyles}>
-              <InputLabel>{t('catalog_filter_genre')}</InputLabel>
-              <Select
-                value={filters.genre || ''}
-                onChange={(e) => handleFilterChange('genre', e.target.value)}
-                label={t('catalog_filter_genre')}
-              >
-                <MenuItem value="">
-                  <em>{t('catalog_filter_all_genres')}</em>
-                </MenuItem>
-                {GENRES.map((genre) => (
-                  <MenuItem key={genre} value={genre}>
-                    {genre}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-
             {/* Год от */}
             <FormControl sx={formControlStyles}>
               <InputLabel>{t('catalog_filter_year_from')}</InputLabel>
@@ -307,6 +268,26 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
               </Select>
             </FormControl>
 
+            {/* Жанр */}
+            {/* TODO Настроить получение жанров из API */}
+            {/* <FormControl sx={formControlStyles}>
+              <InputLabel>{t('catalog_filter_genre')}</InputLabel>
+              <Select
+                value={filters.genre || ''}
+                onChange={(e) => handleFilterChange('genre', e.target.value)}
+                label={t('catalog_filter_genre')}
+              >
+                <MenuItem value="">
+                  <em>{t('catalog_filter_all_genres')}</em>
+                </MenuItem>
+                {GENRES.map((genre) => (
+                  <MenuItem key={genre} value={genre}>
+                    {genre}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl> */}
+
             {/* Только продолжающиеся */}
             <FormControlLabel
               control={
@@ -394,7 +375,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
           <Stack sx={actionsRowStyles}>
             <Button
               variant="contained"
-              onClick={onSearch}
+              onClick={handleApplyFilters}
               className="anime-gradient-sunset"
               sx={applyButtonStyles}
             >
@@ -403,7 +384,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 
             <Button
               variant="outlined"
-              onClick={handleReset}
+              onClick={resetFilters}
               sx={resetButtonStyles}
             >
               {t('button_reset_filters')}

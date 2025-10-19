@@ -37,6 +37,7 @@ export interface IAnimeDetails extends IAnime {
 // Интерфейс для запроса списка аниме
 export interface IGetAnimeListParams {
   search?: string;
+  debouncedSearch?: string;
   min_rating?: number;
   max_rating?: number;
   year_from?: number;

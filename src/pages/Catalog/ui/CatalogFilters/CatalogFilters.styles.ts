@@ -62,8 +62,7 @@ export const filtersPanelStyles: SxProps<Theme> = {
   borderColor: 'divider',
   borderRadius: 'var(--border-radius-large)',
   backgroundColor: 'background.paper',
-  boxShadow: 'var(--shadow-medium)',
-  mt: 2
+  boxShadow: 'var(--shadow-medium)'
 };
 
 export const filtersGridStyles: SxProps<Theme> = {

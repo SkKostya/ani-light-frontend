@@ -7,6 +7,7 @@ import type { INextUserEpisode } from '@/api/types/user.types';
 import { userApi } from '@/api/user.api';
 import { AnimeCard } from '@/shared/entities/anime-card';
 import type { Anime } from '@/shared/entities/anime-card/anime-card.types';
+import { toast } from '@/shared/entities/toast';
 import { getClientToken } from '@/shared/services/user-hash';
 import { Grid, MainLoader } from '@/shared/ui';
 
@@ -21,28 +22,57 @@ const WatchList: React.FC = () => {
   const [nextEpisodes, setNextEpisodes] = useState<INextUserEpisode[]>([]);
   const [isNextEpisodesLoading, setIsNextEpisodesLoading] = useState(false);
 
-  const handleToggleFavorite = (animeId: string) => {
+  const handleToggleFavorite = async (animeId: string) => {
+    const originalState = !!animeList.find((a) => a.id === animeId)?.isFavorite;
+
+    // Оптимистичное обновление UI
+    setAnimeList((prevList) =>
+      prevList.map((anime) =>
+        anime.id === animeId ? { ...anime, isFavorite: !originalState } : anime
+      )
+    );
+
+    try {
+      await userApi.toggleFavoriteAnime(animeId);
+    } catch (err) {
+      const error = err as Error;
+      toast.error(error.message, 'Ошибка');
+      // В случае ошибки возвращаем исходное состояние
+      setAnimeList((prevList) =>
+        prevList.map((anime) =>
+          anime.id === animeId ? { ...anime, isFavorite: originalState } : anime
+        )
+      );
+    }
+  };
+
+  const handleToggleWantToWatch = async (animeId: string) => {
+    const originalState = !!animeList.find((a) => a.id === animeId)
+      ?.isWantToWatch;
+
+    // Оптимистичное обновление UI
     setAnimeList((prevList) =>
       prevList.map((anime) =>
         anime.id === animeId
-          ? { ...anime, isFavorite: !anime.isFavorite }
+          ? { ...anime, isWantToWatch: !originalState }
           : anime
       )
     );
-  };
 
-  const handleToggleWantToWatch = (animeId: string) => {
-    setAnimeList((prevList) =>
-      prevList.map((anime) =>
-        anime.id === animeId
-          ? { ...anime, isWantToWatch: !anime.isWantToWatch }
-          : anime
-      )
-    );
-  };
-
-  const handlePlayEpisode = () => {
-    // TODO: Реализовать навигацию к эпизоду
+    try {
+      await userApi.toggleWantToWatchAnime(animeId);
+    } catch (err) {
+      const error = err as Error;
+      toast.error(error.message, 'Ошибка');
+      // В случае ошибки возвращаем исходное состояние
+      setAnimeList((prevList) =>
+        prevList.map((anime) =>
+          anime.id === animeId
+            ? { ...anime, isWantToWatch: originalState }
+            : anime
+        )
+      );
+    }
   };
 
   useEffect(() => {
@@ -139,7 +169,6 @@ const WatchList: React.FC = () => {
                 <NextEpisodeCard
                   key={`${episode.anime_id}-${episode.next_episode.id}`}
                   episode={episode}
-                  onPlay={handlePlayEpisode}
                 />
               ))}
             </Grid>

@@ -99,7 +99,7 @@ const ImageWithFallback = ({
         sx={{
           ...sx,
           opacity: isLoading ? 0 : 1,
-          transition: 'opacity 0.3s ease-in-out'
+          transition: 'all 0.3s ease-in-out'
         }}
         onError={handleError}
         onLoad={handleLoad}

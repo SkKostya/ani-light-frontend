@@ -2,5 +2,4 @@ import type { INextUserEpisode } from '@/api/types/user.types';
 
 export interface NextEpisodeCardProps {
   episode: INextUserEpisode;
-  onPlay?: (episode: INextUserEpisode) => void;
 }

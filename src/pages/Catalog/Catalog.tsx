@@ -1,8 +1,7 @@
 import { Box, Container, Typography } from '@mui/material';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import type { IGetAnimeListParams } from '@/api/types/anime.types';
 import { userApi } from '@/api/user.api';
 import { toast } from '@/shared/entities';
 import { AnimeCard } from '@/shared/entities/anime-card';
@@ -10,24 +9,19 @@ import { useIntersectionObserver } from '@/shared/hooks/useIntersectionObserver'
 import { Grid, LoadingIndicator, MainLoader } from '@/shared/ui';
 
 import { useCatalogPagination } from './hooks/useCatalogPagination';
-import { useUrlFilters } from './hooks/useUrlFilters';
 import { CatalogFilters as CatalogFiltersComponent } from './ui';
 
 const Catalog: React.FC = () => {
   const { t } = useTranslation();
 
-  const [isInitialLoading, setIsInitialLoading] = useState(true);
-  const { urlFilters, updateUrlFilters, resetUrlFilters } = useUrlFilters();
-
-  const handleError = useCallback((error: string) => {
-    toast.error(error, 'Ошибка');
-  }, []);
-
-  const { animeList, pagination, loadMore, resetAndLoad, updateAnimeInList } =
-    useCatalogPagination({
-      filters: urlFilters,
-      onError: handleError
-    });
+  const {
+    isInitialLoading,
+    animeList,
+    pagination,
+    loadMore,
+    resetAndLoad,
+    updateAnimeInList
+  } = useCatalogPagination();
 
   const handleToggleFavorite = useCallback(
     async (animeId: string) => {
@@ -55,7 +49,7 @@ const Catalog: React.FC = () => {
         updateAnimeInList(animeId, { isFavorite: wasFavorite });
       }
     },
-    [animeList, updateAnimeInList]
+    [animeList]
   );
 
   const handleToggleWantToWatch = useCallback(
@@ -82,7 +76,7 @@ const Catalog: React.FC = () => {
         updateAnimeInList(animeId, { isWantToWatch: originalState });
       }
     },
-    [animeList, updateAnimeInList]
+    [animeList]
   );
 
   // Настройка Intersection Observer для бесконечной прокрутки
@@ -99,44 +93,15 @@ const Catalog: React.FC = () => {
       !pagination.isLoading &&
       animeList.length > 0 // Загружаем только если уже есть данные
     ) {
+      // Первая загрузка данных в useCatalogPagination
       loadMore();
     }
   }, [
     isIntersecting,
     pagination.hasMore,
     pagination.isLoading,
-    animeList.length,
-    loadMore
+    animeList.length
   ]);
-
-  // Загружаем начальные данные
-  useEffect(() => {
-    const loadInitialData = async () => {
-      setIsInitialLoading(true);
-      await resetAndLoad();
-      setIsInitialLoading(false);
-    };
-
-    loadInitialData();
-  }, []);
-
-  // Обработчики фильтров
-  const handleFiltersChange = useCallback(
-    (newFilters: IGetAnimeListParams) => {
-      updateUrlFilters(newFilters);
-      resetAndLoad();
-    },
-    [updateUrlFilters]
-  );
-
-  const handleSearch = useCallback(() => {
-    resetAndLoad();
-  }, [resetAndLoad]);
-
-  const handleResetFilters = useCallback(() => {
-    resetUrlFilters();
-    resetAndLoad();
-  }, [resetUrlFilters, resetAndLoad]);
 
   return (
     <Container>
@@ -162,12 +127,7 @@ const Catalog: React.FC = () => {
         </Typography>
 
         {/* Фильтры */}
-        <CatalogFiltersComponent
-          filters={urlFilters}
-          onFiltersChange={handleFiltersChange}
-          onSearch={handleSearch}
-          onReset={handleResetFilters}
-        />
+        <CatalogFiltersComponent onApplyFilters={resetAndLoad} />
 
         {/* Сетка карточек аниме */}
         <Grid maxColCount={3} minColSize={260} gap={16}>
@@ -183,14 +143,16 @@ const Catalog: React.FC = () => {
         </Grid>
 
         {/* Индикатор загрузки и статус пагинации */}
-        {animeList.length > 0 && !isInitialLoading && !pagination.isLoading && (
-          <Box ref={ref}>
-            <LoadingIndicator
-              isLoading={pagination.isLoading}
-              hasMore={pagination.hasMore}
-              currentCount={animeList.length}
-            />
-          </Box>
+        {animeList.length > 0 && !isInitialLoading && (
+          <>
+            <Box>
+              <LoadingIndicator
+                isLoading={pagination.isLoading}
+                hasMore={pagination.hasMore}
+              />
+            </Box>
+            {!pagination.isLoading && <Box ref={ref} />}
+          </>
         )}
       </Box>
     </Container>

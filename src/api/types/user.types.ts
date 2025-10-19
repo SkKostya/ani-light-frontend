@@ -91,6 +91,7 @@ export type UserAnimeListResponse = IPaginatedResponse<UserAnime>;
 export interface INextUserEpisode {
   anime_id: string;
   anime: Omit<IAnime, 'userAnime' | 'animeReleases'>;
+  anime_release: AnimeRelease;
   next_episode: Episode;
 }
 
