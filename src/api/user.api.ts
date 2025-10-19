@@ -8,6 +8,7 @@ import type {
   CreateUserAnimeDto,
   CreateUserDto,
   CreateUserEpisodeDto,
+  INextUserEpisode,
   LoginDto,
   MarkEpisodeWatchedDto,
   ProfileResponse,
@@ -93,11 +94,21 @@ class UserApi extends ApiConnector {
   }
 
   /**
-   * Получить список аниме пользователя
+   * Получить список аниме в процессе просмотра
    */
-  getUserAnimeList(): Promise<UserAnime[]> {
+  getUserActiveAnimeList(): Promise<UserAnime[]> {
     return this.call<never, UserAnime[]>({
-      path: 'user/anime',
+      path: 'user/anime/currently-watching',
+      method: 'get'
+    });
+  }
+
+  /**
+   * Получить список эпизодов на очереди просмотра
+   */
+  getUserNextEpisodes(): Promise<INextUserEpisode[]> {
+    return this.call<never, INextUserEpisode[]>({
+      path: 'user/anime/next-episodes',
       method: 'get'
     });
   }
@@ -173,9 +184,9 @@ class UserApi extends ApiConnector {
   /**
    * Удалить аниме из списка пользователя
    */
-  removeUserAnime(animeId: string): Promise<void> {
+  removeUserActiveAnime(animeId: string): Promise<void> {
     return this.call<never, void>({
-      path: `user/anime/${animeId}`,
+      path: `user/anime/${animeId}/stop-watching`,
       method: 'delete'
     });
   }
@@ -199,26 +210,6 @@ class UserApi extends ApiConnector {
   getUserEpisodeList(): Promise<UserEpisode[]> {
     return this.call<never, UserEpisode[]>({
       path: 'user/episodes',
-      method: 'get'
-    });
-  }
-
-  /**
-   * Получить просмотренные эпизоды
-   */
-  getWatchedEpisodes(): Promise<UserEpisode[]> {
-    return this.call<never, UserEpisode[]>({
-      path: 'user/episodes/watched',
-      method: 'get'
-    });
-  }
-
-  /**
-   * Получить эпизоды в процессе просмотра
-   */
-  getWatchingEpisodes(): Promise<UserEpisode[]> {
-    return this.call<never, UserEpisode[]>({
-      path: 'user/episodes/watching',
       method: 'get'
     });
   }

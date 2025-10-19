@@ -1,17 +1,25 @@
 import { PlaylistPlay as WatchListIcon } from '@mui/icons-material';
 import { Box, Container, Typography } from '@mui/material';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import type { INextUserEpisode } from '@/api/types/user.types';
+import { userApi } from '@/api/user.api';
 import { AnimeCard } from '@/shared/entities/anime-card';
 import type { Anime } from '@/shared/entities/anime-card/anime-card.types';
+import { getClientToken } from '@/shared/services/user-hash';
+import { Grid, MainLoader } from '@/shared/ui';
+
+import { NextEpisodeCard } from './ui';
 
 const WatchList: React.FC = () => {
   const { t } = useTranslation();
-  const [animeList, setAnimeList] = useState<Anime[]>([]);
 
-  // Фильтруем аниме для списка просмотра (показываем все, так как нет отдельного поля isWatching)
-  const watchListAnime = useMemo(() => animeList, [animeList]);
+  const [animeList, setAnimeList] = useState<Anime[]>([]);
+  const [isAnimeListLoading, setIsAnimeListLoading] = useState(false);
+
+  const [nextEpisodes, setNextEpisodes] = useState<INextUserEpisode[]>([]);
+  const [isNextEpisodesLoading, setIsNextEpisodesLoading] = useState(false);
 
   const handleToggleFavorite = (animeId: string) => {
     setAnimeList((prevList) =>
@@ -33,10 +41,69 @@ const WatchList: React.FC = () => {
     );
   };
 
-  const handleAnimeClick = () => {
-    // TODO: Navigate to anime details page
-    // console.log('Clicked anime:', animeId);
+  const handlePlayEpisode = () => {
+    // TODO: Реализовать навигацию к эпизоду
   };
+
+  useEffect(() => {
+    const accessToken = getClientToken();
+    if (!accessToken) return;
+
+    (async () => {
+      setIsAnimeListLoading(true);
+      try {
+        const response = await userApi.getUserActiveAnimeList();
+        const nextEpisodesResponse = await userApi.getUserNextEpisodes();
+        setNextEpisodes(nextEpisodesResponse);
+        setAnimeList(
+          response.map((item) => {
+            const firstRelease = item.anime.animeReleases?.[0];
+            const isOnGoing = item.anime.animeReleases?.some(
+              (release) => release.is_ongoing
+            );
+            const genres = item.anime.animeReleases
+              .flatMap(
+                (release) =>
+                  release.animeGenres?.map((genre) => genre.genre.name) || ''
+              )
+              .filter(Boolean);
+            return {
+              id: item.id,
+              alias: item.anime.alias,
+              title: item.anime.name,
+              originalTitle: item.anime.name_english,
+              description: firstRelease?.description || '',
+              imageUrl: item.anime.image || firstRelease?.poster_url || '',
+              isFavorite: item.is_favorite,
+              isWantToWatch: item.want_to_watch,
+              genres: genres,
+              year: item.anime.last_year,
+              seasons: item.anime.total_releases,
+              episodes: item.anime.total_episodes,
+              onGoing: isOnGoing
+            };
+          })
+        );
+      } finally {
+        setIsAnimeListLoading(false);
+      }
+    })();
+  }, []);
+
+  useEffect(() => {
+    const accessToken = getClientToken();
+    if (!accessToken) return;
+
+    (async () => {
+      setIsNextEpisodesLoading(true);
+      try {
+        const nextEpisodesResponse = await userApi.getUserNextEpisodes();
+        setNextEpisodes(nextEpisodesResponse);
+      } finally {
+        setIsNextEpisodesLoading(false);
+      }
+    })();
+  }, []);
 
   return (
     <Container>
@@ -55,61 +122,78 @@ const WatchList: React.FC = () => {
           </Typography>
         </Box>
 
+        {isNextEpisodesLoading ? (
+          <MainLoader fullWidth />
+        ) : nextEpisodes.length > 0 ? (
+          <>
+            <Typography
+              variant="h4"
+              component="h2"
+              gutterBottom
+              sx={{ mb: 3, mt: 4 }}
+            >
+              {t('watchlist_next_episodes_title')}
+            </Typography>
+            <Grid maxColCount={3} minColSize={300} gap={16}>
+              {nextEpisodes.map((episode) => (
+                <NextEpisodeCard
+                  key={`${episode.anime_id}-${episode.next_episode.id}`}
+                  episode={episode}
+                  onPlay={handlePlayEpisode}
+                />
+              ))}
+            </Grid>
+          </>
+        ) : null}
+
         <Typography variant="body1" color="text.secondary" paragraph>
           {t('watchlist_description')}
         </Typography>
 
         {/* Сетка карточек аниме */}
-        {watchListAnime.length > 0 ? (
-          <Box
-            sx={{
-              display: 'grid',
-              gridTemplateColumns: {
-                xs: '1fr',
-                sm: 'repeat(2, 1fr)',
-                md: 'repeat(3, 1fr)'
-              },
-              gap: 3
-            }}
-          >
-            {watchListAnime.map((anime) => (
-              <AnimeCard
-                key={anime.id}
-                anime={anime}
-                onToggleFavorite={handleToggleFavorite}
-                onToggleWantToWatch={handleToggleWantToWatch}
-                onClick={handleAnimeClick}
-                variant="compact"
-              />
-            ))}
-          </Box>
-        ) : (
-          /* Пустое состояние */
-          <Box
-            sx={{
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              justifyContent: 'center',
-              py: 8,
-              textAlign: 'center'
-            }}
-          >
-            <WatchListIcon
+        <div>
+          {isAnimeListLoading ? (
+            <MainLoader fullWidth />
+          ) : animeList.length > 0 ? (
+            <Grid maxColCount={3} minColSize={260} gap={16}>
+              {animeList.map((anime) => (
+                <AnimeCard
+                  key={anime.id}
+                  anime={anime}
+                  onToggleFavorite={handleToggleFavorite}
+                  onToggleWantToWatch={handleToggleWantToWatch}
+                  variant="compact"
+                />
+              ))}
+            </Grid>
+          ) : (
+            /* Пустое состояние */
+            <Box
               sx={{
-                fontSize: 64,
-                color: 'var(--color-text-disabled)',
-                mb: 2
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                py: 8,
+                textAlign: 'center'
               }}
-            />
-            <Typography variant="h5" component="h2" gutterBottom>
-              {t('watchlist_empty_title')}
-            </Typography>
-            <Typography variant="body1" color="text.secondary">
-              {t('watchlist_empty_description')}
-            </Typography>
-          </Box>
-        )}
+            >
+              <WatchListIcon
+                sx={{
+                  fontSize: 64,
+                  color: 'var(--color-text-disabled)',
+                  mb: 2
+                }}
+              />
+              <Typography variant="h5" component="h2" gutterBottom>
+                {t('watchlist_empty_title')}
+              </Typography>
+              <Typography variant="body1" color="text.secondary">
+                {t('watchlist_empty_description')}
+              </Typography>
+            </Box>
+          )}
+        </div>
       </Box>
     </Container>
   );

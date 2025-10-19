@@ -3,8 +3,7 @@ import {
   History,
   Home,
   PlaylistAdd,
-  PlaylistPlay,
-  Settings
+  PlaylistPlay
 } from '@mui/icons-material';
 import { Box, Tab, Tabs, useMediaQuery, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
@@ -106,12 +105,13 @@ const Navigation: React.FC<NavigationProps> = ({
       label: t('layout.nav_history'),
       icon: <History />,
       value: 4
-    },
-    {
-      label: t('layout.nav_profile'),
-      icon: <Settings />,
-      value: 5
     }
+    // TODO Профиль не реализован
+    // {
+    //   label: t('layout.nav_profile'),
+    //   icon: <Settings />,
+    //   value: 5
+    // }
   ];
 
   // На мобильных устройствах показываем только иконки

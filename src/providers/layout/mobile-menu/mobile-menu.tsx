@@ -4,8 +4,7 @@ import {
   History,
   Home,
   PlaylistAdd,
-  PlaylistPlay,
-  Settings
+  PlaylistPlay
 } from '@mui/icons-material';
 import {
   Box,
@@ -26,7 +25,6 @@ import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { isNavigationItemActive } from '@/shared/services/helpers/navigate-helper';
 import { ThemeToggle } from '@/shared/ui';
 
-import LanguageSwitcher from '../language-switcher';
 import {
   closeButtonStyles,
   controlsStyles,
@@ -80,12 +78,13 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
       label: t('layout.nav_history'),
       path: ROUTES.history,
       icon: <History />
-    },
-    {
-      label: t('layout.nav_profile'),
-      path: ROUTES.profile,
-      icon: <Settings />
     }
+    // TODO Профиль не реализован
+    // {
+    //   label: t('layout.nav_profile'),
+    //   path: ROUTES.profile,
+    //   icon: <Settings />
+    // }
   ];
 
   // Определяем активный пункт меню на основе текущего пути
@@ -148,7 +147,9 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
       {/* Управление */}
       <Box sx={controlsStyles}>
         <ThemeToggle size="small" showTooltip={false} />
-        <LanguageSwitcher size="small" showTooltip={false} />
+
+        {/* TODO английский не поддерживается на сервере */}
+        {/* <LanguageSwitcher size="small" showTooltip={false} /> */}
       </Box>
     </Box>
   );

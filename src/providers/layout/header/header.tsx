@@ -15,7 +15,6 @@ import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { ThemeToggle } from '@/shared/ui';
 
-import LanguageSwitcher from '../language-switcher';
 import {
   appBarStyles,
   controlsContainerStyles,
@@ -80,7 +79,9 @@ const Header: React.FC = () => {
         {!isMobile && (
           <Box sx={controlsContainerStyles}>
             <ThemeToggle size="medium" />
-            <LanguageSwitcher size="medium" />
+
+            {/* TODO английский не поддерживается на сервере */}
+            {/* <LanguageSwitcher size="medium" /> */}
           </Box>
         )}
       </Toolbar>

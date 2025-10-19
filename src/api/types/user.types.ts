@@ -2,6 +2,7 @@
 import type { AnimeRelease } from './anime-release.types';
 import type { IAnime } from './anime.types';
 import type { IPaginatedResponse } from './api.types';
+import type { Episode } from './episode.types';
 
 export interface User {
   id: string;
@@ -86,6 +87,12 @@ export interface UserAnime {
 export type UserAnimeListResponse = IPaginatedResponse<UserAnime>;
 
 // === ПОЛЬЗОВАТЕЛЬСКИЕ ЭПИЗОДЫ ===
+
+export interface INextUserEpisode {
+  anime_id: string;
+  anime: Omit<IAnime, 'userAnime' | 'animeReleases'>;
+  next_episode: Episode;
+}
 
 export interface CreateUserEpisodeDto {
   episode_id: string;

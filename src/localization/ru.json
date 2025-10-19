@@ -76,7 +76,7 @@
   "watchlist_title": "Смотрю",
   "watchlist_description": "Аниме, которые вы сейчас смотрите",
   "watchlist_empty_title": "Список просмотра пуст",
-  "watchlist_empty_description": "Добавьте аниме в список просмотра, чтобы отслеживать прогресс",
+  "watchlist_empty_description": "Начните смотреть аниме, чтобы они появились здесь",
   "wantlist_title": "Хочу посмотреть",
   "wantlist_description": "Аниме, которые вы планируете посмотреть",
   "wantlist_empty_title": "Список желаний пуст",
@@ -271,5 +271,11 @@
   "anime_user_status_dropped": "Брошено",
   "anime_user_status_plan_to_watch": "Планирую смотреть",
   "anime_user_status_not_added": "Не добавлено",
-  "anime_all_episodes": "Все серии"
+  "anime_all_episodes": "Все серии",
+  "watchlist_next_episodes_title": "Следующие серии",
+  "anime_new_episode": "Новая серия",
+  "anime_episode": "Серия",
+  "anime_ready_to_watch": "Готово к просмотру",
+  "anime_watch_now": "Смотреть сейчас",
+  "anime_add_to_favorites": "В избранное"
 }

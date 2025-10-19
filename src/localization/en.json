@@ -76,7 +76,7 @@
   "watchlist_title": "Watchlist",
   "watchlist_description": "Anime you are currently watching",
   "watchlist_empty_title": "Watchlist is empty",
-  "watchlist_empty_description": "Add anime to your watchlist to track your progress",
+  "watchlist_empty_description": "Start watching anime to see them here",
   "wantlist_title": "Want to Watch",
   "wantlist_description": "Anime you plan to watch",
   "wantlist_empty_title": "Want list is empty",
@@ -271,5 +271,11 @@
   "anime_user_status_dropped": "Dropped",
   "anime_user_status_plan_to_watch": "Plan to Watch",
   "anime_user_status_not_added": "Not Added",
-  "anime_all_episodes": "All Episodes"
+  "anime_all_episodes": "All Episodes",
+  "watchlist_next_episodes_title": "Next Episodes",
+  "anime_new_episode": "New Episode",
+  "anime_episode": "Episode",
+  "anime_ready_to_watch": "Ready to Watch",
+  "anime_watch_now": "Watch Now",
+  "anime_add_to_favorites": "Add to Favorites"
 }
