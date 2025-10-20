@@ -1,9 +1,13 @@
+import { Close as CloseIcon, PlayArrow as PlayIcon } from '@mui/icons-material';
 import {
-  PlayArrow as PlayIcon,
-  Schedule as ScheduleIcon
-} from '@mui/icons-material';
-import { Box, Card, Typography } from '@mui/material';
-import React from 'react';
+  Box,
+  Button,
+  Card,
+  IconButton,
+  Popover,
+  Typography
+} from '@mui/material';
+import React, { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
 import { ROUTES } from '@/shared/constants';
@@ -12,19 +16,36 @@ import { ImageWithFallback, LocalizedLink } from '@/shared/ui';
 import { nextEpisodeCardStyles } from './NextEpisodeCard.styles';
 import type { NextEpisodeCardProps } from './NextEpisodeCard.types';
 
-const NextEpisodeCard: React.FC<NextEpisodeCardProps> = ({ episode }) => {
+const NextEpisodeCard: React.FC<NextEpisodeCardProps> = ({
+  episode,
+  onDelete
+}) => {
   const { t } = useTranslation();
 
-  const formatDuration = (seconds: number): string => {
-    const minutes = Math.floor(seconds / 60);
-    const hours = Math.floor(minutes / 60);
-    const remainingMinutes = minutes % 60;
+  const [anchorEl, setAnchorEl] = useState<HTMLButtonElement | null>(null);
 
-    if (hours > 0) {
-      return `${hours}ч ${remainingMinutes}м`;
-    }
-    return `${minutes}м`;
+  const handleDeleteClick = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAnchorEl(e.currentTarget);
   };
+
+  const handleConfirmDelete = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onDelete?.(episode);
+    setAnchorEl(null);
+  };
+
+  const handleClose = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setAnchorEl(null);
+  };
+
+  const popoverTop = anchorEl?.getBoundingClientRect().top || 0;
+  const popoverLeft = anchorEl?.getBoundingClientRect().left || 0;
+  const open = Boolean(anchorEl);
 
   return (
     <LocalizedLink
@@ -45,21 +66,21 @@ const NextEpisodeCard: React.FC<NextEpisodeCardProps> = ({ episode }) => {
         {/* Контейнер изображения */}
         <Box sx={nextEpisodeCardStyles.imageContainer}>
           <ImageWithFallback
-            src={episode.anime.image || ''}
+            src={
+              episode.next_episode.preview_image || episode.anime.image || ''
+            }
             alt={episode.anime.name}
             sx={nextEpisodeCardStyles.animeImage}
           />
 
           {/* Оверлей с кнопкой воспроизведения */}
-          <Box sx={nextEpisodeCardStyles.episodeOverlay}>
-            <Box sx={nextEpisodeCardStyles.playButton}>
-              <PlayIcon sx={{ fontSize: 32, color: 'white' }} />
+          <Box
+            className="episode-overlay"
+            sx={nextEpisodeCardStyles.episodeOverlay}
+          >
+            <Box className="play-button" sx={nextEpisodeCardStyles.playButton}>
+              <PlayIcon sx={{ fontSize: 20, color: 'white' }} />
             </Box>
-          </Box>
-
-          {/* Бейдж номера эпизода */}
-          <Box sx={nextEpisodeCardStyles.episodeBadge}>
-            {t('anime_episode_series')} {episode.next_episode.number}
           </Box>
         </Box>
 
@@ -70,25 +91,71 @@ const NextEpisodeCard: React.FC<NextEpisodeCardProps> = ({ episode }) => {
             {episode.anime.name}
           </Typography>
 
-          {/* Информация об эпизоде */}
-          <Box sx={nextEpisodeCardStyles.episodeInfo}>
-            <Box sx={nextEpisodeCardStyles.episodeNumber}>
-              {t('anime_episode')} {episode.next_episode.number}
-            </Box>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-              <ScheduleIcon
-                sx={{ fontSize: 16, color: 'var(--color-text-secondary)' }}
-              />
-              <Typography sx={nextEpisodeCardStyles.episodeDuration}>
-                {formatDuration(episode.next_episode.duration)}
-              </Typography>
-            </Box>
+          {/* Номер серии */}
+          <Box sx={nextEpisodeCardStyles.episodeNumber}>
+            {t('anime_episode')} {episode.next_episode.number}
           </Box>
-
-          <Typography sx={nextEpisodeCardStyles.progressText}>
-            {t('anime_ready_to_watch')}
-          </Typography>
         </Box>
+
+        {/* Кнопка удаления */}
+        {onDelete && (
+          <div
+            style={{
+              position: 'absolute',
+              top: '8px',
+              right: '8px'
+            }}
+          >
+            <IconButton
+              aria-describedby={'delete-episode-popover'}
+              sx={nextEpisodeCardStyles.deleteButton}
+              onClick={handleDeleteClick}
+              aria-label={t('delete_episode')}
+              size="small"
+            >
+              <CloseIcon sx={{ fontSize: 18 }} />
+            </IconButton>
+            <Popover
+              anchorReference="anchorPosition"
+              anchorPosition={{ top: popoverTop, left: popoverLeft }}
+              anchorOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              transformOrigin={{
+                vertical: 'top',
+                horizontal: 'right'
+              }}
+              id={'delete-episode-popover'}
+              open={open}
+              onClose={handleClose}
+              sx={nextEpisodeCardStyles.popover}
+            >
+              <Box sx={nextEpisodeCardStyles.popoverContent}>
+                <Typography sx={nextEpisodeCardStyles.popoverTitle}>
+                  {t('delete_episode_confirmation')}
+                </Typography>
+                <Typography sx={nextEpisodeCardStyles.popoverDescription}>
+                  {t('delete_episode_description')}
+                </Typography>
+                <Box sx={nextEpisodeCardStyles.popoverActions}>
+                  <Button
+                    onClick={handleClose}
+                    sx={nextEpisodeCardStyles.popoverCancelButton}
+                  >
+                    {t('cancel')}
+                  </Button>
+                  <Button
+                    onClick={handleConfirmDelete}
+                    sx={nextEpisodeCardStyles.popoverDeleteButton}
+                  >
+                    {t('delete')}
+                  </Button>
+                </Box>
+              </Box>
+            </Popover>
+          </div>
+        )}
       </Card>
     </LocalizedLink>
   );

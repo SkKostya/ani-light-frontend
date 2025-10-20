@@ -275,7 +275,15 @@
   "watchlist_next_episodes_title": "Следующие серии",
   "anime_new_episode": "Новая серия",
   "anime_episode": "Серия",
+  "delete_episode": "Удалить эпизод",
   "anime_ready_to_watch": "Готово к просмотру",
   "anime_watch_now": "Смотреть сейчас",
-  "anime_add_to_favorites": "В избранное"
+  "anime_add_to_favorites": "В избранное",
+  "watchlist_episode_removed": "Эпизод удален из списка",
+  "success_title": "Успех",
+  "error_title": "Ошибка",
+  "delete_episode_confirmation": "Удалить эпизод из списка просмотра?",
+  "delete_episode_description": "Это действие нельзя будет отменить",
+  "cancel": "Отмена",
+  "delete": "Удалить"
 }

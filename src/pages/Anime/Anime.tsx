@@ -180,7 +180,10 @@ const Anime = () => {
 
         {/* Кнопки управления */}
         <Box sx={animePageStyles.controlsContainer}>
-          <AnimeControls totalEpisodes={episode.animeRelease.episodes_total} />
+          <AnimeControls
+            totalEpisodes={episode.animeRelease.episodes_total}
+            currentEpisodeId={episode.id}
+          />
         </Box>
 
         {/* Последние просмотренные серии */}

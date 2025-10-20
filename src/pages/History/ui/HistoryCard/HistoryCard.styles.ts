@@ -12,7 +12,7 @@ export const historyCardStyles = {
     cursor: 'pointer',
     transition: 'all 0.3s ease-in-out',
     overflow: 'hidden',
-    minHeight: { xs: '100px', sm: '120px' },
+    minHeight: '100px',
     '&:hover': {
       transform: 'translateY(-2px)',
       boxShadow: 'var(--shadow-medium)',
@@ -56,9 +56,9 @@ export const historyCardStyles = {
 
   contentContainer: {
     display: 'flex',
+    alignItems: 'center',
     flex: 1,
-    p: { xs: 1.5, sm: 2 },
-    pt: { xs: 2.5, sm: 3 }
+    p: 1.5
   } as SxProps<Theme>,
 
   imageContainer: {
@@ -117,11 +117,9 @@ export const historyCardStyles = {
     fontSize: { xs: '0.9rem', sm: '1rem' },
     fontWeight: 600,
     lineHeight: 1.2,
+    paddingRight: '28px',
     mb: 0.5,
-    color: 'var(--color-text-primary)',
-    overflow: 'hidden',
-    textOverflow: 'ellipsis',
-    whiteSpace: 'nowrap'
+    color: 'var(--color-text-primary)'
   } as SxProps<Theme>,
 
   episodeInfo: {

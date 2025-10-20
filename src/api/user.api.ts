@@ -21,7 +21,8 @@ import type {
   UserEpisode,
   UserHistoryListResponse,
   UserNotifications,
-  UserResponse
+  UserResponse,
+  UserWatchingAnime
 } from './types/user.types';
 
 class UserApi extends ApiConnector {
@@ -96,8 +97,8 @@ class UserApi extends ApiConnector {
   /**
    * Получить список аниме в процессе просмотра
    */
-  getUserActiveAnimeList(): Promise<UserAnime[]> {
-    return this.call<never, UserAnime[]>({
+  getUserActiveAnimeList(): Promise<UserWatchingAnime[]> {
+    return this.call<never, UserWatchingAnime[]>({
       path: 'user/anime/currently-watching',
       method: 'get'
     });

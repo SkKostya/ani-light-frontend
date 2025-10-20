@@ -3,7 +3,7 @@ import Hls from 'hls.js';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
-import useUserVideo from './useUserVideo';
+import useUserVideo from '../../../hooks/useUserVideo';
 
 interface UseInitPlayerProps {
   episodeId: string;
@@ -92,7 +92,7 @@ const useInitPlayer = ({
     const config = {
       container: playerRef.current!,
       url: videoUrl!,
-      poster: poster,
+      poster: poster || '',
       title: title,
       volume: 1,
       muted: false,

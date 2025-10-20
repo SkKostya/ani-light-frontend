@@ -35,7 +35,7 @@ export const seasonSectionStyles = {
   title: {
     color: 'var(--color-text-primary)',
     fontWeight: 600,
-    fontSize: { xs: '1.125rem', sm: '1.25rem' }
+    fontSize: { xs: '1.1rem', sm: '1.2rem' }
   } as SxProps<Theme>,
 
   episodesGrid: {

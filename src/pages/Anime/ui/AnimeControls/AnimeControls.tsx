@@ -6,13 +6,15 @@ import { useParams } from 'react-router';
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 
+import useUserVideo from '../../hooks/useUserVideo';
 import { animeControlsStyles } from './AnimeControls.styles';
 
 interface IProps {
   totalEpisodes: number;
+  currentEpisodeId: string;
 }
 
-const AnimeControls = ({ totalEpisodes }: IProps) => {
+const AnimeControls = ({ totalEpisodes, currentEpisodeId }: IProps) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
   const { alias, seasonNumber, episodeNumber } = useParams<{
@@ -20,6 +22,8 @@ const AnimeControls = ({ totalEpisodes }: IProps) => {
     seasonNumber: string;
     episodeNumber: string;
   }>();
+
+  const { handleMarkEpisodeWatched } = useUserVideo();
 
   const handlePrevious = () => {
     if (Number(episodeNumber) === 1) return;
@@ -36,6 +40,7 @@ const AnimeControls = ({ totalEpisodes }: IProps) => {
 
   const handleNext = () => {
     if (Number(episodeNumber) === totalEpisodes) return;
+    handleMarkEpisodeWatched(currentEpisodeId);
     if (seasonNumber)
       navigate(
         ROUTES.animeWithSeason(

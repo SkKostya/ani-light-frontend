@@ -275,7 +275,15 @@
   "watchlist_next_episodes_title": "Next Episodes",
   "anime_new_episode": "New Episode",
   "anime_episode": "Episode",
+  "delete_episode": "Delete episode",
   "anime_ready_to_watch": "Ready to Watch",
   "anime_watch_now": "Watch Now",
-  "anime_add_to_favorites": "Add to Favorites"
+  "anime_add_to_favorites": "Add to Favorites",
+  "watchlist_episode_removed": "Episode removed from the list",
+  "success_title": "Success",
+  "error_title": "Error",
+  "delete_episode_confirmation": "Delete episode from watchlist?",
+  "delete_episode_description": "This action cannot be undone",
+  "cancel": "Cancel",
+  "delete": "Delete"
 }

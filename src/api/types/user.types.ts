@@ -86,6 +86,12 @@ export interface UserAnime {
 
 export type UserAnimeListResponse = IPaginatedResponse<UserAnime>;
 
+export interface UserWatchingAnime extends UserAnime {
+  lastWatchedEpisode: Episode & {
+    animeRelease: AnimeRelease;
+  };
+}
+
 // === ПОЛЬЗОВАТЕЛЬСКИЕ ЭПИЗОДЫ ===
 
 export interface INextUserEpisode {
@@ -132,13 +138,16 @@ export interface UserEpisode {
     title: string;
     duration: number;
     video_url: string;
+    preview_image: string;
     animeRelease: {
       id: string;
-      alias: string;
       sort_order: number;
       title_ru: string;
       title_en: string;
       poster_url: string;
+      anime: {
+        alias: string;
+      };
     };
   };
 }

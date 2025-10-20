@@ -5,8 +5,9 @@
 export interface HistoryEntry {
   id: string;
   animeId: string;
-  animeTitle: string;
-  animeImageUrl: string;
+  title: string;
+  alias: string;
+  imageUrl: string;
   season: number;
   episode: number;
   episodeTitle: string;

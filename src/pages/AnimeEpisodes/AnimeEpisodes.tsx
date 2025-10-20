@@ -26,12 +26,16 @@ const AnimeEpisodes = () => {
 
       const firstRelease = animeInfo.animeReleases[0];
       const userAnime = animeInfo.userAnime?.[0];
-      const genres = animeInfo.animeReleases
-        .flatMap(
-          (release) =>
-            release.animeGenres?.map((genre) => genre.genre.name) || ''
+      const genres = [
+        ...new Set(
+          animeInfo.animeReleases
+            .flatMap(
+              (release) =>
+                release.animeGenres?.map((genre) => genre.genre.name) || ''
+            )
+            .filter(Boolean)
         )
-        .filter(Boolean);
+      ];
       const isOnGoing = animeInfo.animeReleases.some(
         (release) => release.is_ongoing
       );

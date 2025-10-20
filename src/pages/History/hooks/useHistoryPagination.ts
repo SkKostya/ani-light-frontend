@@ -27,10 +27,13 @@ const transformUserEpisodeToHistoryEntry = (
   return {
     id: userEpisode.id,
     animeId: userEpisode.episode.anime_id,
-    animeTitle:
+    title:
       userEpisode.episode.animeRelease.title_ru ||
       userEpisode.episode.animeRelease.title_en,
-    animeImageUrl: userEpisode.episode.animeRelease.poster_url,
+    alias: userEpisode.episode.animeRelease.anime.alias,
+    imageUrl:
+      userEpisode.episode.preview_image ||
+      userEpisode.episode.animeRelease.poster_url,
     season: userEpisode.episode.animeRelease.sort_order,
     episode: userEpisode.episode.number,
     episodeTitle: userEpisode.episode.title,

@@ -60,9 +60,7 @@ const SeasonSection = ({ season }: SeasonSectionProps) => {
         sx={seasonSectionStyles.accordionSummary}
       >
         <Typography variant="h6" sx={seasonSectionStyles.title}>
-          {season.seasonNumber > 0
-            ? t('anime_season_number', { number: season.seasonNumber })
-            : t('anime_all_episodes')}
+          {season.title}
         </Typography>
       </AccordionSummary>
 

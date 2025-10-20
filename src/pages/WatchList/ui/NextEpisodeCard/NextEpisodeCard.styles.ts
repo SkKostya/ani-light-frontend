@@ -1,5 +1,3 @@
-import type { SxProps, Theme } from '@mui/material';
-
 export const nextEpisodeCardStyles = {
   card: {
     position: 'relative',
@@ -10,8 +8,9 @@ export const nextEpisodeCardStyles = {
     border: '2px solid transparent',
     transition: 'all 0.3s ease-in-out',
     cursor: 'pointer',
+    display: 'flex',
     '&:hover': {
-      transform: 'translateY(-4px)',
+      transform: 'translateY(-2px)',
       boxShadow: 'var(--shadow-large)',
       border: '2px solid var(--color-primary)',
       '& .play-button': {
@@ -25,13 +24,16 @@ export const nextEpisodeCardStyles = {
         transform: 'scale(1.05)'
       }
     }
-  } as SxProps<Theme>,
+  },
 
   imageContainer: {
     position: 'relative',
-    width: '100%',
-    height: { xs: 200, sm: 240, md: 280 },
+    width: { xs: 120, sm: 130 },
+    maxHeight: '100%',
     overflow: 'hidden',
+    '& > div': {
+      height: '100%'
+    },
     '&::before': {
       content: '""',
       position: 'absolute',
@@ -43,7 +45,7 @@ export const nextEpisodeCardStyles = {
         'linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.7) 100%)',
       zIndex: 1
     }
-  } as SxProps<Theme>,
+  },
 
   animeImage: {
     width: '100%',
@@ -51,7 +53,7 @@ export const nextEpisodeCardStyles = {
     objectFit: 'cover',
     transition: 'transform 0.3s ease-in-out',
     className: 'anime-image'
-  } as SxProps<Theme>,
+  },
 
   episodeOverlay: {
     position: 'absolute',
@@ -67,11 +69,11 @@ export const nextEpisodeCardStyles = {
     transition: 'opacity 0.3s ease-in-out',
     zIndex: 2,
     className: 'episode-overlay'
-  } as SxProps<Theme>,
+  },
 
   playButton: {
-    width: 64,
-    height: 64,
+    width: 40,
+    height: 40,
     borderRadius: '50%',
     background: 'var(--gradient-magic)',
     display: 'flex',
@@ -84,32 +86,23 @@ export const nextEpisodeCardStyles = {
     className: 'play-button',
     '&:hover': {
       transform: 'scale(1.2)',
-      boxShadow: '0 0 24px rgba(233, 30, 99, 0.6)'
+      boxShadow: '0 0 16px rgba(233, 30, 99, 0.6)'
     }
-  } as SxProps<Theme>,
-
-  episodeBadge: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    background: 'var(--gradient-sunset)',
-    color: 'white',
-    padding: '6px 12px',
-    borderRadius: 'var(--border-radius-medium)',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    textShadow: '0 1px 2px rgba(0, 0, 0, 0.3)',
-    boxShadow: 'var(--shadow-small)',
-    zIndex: 3
-  } as SxProps<Theme>,
+  },
 
   content: {
-    padding: { xs: 2, sm: 2.5 },
-    position: 'relative'
-  } as SxProps<Theme>,
+    paddingBlock: { xs: 1, sm: 1.5 },
+    paddingLeft: { xs: 2, sm: 2.5 },
+    paddingRight: '50px',
+    position: 'relative',
+    display: 'flex',
+    flexDirection: 'column',
+    justifyContent: 'center',
+    flex: 1
+  },
 
   animeTitle: {
-    fontSize: { xs: '1.1rem', sm: '1.25rem' },
+    fontSize: { xs: '1rem', sm: '1.1rem' },
     fontWeight: 600,
     color: 'var(--color-text-primary)',
     lineHeight: 1.3,
@@ -119,14 +112,7 @@ export const nextEpisodeCardStyles = {
     WebkitBoxOrient: 'vertical',
     overflow: 'hidden',
     textOverflow: 'ellipsis'
-  } as SxProps<Theme>,
-
-  episodeInfo: {
-    display: 'flex',
-    alignItems: 'center',
-    gap: 1,
-    mb: 1.5
-  } as SxProps<Theme>,
+  },
 
   episodeNumber: {
     background: 'var(--gradient-ocean)',
@@ -137,95 +123,103 @@ export const nextEpisodeCardStyles = {
     fontWeight: 700,
     textTransform: 'uppercase',
     letterSpacing: '0.5px',
-    boxShadow: 'var(--shadow-small)'
-  } as SxProps<Theme>,
-
-  episodeDuration: {
-    color: 'var(--color-text-secondary)',
-    fontSize: '0.875rem',
-    fontWeight: 500
-  } as SxProps<Theme>,
-
-  progressBar: {
-    width: '100%',
-    height: 4,
-    backgroundColor: 'var(--color-border)',
-    borderRadius: 'var(--border-radius-small)',
-    overflow: 'hidden',
-    mb: 1.5
-  } as SxProps<Theme>,
-
-  progressFill: {
-    height: '100%',
-    background: 'var(--gradient-magic)',
-    borderRadius: 'var(--border-radius-small)',
-    transition: 'width 0.3s ease-in-out',
-    boxShadow: '0 0 8px rgba(233, 30, 99, 0.3)'
-  } as SxProps<Theme>,
-
-  progressText: {
-    color: 'var(--color-text-secondary)',
-    fontSize: '0.75rem',
-    fontWeight: 500,
-    textAlign: 'center'
-  } as SxProps<Theme>,
-
-  actionButtons: {
-    display: 'flex',
-    gap: 1,
-    mt: 1.5
-  } as SxProps<Theme>,
-
-  actionButton: {
-    flex: 1,
-    py: 1,
-    px: 2,
-    borderRadius: 'var(--border-radius-medium)',
-    fontSize: '0.875rem',
-    fontWeight: 600,
-    textTransform: 'none',
-    transition: 'all 0.3s ease-in-out',
-    '&:hover': {
-      transform: 'translateY(-1px)',
-      boxShadow: 'var(--shadow-medium)'
-    }
-  } as SxProps<Theme>,
-
-  primaryButton: {
-    background: 'var(--gradient-magic)',
-    color: 'white',
     boxShadow: 'var(--shadow-small)',
-    '&:hover': {
-      background: 'var(--gradient-sunset)',
-      boxShadow: 'var(--shadow-glow)'
-    }
-  } as SxProps<Theme>,
+    alignSelf: 'flex-start'
+  },
 
-  secondaryButton: {
-    background: 'var(--color-background-paper)',
+  deleteButton: {
+    width: 36,
+    height: 36,
+    minWidth: 36,
+    borderRadius: '50%',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    color: 'white',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    transition: 'all 0.3s ease-in-out',
+    zIndex: 4,
+    '&:hover': {
+      backgroundColor: 'var(--color-error)',
+      transform: 'scale(1.1)',
+      boxShadow: '0 0 12px rgba(244, 67, 54, 0.4)'
+    },
+    '&:active': {
+      transform: 'scale(0.95)'
+    }
+  },
+
+  // Стили для Popover
+  popover: {
+    '& .MuiPopover-paper': {
+      borderRadius: 'var(--border-radius-large)',
+      backgroundColor: 'var(--color-background-elevated)',
+      border: '2px solid var(--color-primary)',
+      boxShadow: 'var(--shadow-glow)',
+      overflow: 'hidden',
+      minWidth: 260,
+      maxWidth: 320
+    }
+  },
+
+  popoverContent: {
+    padding: 2,
+    display: 'flex',
+    flexDirection: 'column',
+    gap: 1
+  },
+
+  popoverTitle: {
+    fontSize: '1.1rem',
+    fontWeight: 600,
+    color: 'var(--color-text-primary)',
+    textAlign: 'center'
+  },
+
+  popoverDescription: {
+    fontSize: '0.9rem',
+    color: 'var(--color-text-secondary)',
+    textAlign: 'center',
+    lineHeight: 1.4
+  },
+
+  popoverActions: {
+    display: 'flex',
+    gap: 2,
+    justifyContent: 'center'
+  },
+
+  popoverCancelButton: {
+    minWidth: 100,
+    padding: '8px 16px',
+    borderRadius: 'var(--border-radius-medium)',
+    backgroundColor: 'var(--color-background-paper)',
     color: 'var(--color-text-primary)',
     border: '2px solid var(--color-border)',
+    fontWeight: 500,
+    transition: 'all 0.3s ease-in-out',
     '&:hover': {
-      background: 'var(--color-primary)',
-      color: 'white',
-      border: '2px solid var(--color-primary)'
+      backgroundColor: 'var(--color-background-hover)',
+      borderColor: 'var(--color-primary)',
+      transform: 'translateY(-1px)',
+      boxShadow: 'var(--shadow-small)'
     }
-  } as SxProps<Theme>,
+  },
 
-  newEpisodeBadge: {
-    position: 'absolute',
-    top: 12,
-    left: 12,
+  popoverDeleteButton: {
+    minWidth: 100,
+    padding: '8px 16px',
+    borderRadius: 'var(--border-radius-medium)',
     background: 'var(--gradient-fire)',
     color: 'white',
-    padding: '4px 8px',
-    borderRadius: 'var(--border-radius-small)',
-    fontSize: '0.75rem',
-    fontWeight: 700,
-    textTransform: 'uppercase',
-    letterSpacing: '0.5px',
-    boxShadow: 'var(--shadow-small)',
-    animation: 'pulse 2s infinite',
-    zIndex: 3
-  } as SxProps<Theme>
+    fontWeight: 600,
+    transition: 'all 0.3s ease-in-out',
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 0 16px rgba(244, 67, 54, 0.4)'
+    },
+    '&:active': {
+      transform: 'translateY(0)'
+    }
+  }
 };

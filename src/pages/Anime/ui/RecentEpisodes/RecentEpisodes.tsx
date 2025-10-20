@@ -1,6 +1,7 @@
 import { Box, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 import type { UserEpisode } from '@/api/types/user.types';
 import { userApi } from '@/api/user.api';
@@ -13,6 +14,7 @@ import { recentEpisodesStyles } from './RecentEpisodes.styles';
 
 const RecentEpisodes = () => {
   const { t } = useTranslation();
+  const { episodeNumber } = useParams<{ episodeNumber: string }>();
 
   const [episodes, setEpisodes] = useState<UserEpisode[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,7 +26,11 @@ const RecentEpisodes = () => {
       setIsLoading(true);
       try {
         const episodes = await userApi.getRecentEpisodes();
-        setEpisodes(episodes);
+        setEpisodes(
+          episodes.filter(
+            (item) => item.episode.number !== Number(episodeNumber)
+          )
+        );
       } finally {
         setIsLoading(false);
       }

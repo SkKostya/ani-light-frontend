@@ -73,54 +73,69 @@ const WatchList: React.FC = () => {
     }
   };
 
+  const handleDeleteEpisode = async (animeId: string) => {
+    const episodeToDelete = nextEpisodes.find(
+      (episode) => episode.anime_id === animeId
+    );
+    const animeToDelete = animeList.find((anime) => anime.id === animeId);
+
+    try {
+      await userApi.removeUserActiveAnime(animeId);
+      toast.success(t('watchlist_episode_removed'), t('success_title'));
+      setNextEpisodes((prevEpisodes) =>
+        prevEpisodes.filter((episode) => episode.anime_id !== animeId)
+      );
+      setAnimeList((prevAnimeList) =>
+        prevAnimeList.filter((anime) => anime.id === animeId)
+      );
+    } catch (err) {
+      const error = err as Error;
+      toast.error(error.message, t('error_title'));
+      if (episodeToDelete)
+        setNextEpisodes((prev) => [...prev, episodeToDelete]);
+      if (animeToDelete) setAnimeList((prev) => [...prev, animeToDelete]);
+    }
+  };
+
   useEffect(() => {
     const accessToken = getClientToken();
     if (!accessToken) return;
 
-    const timeout = setTimeout(async () => {
+    (async () => {
       setIsLoading(true);
       try {
         const nextEpisodesResponse = await userApi.getUserNextEpisodes();
-        setNextEpisodes(nextEpisodesResponse);
+        setNextEpisodes(
+          nextEpisodesResponse.filter((item) => item.next_episode !== null)
+        );
 
         const response = await userApi.getUserActiveAnimeList();
         setAnimeList(
           response.map((item) => {
-            const firstRelease = item.anime.animeReleases?.[0];
-            const isOnGoing = item.anime.animeReleases?.some(
-              (release) => release.is_ongoing
-            );
-            const genres = item.anime.animeReleases
-              .flatMap(
-                (release) =>
-                  release.animeGenres?.map((genre) => genre.genre.name) || ''
-              )
-              .filter(Boolean);
+            const release = item.lastWatchedEpisode.animeRelease;
+            const genres =
+              release?.animeGenres?.map((genre) => genre.genre.name) || [];
             return {
               id: item.id,
               alias: item.anime.alias,
               title: item.anime.name,
               originalTitle: item.anime.name_english,
-              description: firstRelease?.description || '',
-              imageUrl: item.anime.image || firstRelease?.poster_url || '',
+              description: release?.description || '',
+              imageUrl: item.anime.image || release?.poster_url || '',
               isFavorite: item.is_favorite,
               isWantToWatch: item.want_to_watch,
               genres: genres,
               year: item.anime.last_year,
               seasons: item.anime.total_releases,
               episodes: item.anime.total_episodes,
-              onGoing: isOnGoing
+              onGoing: false
             };
           })
         );
       } finally {
         setIsLoading(false);
       }
-    }, 100);
-
-    return () => {
-      clearTimeout(timeout);
-    };
+    })();
   }, []);
 
   return (
@@ -155,9 +170,11 @@ const WatchList: React.FC = () => {
                 <NextEpisodeCard
                   key={`${episode.anime_id}-${episode.next_episode.id}`}
                   episode={episode}
+                  onDelete={() => handleDeleteEpisode(episode.anime_id)}
                 />
               ))}
             </Grid>
+            <div style={{ height: 24 }} />
           </>
         ) : null}
 
