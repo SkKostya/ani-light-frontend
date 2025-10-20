@@ -38,7 +38,8 @@ export class ApiConnector {
         data: body,
         params: clonedParams,
         headers,
-        signal: abortSignal
+        signal: abortSignal,
+        withCredentials: true
       });
       return data;
     } catch (e: unknown) {

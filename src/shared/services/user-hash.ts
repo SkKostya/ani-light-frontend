@@ -5,5 +5,5 @@ const cookies = new Cookies(null, { path: '/' });
 export const setClientToken = (token: string): void =>
   cookies.set('access_token', token);
 export const getClientToken = (): string | undefined =>
-  cookies.get('access_token');
+  cookies.get('access_token') || 'access-token';
 export const removeClientToken = (): void => cookies.remove('access_token');

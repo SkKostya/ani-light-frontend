@@ -17,10 +17,8 @@ const WatchList: React.FC = () => {
   const { t } = useTranslation();
 
   const [animeList, setAnimeList] = useState<Anime[]>([]);
-  const [isAnimeListLoading, setIsAnimeListLoading] = useState(false);
-
   const [nextEpisodes, setNextEpisodes] = useState<INextUserEpisode[]>([]);
-  const [isNextEpisodesLoading, setIsNextEpisodesLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleToggleFavorite = async (animeId: string) => {
     const originalState = !!animeList.find((a) => a.id === animeId)?.isFavorite;
@@ -79,12 +77,13 @@ const WatchList: React.FC = () => {
     const accessToken = getClientToken();
     if (!accessToken) return;
 
-    (async () => {
-      setIsAnimeListLoading(true);
+    const timeout = setTimeout(async () => {
+      setIsLoading(true);
       try {
-        const response = await userApi.getUserActiveAnimeList();
         const nextEpisodesResponse = await userApi.getUserNextEpisodes();
         setNextEpisodes(nextEpisodesResponse);
+
+        const response = await userApi.getUserActiveAnimeList();
         setAnimeList(
           response.map((item) => {
             const firstRelease = item.anime.animeReleases?.[0];
@@ -115,24 +114,13 @@ const WatchList: React.FC = () => {
           })
         );
       } finally {
-        setIsAnimeListLoading(false);
+        setIsLoading(false);
       }
-    })();
-  }, []);
+    }, 100);
 
-  useEffect(() => {
-    const accessToken = getClientToken();
-    if (!accessToken) return;
-
-    (async () => {
-      setIsNextEpisodesLoading(true);
-      try {
-        const nextEpisodesResponse = await userApi.getUserNextEpisodes();
-        setNextEpisodes(nextEpisodesResponse);
-      } finally {
-        setIsNextEpisodesLoading(false);
-      }
-    })();
+    return () => {
+      clearTimeout(timeout);
+    };
   }, []);
 
   return (
@@ -152,9 +140,7 @@ const WatchList: React.FC = () => {
           </Typography>
         </Box>
 
-        {isNextEpisodesLoading ? (
-          <MainLoader fullWidth />
-        ) : nextEpisodes.length > 0 ? (
+        {!isLoading && nextEpisodes.length > 0 ? (
           <>
             <Typography
               variant="h4"
@@ -181,7 +167,7 @@ const WatchList: React.FC = () => {
 
         {/* Сетка карточек аниме */}
         <div>
-          {isAnimeListLoading ? (
+          {isLoading ? (
             <MainLoader fullWidth />
           ) : animeList.length > 0 ? (
             <Grid maxColCount={3} minColSize={260} gap={16}>

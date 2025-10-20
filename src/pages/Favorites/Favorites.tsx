@@ -158,7 +158,6 @@ const Favorites: React.FC = () => {
                 <LoadingIndicator
                   isLoading={pagination.isLoading}
                   hasMore={pagination.hasMore}
-                  currentCount={animeList.length}
                 />
               </Box>
             )}

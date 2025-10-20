@@ -64,6 +64,7 @@ export const useWantListPagination = () => {
 
           return {
             id: item.anime.id,
+            alias: item.anime.alias,
             title: item.anime.name,
             originalTitle: item.anime.name_english,
             description: firstRelease?.description || '',

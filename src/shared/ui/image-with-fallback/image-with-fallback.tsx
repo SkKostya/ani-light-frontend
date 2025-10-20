@@ -71,7 +71,14 @@ const ImageWithFallback = ({
   }
 
   return (
-    <Box sx={{ position: 'relative' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        position: 'relative',
+        maxHeight: '100%'
+      }}
+    >
       {/* Skeleton загрузчик */}
       {isLoading && (
         <Skeleton

@@ -55,6 +55,9 @@ const WantList: React.FC = () => {
         (a) => a.id === animeId
       )?.isWantToWatch;
 
+      // Оптимистичное обновление UI
+      updateAnimeInList(animeId, { isWantToWatch: !originalState });
+
       try {
         await userApi.toggleWantToWatchAnime(animeId);
         // Показываем toast на основе исходного состояния
@@ -158,7 +161,6 @@ const WantList: React.FC = () => {
                 <LoadingIndicator
                   isLoading={pagination.isLoading}
                   hasMore={pagination.hasMore}
-                  currentCount={animeList.length}
                 />
               </Box>
             )}

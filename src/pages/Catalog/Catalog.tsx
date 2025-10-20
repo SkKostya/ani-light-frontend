@@ -107,6 +107,18 @@ const Catalog: React.FC = () => {
     <Container>
       {isInitialLoading && <MainLoader fullScreen={true} />}
 
+      <button
+        onClick={() => {
+          userApi.login({
+            email: 'test@example.com',
+            password: 'Qwerty123456!'
+          });
+        }}
+        style={{ color: 'white' }}
+      >
+        Login
+      </button>
+
       <Box sx={{ py: 4 }}>
         {/* Заголовок */}
         <Box

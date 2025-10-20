@@ -92,7 +92,6 @@ const History: React.FC = () => {
               <LoadingIndicator
                 isLoading={pagination.isLoading}
                 hasMore={pagination.hasMore}
-                currentCount={sortedDates.length}
               />
             </Box>
           )}

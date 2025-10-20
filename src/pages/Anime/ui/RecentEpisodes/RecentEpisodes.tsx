@@ -1,4 +1,4 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -43,37 +43,49 @@ const RecentEpisodes = () => {
       <Box sx={recentEpisodesStyles.container}>
         <Box sx={recentEpisodesStyles.chipContainer}>
           {episodes.map((episode) => (
-            <Box key={episode.id} sx={recentEpisodesStyles.chip}>
-              <LocalizedLink
-                to={ROUTES.anime(
-                  episode.episode.anime_id,
-                  episode.episode.anime_release_id,
-                  String(episode.episode.number)
-                )}
-                style={{
-                  textDecoration: 'none',
-                  color: 'inherit',
-                  width: '100%'
-                }}
-              >
-                <Box sx={recentEpisodesStyles.chipContent}>
-                  <Typography
-                    variant="caption"
-                    sx={recentEpisodesStyles.episodeTitle}
-                  >
-                    {episode.episode.animeRelease.title_ru}
-                  </Typography>
-                  <Typography
-                    variant="caption"
-                    sx={recentEpisodesStyles.episodeNumber}
-                  >
-                    {t('anime_episode_number', {
-                      number: episode.episode.number
-                    })}
-                  </Typography>
-                </Box>
-              </LocalizedLink>
-            </Box>
+            <Tooltip
+              key={episode.id}
+              title={episode.episode.animeRelease.title_ru}
+            >
+              <Box sx={recentEpisodesStyles.chip}>
+                <LocalizedLink
+                  to={
+                    episode.episode.animeRelease.sort_order > 0
+                      ? ROUTES.animeWithSeason(
+                          episode.episode.animeRelease.alias,
+                          String(episode.episode.animeRelease.sort_order),
+                          String(episode.episode.number)
+                        )
+                      : ROUTES.anime(
+                          episode.episode.animeRelease.alias,
+                          String(episode.episode.number)
+                        )
+                  }
+                  style={{
+                    textDecoration: 'none',
+                    color: 'inherit',
+                    width: '100%'
+                  }}
+                >
+                  <Box sx={recentEpisodesStyles.chipContent}>
+                    <Typography
+                      variant="caption"
+                      sx={recentEpisodesStyles.episodeTitle}
+                    >
+                      {episode.episode.animeRelease.title_ru}
+                    </Typography>
+                    <Typography
+                      variant="caption"
+                      sx={recentEpisodesStyles.episodeNumber}
+                    >
+                      {t('anime_episode_number', {
+                        number: episode.episode.number
+                      })}
+                    </Typography>
+                  </Box>
+                </LocalizedLink>
+              </Box>
+            </Tooltip>
           ))}
         </Box>
       </Box>
