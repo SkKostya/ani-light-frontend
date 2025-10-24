@@ -76,15 +76,13 @@ const SeasonSection = ({ season }: SeasonSectionProps) => {
                   number: episode.number,
                   isWatched: episode.userEpisode?.status === 'watched'
                 }}
-                href={
-                  season.seasonNumber > 0
-                    ? ROUTES.animeWithSeason(
-                        alias,
-                        String(season.seasonNumber),
-                        String(episode.number)
-                      )
-                    : ROUTES.anime(alias, String(episode.number))
-                }
+                href={ROUTES.anime(alias, {
+                  episodeNumber: String(episode.number),
+                  seasonNumber:
+                    season.seasonNumber > 0
+                      ? String(season.seasonNumber)
+                      : undefined
+                })}
               />
             ))}
           </Box>

@@ -2,7 +2,7 @@ import { Home, Refresh, VideoLibrary } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 
 import { episodeApi } from '@/api/episode.api';
 import type { EpisodeDetails } from '@/api/types/episode.types';
@@ -17,11 +17,10 @@ const Anime = () => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
 
-  const { alias, seasonNumber, episodeNumber } = useParams<{
-    alias: string;
-    seasonNumber: string;
-    episodeNumber: string;
-  }>();
+  const { alias } = useParams<{ alias: string }>();
+  const [searchParams] = useSearchParams();
+  const seasonNumber = searchParams.get('season');
+  const episodeNumber = searchParams.get('episode');
 
   const [episode, setEpisode] = useState<EpisodeDetails | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -146,11 +145,12 @@ const Anime = () => {
   }
 
   const handleNextEpisode = () => {
-    if (seasonNumber)
-      navigate(
-        ROUTES.animeWithSeason(alias, seasonNumber, String(episode.number + 1))
-      );
-    else navigate(ROUTES.anime(alias, String(episode.number + 1)));
+    navigate(
+      ROUTES.anime(alias, {
+        episodeNumber: String(episode.number + 1),
+        seasonNumber: seasonNumber ?? undefined
+      })
+    );
   };
 
   return (

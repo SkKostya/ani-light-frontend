@@ -46,10 +46,6 @@ const router = createBrowserRouter([
                 element: <Anime />
               },
               {
-                path: ROUTES.animeWithSeason(),
-                element: <Anime />
-              },
-              {
                 path: ROUTES.animeEpisodes(),
                 element: <AnimeEpisodes />
               },

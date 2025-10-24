@@ -25,15 +25,10 @@ const HistoryCard: React.FC<HistoryCardProps> = ({ entry, onClick }) => {
 
   return (
     <LocalizedLink
-      to={
-        entry.season > 0
-          ? ROUTES.animeWithSeason(
-              entry.alias,
-              String(entry.season),
-              String(entry.episode)
-            )
-          : ROUTES.anime(entry.alias, String(entry.episode))
-      }
+      to={ROUTES.anime(entry.alias, {
+        episodeNumber: String(entry.episode),
+        seasonNumber: entry.season > 0 ? String(entry.season) : undefined
+      })}
     >
       <Box
         sx={historyCardStyles.container}
