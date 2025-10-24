@@ -7,6 +7,8 @@ import Layout from './providers/layout';
 import { ROUTES } from './shared/constants';
 import NotFound from './shared/widgets/errors/404';
 
+const Login = lazy(() => import('./pages/Login/Login'));
+const Register = lazy(() => import('./pages/Register/Register'));
 const Catalog = lazy(() => import('./pages/Catalog/Catalog'));
 const Anime = lazy(() => import('./pages/Anime/Anime'));
 const AnimeEpisodes = lazy(() => import('./pages/AnimeEpisodes/AnimeEpisodes'));
@@ -24,6 +26,14 @@ const router = createBrowserRouter([
       {
         path: '/:lang',
         children: [
+          {
+            path: ROUTES.login,
+            element: <Login />
+          },
+          {
+            path: ROUTES.register,
+            element: <Register />
+          },
           {
             element: <Layout />,
             children: [

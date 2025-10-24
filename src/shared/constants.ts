@@ -1,4 +1,7 @@
 export const ROUTES = {
+  login: 'login',
+  register: 'register',
+
   catalog: 'anime',
   animeEpisodes: (alias = ':alias') => `anime/${alias}`,
   animeWithSeason: (
