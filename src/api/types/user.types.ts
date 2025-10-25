@@ -141,6 +141,7 @@ export interface UserEpisode {
     preview_image: string;
     animeRelease: {
       id: string;
+      alias: string;
       sort_order: number;
       title_ru: string;
       title_en: string;

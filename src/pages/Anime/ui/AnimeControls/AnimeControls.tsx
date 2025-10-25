@@ -1,7 +1,7 @@
 import { PlaylistPlay, SkipNext, SkipPrevious } from '@mui/icons-material';
 import { Box, Button, Stack, Typography } from '@mui/material';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useParams, useSearchParams } from 'react-router';
 
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
@@ -17,39 +17,32 @@ interface IProps {
 const AnimeControls = ({ totalEpisodes, currentEpisodeId }: IProps) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
-  const { alias, seasonNumber, episodeNumber } = useParams<{
-    alias: string;
-    seasonNumber: string;
-    episodeNumber: string;
-  }>();
+  const { alias } = useParams<{ alias: string }>();
+  const [searchParams] = useSearchParams();
+  const seasonNumber = searchParams.get('season');
+  const episodeNumber = searchParams.get('episode');
 
   const { handleMarkEpisodeWatched } = useUserVideo();
 
   const handlePrevious = () => {
     if (Number(episodeNumber) === 1) return;
-    if (seasonNumber)
-      navigate(
-        ROUTES.animeWithSeason(
-          alias,
-          seasonNumber,
-          String(Number(episodeNumber) - 1)
-        )
-      );
-    else navigate(ROUTES.anime(alias, String(Number(episodeNumber) - 1)));
+    navigate(
+      ROUTES.anime(alias, {
+        episodeNumber: String(Number(episodeNumber) - 1),
+        seasonNumber: seasonNumber ?? undefined
+      })
+    );
   };
 
   const handleNext = () => {
     if (Number(episodeNumber) === totalEpisodes) return;
     handleMarkEpisodeWatched(currentEpisodeId);
-    if (seasonNumber)
-      navigate(
-        ROUTES.animeWithSeason(
-          alias,
-          seasonNumber,
-          String(Number(episodeNumber) + 1)
-        )
-      );
-    else navigate(ROUTES.anime(alias, String(Number(episodeNumber) + 1)));
+    navigate(
+      ROUTES.anime(alias, {
+        episodeNumber: String(Number(episodeNumber) + 1),
+        seasonNumber: seasonNumber ?? undefined
+      })
+    );
   };
 
   const handleAllEpisodes = () => {

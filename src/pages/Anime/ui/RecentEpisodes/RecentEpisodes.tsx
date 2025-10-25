@@ -1,7 +1,7 @@
 import { Box, Tooltip, Typography } from '@mui/material';
 import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useParams } from 'react-router';
+import { useSearchParams } from 'react-router';
 
 import type { UserEpisode } from '@/api/types/user.types';
 import { userApi } from '@/api/user.api';
@@ -14,7 +14,8 @@ import { recentEpisodesStyles } from './RecentEpisodes.styles';
 
 const RecentEpisodes = () => {
   const { t } = useTranslation();
-  const { episodeNumber } = useParams<{ episodeNumber: string }>();
+  const [searchParams] = useSearchParams();
+  const episodeNumber = searchParams.get('episode');
 
   const [episodes, setEpisodes] = useState<UserEpisode[]>([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,18 +56,13 @@ const RecentEpisodes = () => {
             >
               <Box sx={recentEpisodesStyles.chip}>
                 <LocalizedLink
-                  to={
-                    episode.episode.animeRelease.sort_order > 0
-                      ? ROUTES.animeWithSeason(
-                          episode.episode.animeRelease.alias,
-                          String(episode.episode.animeRelease.sort_order),
-                          String(episode.episode.number)
-                        )
-                      : ROUTES.anime(
-                          episode.episode.animeRelease.alias,
-                          String(episode.episode.number)
-                        )
-                  }
+                  to={ROUTES.anime(episode.episode.animeRelease.alias, {
+                    episodeNumber: String(episode.episode.number),
+                    seasonNumber:
+                      episode.episode.animeRelease.sort_order > 0
+                        ? String(episode.episode.animeRelease.sort_order)
+                        : undefined
+                  })}
                   style={{
                     textDecoration: 'none',
                     color: 'inherit',

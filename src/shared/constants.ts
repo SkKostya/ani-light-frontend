@@ -1,13 +1,19 @@
 export const ROUTES = {
+  login: 'login',
+  register: 'register',
+
   catalog: 'anime',
   animeEpisodes: (alias = ':alias') => `anime/${alias}`,
-  animeWithSeason: (
+  anime: (
     alias = ':alias',
-    seasonNumber = ':seasonNumber',
-    episodeNumber = ':episodeNumber'
-  ) => `anime/${alias}/season/${seasonNumber}/episode/${episodeNumber}`,
-  anime: (alias = ':alias', episodeNumber = ':episodeNumber') =>
-    `anime/${alias}/episode/${episodeNumber}`,
+    params?: { episodeNumber?: string; seasonNumber?: string }
+  ) => {
+    const searchParams = new URLSearchParams();
+    if (params?.seasonNumber) searchParams.set('season', params.seasonNumber);
+    if (params?.episodeNumber)
+      searchParams.set('episode', params.episodeNumber);
+    return `anime/${alias}/watch${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
+  },
 
   watchList: 'watch-list',
   wantList: 'want-list',

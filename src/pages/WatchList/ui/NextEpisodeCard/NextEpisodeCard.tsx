@@ -49,18 +49,13 @@ const NextEpisodeCard: React.FC<NextEpisodeCardProps> = ({
 
   return (
     <LocalizedLink
-      to={
-        episode.anime_release.sort_order > 0
-          ? ROUTES.animeWithSeason(
-              episode.anime.alias,
-              String(episode.anime_release.sort_order),
-              String(episode.next_episode.number)
-            )
-          : ROUTES.anime(
-              episode.anime.alias,
-              String(episode.next_episode.number)
-            )
-      }
+      to={ROUTES.anime(episode.anime.alias, {
+        episodeNumber: String(episode.next_episode.number),
+        seasonNumber:
+          episode.anime_release.sort_order > 0
+            ? String(episode.anime_release.sort_order)
+            : undefined
+      })}
     >
       <Card sx={nextEpisodeCardStyles.card}>
         {/* Контейнер изображения */}
