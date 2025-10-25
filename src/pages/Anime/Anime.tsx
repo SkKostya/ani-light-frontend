@@ -82,9 +82,8 @@ const Anime = () => {
       }
     };
     loadEpisode();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [alias, seasonNumber, episodeNumber]);
-
-  if (isLoading) return <MainLoader fullWidth />;
 
   if (!episode) {
     const handleRefresh = () => {
@@ -93,6 +92,8 @@ const Anime = () => {
 
     return (
       <Box sx={animePageStyles.container}>
+        {isLoading && <MainLoader fullScreen />}
+
         <Box sx={animePageStyles.notFoundContainer}>
           {/* Иконка */}
           <Box sx={animePageStyles.notFoundIcon}>
