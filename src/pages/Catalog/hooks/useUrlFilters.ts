@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { useSearchParams } from 'react-router';
 
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
@@ -20,18 +21,33 @@ export const useUrlFilters = () => {
   const max_rating = searchParams.get('max_rating')
     ? Number(searchParams.get('max_rating'))
     : undefined;
-  const is_ongoing = searchParams.get('is_ongoing')
-    ? Boolean(searchParams.get('is_ongoing'))
-    : undefined;
+  const is_ongoing =
+    searchParams.get('is_ongoing') === 'true'
+      ? true
+      : searchParams.get('is_ongoing') === 'false'
+        ? false
+        : undefined;
 
-  return {
-    search,
-    debouncedSearch,
-    genre,
-    year_from,
-    year_to,
-    min_rating,
-    max_rating,
-    is_ongoing
-  };
+  return useMemo(
+    () => ({
+      search,
+      debouncedSearch,
+      genre,
+      year_from,
+      year_to,
+      min_rating,
+      max_rating,
+      is_ongoing
+    }),
+    [
+      search,
+      debouncedSearch,
+      genre,
+      year_from,
+      year_to,
+      min_rating,
+      max_rating,
+      is_ongoing
+    ]
+  );
 };

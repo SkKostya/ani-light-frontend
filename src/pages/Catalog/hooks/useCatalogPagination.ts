@@ -43,14 +43,14 @@ export const useCatalogPagination = () => {
     setPagination((prev) => ({ ...prev, isLoading: true }));
 
     try {
-      const newFilters = { ...filters };
-      if (filters.debouncedSearch) {
-        newFilters.search = filters.debouncedSearch;
-        delete newFilters.debouncedSearch;
-      }
-
       const response = await animeApi.getAnimeList({
-        ...filters,
+        search: filters.debouncedSearch,
+        genre: filters.genre,
+        year_from: filters.year_from,
+        year_to: filters.year_to,
+        min_rating: filters.min_rating,
+        max_rating: filters.max_rating,
+        is_ongoing: filters.is_ongoing,
         page,
         limit: pagination.limit
       });
@@ -133,10 +133,18 @@ export const useCatalogPagination = () => {
     []
   );
 
-  // Загружаем начальные данные
+  // Загружаем начальные данные при изменении фильтров
   useEffect(() => {
     resetAndLoad();
-  }, [filters.debouncedSearch]);
+  }, [
+    filters.debouncedSearch,
+    filters.genre,
+    filters.year_from,
+    filters.year_to,
+    filters.min_rating,
+    filters.max_rating,
+    filters.is_ongoing
+  ]);
 
   return {
     isInitialLoading,

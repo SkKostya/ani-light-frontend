@@ -23,6 +23,7 @@ import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 
 import type { IGetAnimeListParams } from '@/api/types/anime.types';
+import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 
 import { useUrlFilters } from '../../hooks/useUrlFilters';
 import {
@@ -56,14 +57,15 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 }) => {
   const { t } = useTranslation();
   const [searchParams, setSearchParams] = useSearchParams();
-  const params = new URLSearchParams(searchParams);
 
   const initialFilters = useUrlFilters();
 
   const [filters, setFilters] = useState<IGetAnimeListParams>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
+  const [searchInput, setSearchInput] = useState(initialFilters.search || '');
 
-  const searchValue = initialFilters.search || '';
+  // Debounced search для автоматического обновления URL
+  const debouncedSearch = useDebouncedValue(searchInput, 500);
 
   const handleFilterChange = (
     key: keyof IGetAnimeListParams,
@@ -73,6 +75,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
   };
 
   const handleApplyFilters = () => {
+    const params = new URLSearchParams(searchParams);
     Object.entries(filters).forEach(([key, value]) => {
       if (value) params.set(key, value.toString());
       else params.delete(key);
@@ -82,13 +85,11 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
   };
 
   const handleSearchChange = (value: string) => {
-    if (value) params.set('search', value);
-    else params.delete('search');
-    setSearchParams(params);
+    setSearchInput(value);
   };
 
   const hasActiveFilters =
-    filters.debouncedSearch ||
+    debouncedSearch ||
     filters.genre ||
     filters.year_from ||
     filters.year_to ||
@@ -98,7 +99,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 
   const getActiveFiltersCount = () => {
     let count = 0;
-    if (filters.debouncedSearch) count++;
+    if (debouncedSearch) count++;
     if (filters.genre) count++;
     if (filters.year_from || filters.year_to) count++;
     if (filters.min_rating || filters.max_rating) count++;
@@ -108,6 +109,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 
   // Сбрасываем фильтры в URL
   const resetFilters = useCallback(() => {
+    const params = new URLSearchParams(searchParams);
     params.delete('search');
     params.delete('genre');
     params.delete('year_from');
@@ -116,11 +118,22 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
     params.delete('max_rating');
     params.delete('is_ongoing');
     setSearchParams(params, { replace: true });
-  }, []);
 
-  useEffect(() => {
+    // Сбрасываем локальное состояние
     setFilters(initialFilters);
-  }, [initialFilters]);
+    setSearchInput('');
+  }, [searchParams, setSearchParams, initialFilters]);
+
+  // Автоматически обновляем URL при изменении debounced search
+  useEffect(() => {
+    const params = new URLSearchParams(searchParams);
+    if (debouncedSearch) {
+      params.set('search', debouncedSearch);
+    } else {
+      params.delete('search');
+    }
+    setSearchParams(params);
+  }, [debouncedSearch, searchParams, setSearchParams]);
 
   return (
     <Box sx={filtersContainerStyles}>
@@ -129,7 +142,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
         <TextField
           fullWidth
           placeholder={t('catalog_search_placeholder')}
-          value={searchValue}
+          value={searchInput}
           onChange={(e) => handleSearchChange(e.target.value)}
           slotProps={{
             input: {
@@ -316,10 +329,15 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
                 {t('catalog_active_filters')}:
               </Typography>
               <Stack direction="row" spacing={1} flexWrap="wrap" useFlexGap>
-                {filters.search && (
+                {debouncedSearch && (
                   <Chip
-                    label={`Поиск: "${filters.search}"`}
-                    onDelete={() => handleFilterChange('search', undefined)}
+                    label={`Поиск: "${debouncedSearch}"`}
+                    onDelete={() => {
+                      setSearchInput('');
+                      const params = new URLSearchParams(searchParams);
+                      params.delete('search');
+                      setSearchParams(params);
+                    }}
                     sx={filterChipStyles}
                     color="primary"
                     variant="outlined"
