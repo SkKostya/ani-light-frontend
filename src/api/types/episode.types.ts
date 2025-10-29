@@ -43,6 +43,17 @@ export interface GetEpisodeDetailsParams {
   number: number;
 }
 
+export interface GetNextEpisodeParams {
+  alias: string;
+  seasonNumber: number;
+  number: number;
+}
+
+export interface GetNextEpisodeResponse {
+  seasonSortOrder: number;
+  nextEpisodeNumber: number;
+}
+
 // Типы для рейтингов эпизодов
 export interface CreateEpisodeRatingDto {
   rating: number;

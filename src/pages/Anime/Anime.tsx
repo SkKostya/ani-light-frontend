@@ -1,14 +1,16 @@
 import { Home, Refresh, VideoLibrary } from '@mui/icons-material';
 import { Box, Button, Container, Typography } from '@mui/material';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useParams, useSearchParams } from 'react-router';
 
 import { episodeApi } from '@/api/episode.api';
-import type { EpisodeDetails } from '@/api/types/episode.types';
+import type { GetNextEpisodeResponse } from '@/api/types/episode.types';
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { LocalizedLink, MainLoader } from '@/shared/ui';
+import { getEpisodeDetails } from '@/store/episode.slice';
+import { useAppDispatch, useAppSelector } from '@/store/store';
 
 import { animePageStyles } from './Anime.styles';
 import { AnimeControls, AnimePlayer, RecentEpisodes } from './ui';
@@ -16,70 +18,49 @@ import { AnimeControls, AnimePlayer, RecentEpisodes } from './ui';
 const Anime = () => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
+  const dispatch = useAppDispatch();
+  const { episode } = useAppSelector((state) => state.episode);
 
   const { alias } = useParams<{ alias: string }>();
   const [searchParams] = useSearchParams();
   const seasonNumber = searchParams.get('season');
   const episodeNumber = searchParams.get('episode');
 
-  const [episode, setEpisode] = useState<EpisodeDetails | null>(null);
+  const animePageRef = useRef<HTMLDivElement>(null);
+
+  const [nextEpisode, setNextEpisode] = useState<GetNextEpisodeResponse | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(true);
-
-  // Тестовые данные для плеера
-  const playerProps = useMemo(() => {
-    const qualityOptions = [];
-
-    if (episode?.video_url_1080) {
-      qualityOptions.push({
-        name: '1080p',
-        url: episode.video_url_1080,
-        default: true
-      });
-    }
-
-    if (episode?.video_url_720) {
-      qualityOptions.push({
-        name: '720p',
-        url: episode.video_url_720,
-        default: !episode?.video_url_1080
-      });
-    }
-
-    if (episode?.video_url_480) {
-      qualityOptions.push({
-        name: '480p',
-        url: episode.video_url_480,
-        default: !episode?.video_url_1080 && !episode?.video_url_720
-      });
-    }
-
-    return {
-      videoUrl: episode?.video_url || undefined,
-      poster: episode?.preview_image
-        ? process.env.PUBLIC_ANILIBRIA_URL + episode.preview_image
-        : undefined,
-      title: episode?.animeRelease.title_ru,
-      subtitle: episode?.animeRelease.title_en,
-      quality: qualityOptions
-    };
-  }, [episode]);
 
   useEffect(() => {
     if (!alias || !seasonNumber || !episodeNumber) return;
     const loadEpisode = async () => {
+      setIsLoading(true);
+      const response = await dispatch(
+        getEpisodeDetails({
+          alias,
+          seasonNumber: parseInt(seasonNumber),
+          number: parseInt(episodeNumber)
+        })
+      );
+
+      if (getEpisodeDetails.rejected.match(response)) {
+        console.error(response.error);
+      }
+
       try {
-        setIsLoading(true);
-        const episode = await episodeApi.getEpisodeDetails({
+        const nextEpisodeResponse = await episodeApi.getNextEpisode({
           alias,
           seasonNumber: parseInt(seasonNumber),
           number: parseInt(episodeNumber)
         });
-        setEpisode(episode);
-      } catch (error) {
-        console.error(error);
-      } finally {
-        setIsLoading(false);
+        setNextEpisode(nextEpisodeResponse);
+      } catch (err) {
+        console.error(err);
       }
+
+      setIsLoading(false);
     };
     loadEpisode();
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -146,44 +127,38 @@ const Anime = () => {
   }
 
   const handleNextEpisode = () => {
+    const nextSeasonSortOrder = nextEpisode?.seasonSortOrder
+      ? String(nextEpisode.seasonSortOrder)
+      : undefined;
+    const nextEpisodeNumber = nextEpisode?.nextEpisodeNumber;
+    if (!nextEpisodeNumber) return;
     navigate(
       ROUTES.anime(alias, {
-        episodeNumber: String(episode.number + 1),
-        seasonNumber: seasonNumber ?? undefined
+        episodeNumber: String(nextEpisodeNumber),
+        seasonNumber: nextSeasonSortOrder ?? seasonNumber ?? undefined
       })
     );
   };
 
   return (
-    <Box sx={animePageStyles.container}>
+    <Box
+      ref={animePageRef}
+      sx={animePageStyles.container}
+      data-next-season-sort-order={nextEpisode?.seasonSortOrder}
+      data-next-episode-number={nextEpisode?.nextEpisodeNumber}
+    >
       <Container maxWidth="lg">
-        {/* Заголовок страницы */}
-        <Box sx={animePageStyles.header}>
-          <Typography variant="h4" sx={animePageStyles.title}>
-            {t('anime_title')}
-          </Typography>
-        </Box>
-
         {/* Плеер */}
         <Box sx={animePageStyles.playerContainer}>
-          <AnimePlayer
-            {...playerProps}
-            episodeId={episode.id}
-            opening={episode.opening}
-            ending={episode.ending}
-            onNextEpisode={
-              episode.number < episode.animeRelease.episodes_total
-                ? handleNextEpisode
-                : undefined
-            }
-          />
+          <AnimePlayer animePageRef={animePageRef} />
         </Box>
 
         {/* Кнопки управления */}
         <Box sx={animePageStyles.controlsContainer}>
           <AnimeControls
-            totalEpisodes={episode.animeRelease.episodes_total}
-            currentEpisodeId={episode.id}
+            onNextEpisode={
+              nextEpisode?.nextEpisodeNumber ? handleNextEpisode : undefined
+            }
           />
         </Box>
 

@@ -3,23 +3,15 @@ import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface UseSkipNextActionsProps {
+  playerRef: React.RefObject<HTMLDivElement | null>;
   artPlayerRef: React.RefObject<ArtPlayer | null>;
-  opening: {
-    start: number;
-    stop: number;
-  };
-  ending: {
-    start: number;
-    stop: number;
-  };
-  onNextEpisode?: () => void;
+  animePageRef: React.RefObject<HTMLDivElement | null>;
 }
 
 const useSkipNextActions = ({
+  playerRef,
   artPlayerRef,
-  opening,
-  ending,
-  onNextEpisode
+  animePageRef
 }: UseSkipNextActionsProps) => {
   const { t } = useTranslation();
 
@@ -54,7 +46,9 @@ const useSkipNextActions = ({
 
     button.addEventListener('click', () => {
       if (artPlayerRef.current) {
-        artPlayerRef.current.video.currentTime = opening.stop;
+        artPlayerRef.current.video.currentTime = Number(
+          playerRef.current?.dataset.openingStop
+        );
       }
     });
 
@@ -98,7 +92,10 @@ const useSkipNextActions = ({
     `;
 
     button.addEventListener('click', () => {
-      onNextEpisode?.();
+      const nextEpisodeButton = document.getElementById('next-episode-button');
+      if (nextEpisodeButton) {
+        nextEpisodeButton.click();
+      }
     });
 
     button.addEventListener('mouseenter', () => {
@@ -122,14 +119,26 @@ const useSkipNextActions = ({
       const skipButton = skipButtonRef.current;
       const nextButton = nextButtonRef.current;
 
+      const openingStart = playerRef.current?.dataset.openingStart
+        ? Number(playerRef.current?.dataset.openingStart)
+        : null;
+      const openingStop = playerRef.current?.dataset.openingStop
+        ? Number(playerRef.current?.dataset.openingStop)
+        : null;
+      const endingStart = playerRef.current?.dataset.endingStart
+        ? Number(playerRef.current?.dataset.endingStart)
+        : 0;
+      const totalDuration =
+        Number(playerRef.current?.dataset.totalDuration || 10) - 10;
+
       if (
-        typeof opening.start === 'number' &&
-        typeof opening.stop === 'number' &&
+        typeof openingStart === 'number' &&
+        typeof openingStop === 'number' &&
         skipButton &&
         skipButton instanceof HTMLElement
       ) {
         const shouldShowSkip =
-          currentTime >= opening?.start && currentTime < opening?.stop;
+          currentTime >= openingStart && currentTime < openingStop;
         const display = shouldShowSkip ? 'block' : 'none';
         if (skipButton.style.display !== display) {
           skipButton.style.display = display;
@@ -137,11 +146,14 @@ const useSkipNextActions = ({
       }
 
       if (
-        typeof ending.start === 'number' &&
+        (typeof endingStart === 'number' || totalDuration) &&
         nextButton &&
         nextButton instanceof HTMLElement
       ) {
-        const shouldShowNext = currentTime >= ending.start && !!onNextEpisode;
+        const animePage = animePageRef.current;
+        const nextEpisodeNumber = animePage?.dataset.nextEpisodeNumber;
+        const shouldShowNext =
+          currentTime >= (endingStart || totalDuration) && !!nextEpisodeNumber;
         const display = shouldShowNext ? 'block' : 'none';
         if (nextButton.style.display !== display) {
           nextButton.style.display = display;
@@ -165,19 +177,14 @@ const useSkipNextActions = ({
   const addButtonsToLayers = () => {
     if (!artPlayerRef.current) return;
 
-    if (skipButtonRef.current)
-      artPlayerRef.current.layers.remove('skip-opening');
-    if (nextButtonRef.current)
-      artPlayerRef.current.layers.remove('next-episode');
-
     // Добавляем кнопку пропуска опенинга
-    artPlayerRef.current.layers.add({
+    artPlayerRef.current.layers.update({
       name: 'skip-opening',
       html: createSkipOpeningButton()
     });
 
     // Добавляем кнопку следующей серии
-    artPlayerRef.current.layers.add({
+    artPlayerRef.current.layers.update({
       name: 'next-episode',
       html: createNextEpisodeButton()
     });

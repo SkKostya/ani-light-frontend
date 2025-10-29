@@ -13,10 +13,10 @@ const useUserVideo = () => {
     if (!token || markedAsWatching.current) return;
     try {
       await userApi.markEpisodeWatching(episodeId);
-      markedAsWatching.current = true;
     } catch (error) {
       console.error(error);
     }
+    markedAsWatching.current = true;
   };
 
   const handleMarkEpisodeWatched = async (episodeId: string) => {
@@ -25,10 +25,10 @@ const useUserVideo = () => {
       await userApi.markEpisodeWatched(episodeId, {
         watched_until_end: true
       });
-      markedAsWatched.current = true;
     } catch (error) {
       console.error(error);
     }
+    markedAsWatched.current = true;
   };
 
   return {

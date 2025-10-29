@@ -1,52 +1,76 @@
 import ArtPlayer from 'artplayer';
 import Hls from 'hls.js';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
+
+import { useAppSelector } from '@/store/store';
 
 import useUserVideo from '../../../hooks/useUserVideo';
 
 interface UseInitPlayerProps {
-  episodeId: string;
-  videoUrl?: string;
-  poster?: string;
-  title?: string;
-  quality?: Array<{
-    name: string;
-    url: string;
-    default?: boolean;
-  }>;
   playerRef: React.RefObject<HTMLDivElement | null>;
   artPlayerRef: React.RefObject<ArtPlayer | null>;
-  ending: {
-    start: number;
-    stop: number;
-  };
   updateButtonsVisibility: (currentTime: number) => void;
   handleSkipNextPosition: (isFullscreen: boolean) => void;
   addButtonsToLayers: () => void;
 }
 
 const useInitPlayer = ({
-  episodeId,
-  videoUrl,
-  poster,
-  title,
-  quality = [],
   playerRef,
   artPlayerRef,
-  ending,
   updateButtonsVisibility,
   handleSkipNextPosition,
   addButtonsToLayers
 }: UseInitPlayerProps) => {
   const { t } = useTranslation();
+  const { episode } = useAppSelector((state) => state.episode);
 
   const { handleStartWatching, handleMarkEpisodeWatched } = useUserVideo();
+  const hlsRef = useRef<Hls | null>(null);
 
   const [isLoading, setIsLoading] = useState(false);
   const [hasError, setHasError] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
-  const [showPlaceholder, setShowPlaceholder] = useState(!videoUrl);
+  const [showPlaceholder, setShowPlaceholder] = useState(false);
+
+  const { episodeId, videoUrl, poster, title, quality } = useMemo(() => {
+    const qualityOptions = [];
+
+    if (episode?.video_url_1080) {
+      qualityOptions.push({
+        name: '1080p',
+        url: episode.video_url_1080,
+        default: true
+      });
+    }
+
+    if (episode?.video_url_720) {
+      qualityOptions.push({
+        name: '720p',
+        url: episode.video_url_720,
+        default: !episode?.video_url_1080
+      });
+    }
+
+    if (episode?.video_url_480) {
+      qualityOptions.push({
+        name: '480p',
+        url: episode.video_url_480,
+        default: !episode?.video_url_1080 && !episode?.video_url_720
+      });
+    }
+
+    return {
+      episodeId: episode?.id || '',
+      videoUrl: episode?.video_url || undefined,
+      poster: episode?.preview_image
+        ? process.env.PUBLIC_ANILIBRIA_URL + episode.preview_image
+        : undefined,
+      title: episode?.animeRelease.title_ru,
+      subtitle: episode?.animeRelease.title_en,
+      quality: qualityOptions
+    };
+  }, [episode]);
 
   // Проверяем, является ли URL HLS потоком
   const isHlsUrl = (url: string) => {
@@ -64,9 +88,14 @@ const useInitPlayer = ({
   const addCustomSettings = () => {
     if (!artPlayerRef.current) return;
 
+    if (artPlayerRef.current.setting.find('quality')) {
+      artPlayerRef.current.setting.remove('quality');
+    }
+
     // Добавляем настройки качества (всегда доступны)
     if (quality.length > 0) {
       artPlayerRef.current.setting.add({
+        name: 'quality',
         html: t('anime_player_quality'),
         width: 200,
         tooltip: t('anime_player_quality_tooltip'),
@@ -119,16 +148,26 @@ const useInitPlayer = ({
       // Добавляем поддержку HLS
       customType: {
         m3u8: (video: HTMLVideoElement, url: string) => {
-          if (Hls.isSupported()) {
-            const hls = new Hls({
+          // Уничтожаем старый HLS если он был
+          if (hlsRef.current) {
+            try {
+              hlsRef.current.destroy();
+              hlsRef.current = null;
+            } catch (e) {
+              console.warn('Previous HLS destroy failed:', e);
+            }
+          }
+
+          if (Hls.isSupported() && !hlsRef.current) {
+            hlsRef.current = new Hls({
               enableWorker: true,
               lowLatencyMode: true,
               backBufferLength: 90
             });
-            hls.loadSource(url);
-            hls.attachMedia(video);
+            hlsRef.current.loadSource(url);
+            hlsRef.current.attachMedia(video);
 
-            hls.on(Hls.Events.ERROR, (_, data) => {
+            hlsRef.current.on(Hls.Events.ERROR, (_, data) => {
               console.error('HLS error:', data);
               if (data.fatal) {
                 switch (data.type) {
@@ -136,23 +175,23 @@ const useInitPlayer = ({
                     console.error(
                       'Fatal network error encountered, try to recover'
                     );
-                    hls.startLoad();
+                    hlsRef.current?.startLoad();
                     break;
                   case Hls.ErrorTypes.MEDIA_ERROR:
                     console.error(
                       'Fatal media error encountered, try to recover'
                     );
-                    hls.recoverMediaError();
+                    hlsRef.current?.recoverMediaError();
                     break;
                   default:
                     console.error('Fatal error, cannot recover');
-                    hls.destroy();
+                    hlsRef.current?.destroy();
                     break;
                 }
               }
             });
 
-            return hls;
+            return hlsRef.current;
           } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
             // Нативная поддержка HLS (Safari)
             video.src = url;
@@ -169,7 +208,7 @@ const useInitPlayer = ({
 
   // Инициализация плеера
   useEffect(() => {
-    if (!playerRef.current || !videoUrl) return;
+    if (!playerRef.current || !videoUrl || artPlayerRef.current) return;
 
     const initPlayer = async () => {
       try {
@@ -198,12 +237,6 @@ const useInitPlayer = ({
           ) {
             throw new Error('HLS формат не поддерживается в этом браузере');
           }
-        }
-
-        // Уничтожаем предыдущий экземпляр плеера
-        if (artPlayerRef.current) {
-          artPlayerRef.current.destroy();
-          artPlayerRef.current = null;
         }
 
         // Создаем новый экземпляр плеера
@@ -304,7 +337,16 @@ const useInitPlayer = ({
             updateButtonsVisibility(newTime);
 
             if (newTime >= 30) handleStartWatching(episodeId);
-            if (typeof ending.start === 'number' && newTime >= ending.start)
+            const endingStart = playerRef.current?.dataset.endingStart
+              ? Number(playerRef.current?.dataset.endingStart)
+              : null;
+            const totalDuration = Number(
+              playerRef.current?.dataset.totalDuration
+            );
+            if (
+              (typeof endingStart === 'number' && newTime >= endingStart) ||
+              (totalDuration && newTime >= totalDuration - 10)
+            )
               handleMarkEpisodeWatched(episodeId);
           });
 
@@ -346,10 +388,15 @@ const useInitPlayer = ({
         if (video && 'hls' in video && video.hls) {
           (video.hls as Hls).destroy();
         }
-        artPlayerRef.current.destroy();
-        artPlayerRef.current = null;
       }
     };
+  }, [videoUrl]);
+
+  useEffect(() => {
+    if (artPlayerRef.current && videoUrl) {
+      artPlayerRef.current.switchUrl(videoUrl);
+      addCustomSettings();
+    }
   }, [videoUrl]);
 
   // Обработка повторной попытки

@@ -7,9 +7,11 @@ import type { TypedUseSelectorHook } from 'react-redux';
 import { useDispatch, useSelector } from 'react-redux';
 
 import appReducer from './app.slice';
+import episodeReducer from './episode.slice';
 
 const rootReducer = combineReducers({
-  app: appReducer
+  app: appReducer,
+  episode: episodeReducer
 });
 
 const middleware: Middleware[] = [];

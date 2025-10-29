@@ -6,42 +6,20 @@ import ArtPlayer from 'artplayer';
 import { useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { useAppSelector } from '@/store/store';
+
 import { animePlayerStyles } from './AnimePlayer.styles';
 import useInitPlayer from './hooks/useInitPlayer';
 import useSkipNextActions from './hooks/useSkipNextActions';
 
 interface AnimePlayerProps {
-  episodeId: string;
-  videoUrl?: string;
-  poster?: string;
-  title?: string;
-  quality?: Array<{
-    name: string;
-    url: string;
-    default?: boolean;
-  }>;
-  opening: {
-    start: number;
-    stop: number;
-  };
-  ending: {
-    start: number;
-    stop: number;
-  };
-  onNextEpisode?: () => void;
+  animePageRef: React.RefObject<HTMLDivElement | null>;
 }
 
-const AnimePlayer = ({
-  episodeId,
-  videoUrl,
-  poster,
-  title,
-  quality = [],
-  opening,
-  ending,
-  onNextEpisode
-}: AnimePlayerProps) => {
+const AnimePlayer = ({ animePageRef }: AnimePlayerProps) => {
   const { t } = useTranslation();
+  const { episode } = useAppSelector((state) => state.episode);
+
   const playerRef = useRef<HTMLDivElement>(null);
   const artPlayerRef = useRef<ArtPlayer | null>(null);
 
@@ -50,22 +28,15 @@ const AnimePlayer = ({
     handleSkipNextPosition,
     addButtonsToLayers
   } = useSkipNextActions({
+    playerRef,
     artPlayerRef,
-    opening,
-    ending,
-    onNextEpisode
+    animePageRef
   });
 
   const { isLoading, hasError, errorMessage, showPlaceholder, handleRetry } =
     useInitPlayer({
-      episodeId,
-      videoUrl,
-      poster,
-      title,
-      quality,
       playerRef,
       artPlayerRef,
-      ending,
       updateButtonsVisibility,
       handleSkipNextPosition,
       addButtonsToLayers
@@ -79,12 +50,6 @@ const AnimePlayer = ({
           <Box sx={animePlayerStyles.placeholderContent}>
             <Typography variant="h4" sx={animePlayerStyles.placeholderTitle}>
               {t('anime_player_placeholder_title')}
-            </Typography>
-            <Typography
-              variant="body1"
-              sx={animePlayerStyles.placeholderSubtitle}
-            >
-              {t('anime_player_placeholder_subtitle')}
             </Typography>
           </Box>
 
@@ -103,7 +68,15 @@ const AnimePlayer = ({
     <Box sx={animePlayerStyles.container}>
       {/* Контейнер для плеера */}
       <Box sx={animePlayerStyles.playerWrapper}>
-        <div ref={playerRef} style={{ width: '100%', height: '100%' }} />
+        <div
+          ref={playerRef}
+          style={{ width: '100%', height: '100%' }}
+          data-opening-start={episode?.opening.start}
+          data-opening-stop={episode?.opening.stop}
+          data-ending-start={episode?.ending.start}
+          data-ending-stop={episode?.ending.stop}
+          data-total-duration={episode?.duration}
+        />
       </Box>
 
       {/* Overlay загрузки */}

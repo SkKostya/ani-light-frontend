@@ -5,22 +5,23 @@ import { useParams, useSearchParams } from 'react-router';
 
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
+import { useAppSelector } from '@/store/store';
 
 import useUserVideo from '../../hooks/useUserVideo';
 import { animeControlsStyles } from './AnimeControls.styles';
 
-interface IProps {
-  totalEpisodes: number;
-  currentEpisodeId: string;
-}
-
-const AnimeControls = ({ totalEpisodes, currentEpisodeId }: IProps) => {
+const AnimeControls = ({ onNextEpisode }: { onNextEpisode?: () => void }) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
   const { alias } = useParams<{ alias: string }>();
+
+  const { episode } = useAppSelector((state) => state.episode);
+
   const [searchParams] = useSearchParams();
   const seasonNumber = searchParams.get('season');
   const episodeNumber = searchParams.get('episode');
+
+  const currentEpisodeId = episode?.id || '';
 
   const { handleMarkEpisodeWatched } = useUserVideo();
 
@@ -35,14 +36,9 @@ const AnimeControls = ({ totalEpisodes, currentEpisodeId }: IProps) => {
   };
 
   const handleNext = () => {
-    if (Number(episodeNumber) === totalEpisodes) return;
+    if (!onNextEpisode) return;
     handleMarkEpisodeWatched(currentEpisodeId);
-    navigate(
-      ROUTES.anime(alias, {
-        episodeNumber: String(Number(episodeNumber) + 1),
-        seasonNumber: seasonNumber ?? undefined
-      })
-    );
+    onNextEpisode();
   };
 
   const handleAllEpisodes = () => {
@@ -85,10 +81,11 @@ const AnimeControls = ({ totalEpisodes, currentEpisodeId }: IProps) => {
 
         {/* Следующая серия */}
         <Button
+          id="next-episode-button"
           variant="contained"
           onClick={handleNext}
           sx={animeControlsStyles.controlButton}
-          disabled={Number(episodeNumber) === totalEpisodes}
+          disabled={!onNextEpisode}
         >
           <Typography
             variant="body1"

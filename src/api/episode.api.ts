@@ -12,6 +12,8 @@ import type {
   EpisodeRatingResponse,
   GetEpisodeDetailsParams,
   GetEpisodesParams,
+  GetNextEpisodeParams,
+  GetNextEpisodeResponse,
   UpdateEpisodeCommentDto,
   UpdateEpisodeRatingDto
 } from './types/episode.types';
@@ -34,6 +36,19 @@ class EpisodeApi extends ApiConnector {
   getEpisodeDetails(params: GetEpisodeDetailsParams): Promise<EpisodeDetails> {
     return this.call<GetEpisodeDetailsParams, EpisodeDetails>({
       path: `episodes/by-number`,
+      method: 'get',
+      params
+    });
+  }
+
+  /**
+   * Получить наличие следующего эпизода
+   */
+  getNextEpisode(
+    params: GetNextEpisodeParams
+  ): Promise<GetNextEpisodeResponse> {
+    return this.call<GetNextEpisodeParams, GetNextEpisodeResponse>({
+      path: `episodes/next`,
       method: 'get',
       params
     });
