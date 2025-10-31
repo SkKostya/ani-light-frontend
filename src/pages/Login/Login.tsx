@@ -12,7 +12,17 @@ import {
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { containerStyles, formStyles, headerStyles } from './Login.styles';
+import { ROUTES } from '@/shared/constants';
+import { LocalizedLink } from '@/shared/ui';
+
+import {
+  containerStyles,
+  formStyles,
+  headerStyles,
+  linkContainerStyles,
+  linkStyles,
+  linkTextStyles
+} from './Login.styles';
 import type { LoginFormData } from './types';
 
 /**
@@ -175,6 +185,16 @@ const Login: React.FC = () => {
               >
                 {isSubmitting ? t('login_submitting') : t('login_button')}
               </Button>
+
+              {/* Ссылка на регистрацию */}
+              <Box sx={linkContainerStyles}>
+                <Typography sx={linkTextStyles}>
+                  {t('login_no_account')}
+                </Typography>
+                <LocalizedLink to={`/${ROUTES.register}`} sx={linkStyles}>
+                  {t('login_register_link')}
+                </LocalizedLink>
+              </Box>
             </Box>
           </CardContent>
         </Card>

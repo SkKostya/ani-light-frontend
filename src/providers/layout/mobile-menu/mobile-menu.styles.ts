@@ -65,6 +65,23 @@ export const listItemTextStyles: SxProps<Theme> = {
   fontWeight: 500
 };
 
+export const authButtonsStyles: SxProps<Theme> = {
+  p: 2,
+  borderTop: '1px solid var(--color-border)',
+  borderBottom: '1px solid var(--color-border)'
+};
+
+export const authButtonStyles: SxProps<Theme> = {
+  borderRadius: 'var(--border-radius-medium)',
+  textTransform: 'none',
+  fontWeight: 600,
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: 'var(--shadow-medium)'
+  }
+};
+
 export const controlsStyles: SxProps<Theme> = {
   p: 2,
   borderTop: '1px solid var(--color-border)',

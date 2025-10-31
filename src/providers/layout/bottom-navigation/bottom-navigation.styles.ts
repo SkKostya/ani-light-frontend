@@ -20,6 +20,7 @@ export const bottomNavigationStyles: SxProps<Theme> = {
       color: 'text.secondary',
       minWidth: 'auto',
       paddingBottom: '8px',
+      paddingInline: '8px',
       '&.Mui-selected': {
         color: 'primary.main',
         '& .MuiSvgIcon-root': {

@@ -33,4 +33,4 @@ const episodeSlice = createSlice({
   }
 });
 
-export default episodeSlice.reducer;
+export default episodeSlice;

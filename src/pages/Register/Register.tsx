@@ -12,7 +12,17 @@ import {
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 
-import { containerStyles, formStyles, headerStyles } from './Register.styles';
+import { ROUTES } from '@/shared/constants';
+import { LocalizedLink } from '@/shared/ui';
+
+import {
+  containerStyles,
+  formStyles,
+  headerStyles,
+  linkContainerStyles,
+  linkStyles,
+  linkTextStyles
+} from './Register.styles';
 import type { RegisterFormData } from './types';
 
 /**
@@ -246,6 +256,16 @@ const Register: React.FC = () => {
               >
                 {isSubmitting ? t('register_submitting') : t('register_button')}
               </Button>
+
+              {/* Ссылка на вход */}
+              <Box sx={linkContainerStyles}>
+                <Typography sx={linkTextStyles}>
+                  {t('register_has_account')}
+                </Typography>
+                <LocalizedLink to={`/${ROUTES.login}`} sx={linkStyles}>
+                  {t('register_login_link')}
+                </LocalizedLink>
+              </Box>
             </Box>
           </CardContent>
         </Card>

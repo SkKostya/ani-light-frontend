@@ -56,7 +56,7 @@ export const {
   toggleTheme
 } = appSlice.actions;
 
-export default appSlice.reducer;
+export default appSlice;
 
 interface IAppState {
   headerConfig: {

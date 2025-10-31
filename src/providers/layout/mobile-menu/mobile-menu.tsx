@@ -3,11 +3,14 @@ import {
   Close,
   History,
   Home,
+  Login,
+  Logout,
   PlaylistAdd,
   PlaylistPlay
 } from '@mui/icons-material';
 import {
   Box,
+  Button,
   Drawer,
   IconButton,
   List,
@@ -23,9 +26,13 @@ import { useLocation } from 'react-router';
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { isNavigationItemActive } from '@/shared/services/helpers/navigate-helper';
-import { ThemeToggle } from '@/shared/ui';
+import { LocalizedLink, ThemeToggle } from '@/shared/ui';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { setUser } from '@/store/user.slice';
 
 import {
+  authButtonStyles,
+  authButtonsStyles,
   closeButtonStyles,
   controlsStyles,
   drawerContentStyles,
@@ -52,6 +59,9 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
   const { t } = useTranslation();
   const { navigate } = useAppNavigate();
   const location = useLocation();
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
+  const isLoggedIn = !!user;
 
   const menuItems = [
     {
@@ -92,8 +102,13 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
     return isNavigationItemActive(location.pathname, path);
   };
 
-  const handleItemClick = (path: string) => {
-    navigate(path);
+  const handleLogin = () => {
+    navigate(ROUTES.login);
+    onClose();
+  };
+
+  const handleLogout = () => {
+    dispatch(setUser(undefined));
     onClose();
   };
 
@@ -113,36 +128,66 @@ const MobileMenu: React.FC<MobileMenuProps> = ({ open, onClose }) => {
       <List sx={listStyles}>
         {menuItems.map((item) => (
           <ListItem key={item.path} disablePadding>
-            <ListItemButton
-              onClick={() => handleItemClick(item.path)}
-              sx={{
-                ...listItemButtonStyles,
-                ...(isActiveItem(item.path) && {
-                  backgroundColor: 'var(--color-background-elevated)',
-                  borderLeft: '4px solid var(--color-primary)',
-                  '&:hover': {
-                    backgroundColor: 'var(--color-background-elevated)'
-                  }
-                })
-              }}
+            <LocalizedLink
+              to={item.path}
+              style={{ display: 'block', width: '100%' }}
+              onClick={onClose}
             >
-              <ListItemIcon sx={listItemIconStyles}>{item.icon}</ListItemIcon>
-              <ListItemText
-                primary={item.label}
-                primaryTypographyProps={{
-                  sx: {
-                    ...listItemTextStyles,
-                    ...(isActiveItem(item.path) && {
-                      fontWeight: 600,
-                      color: 'primary.main'
-                    })
-                  }
+              <ListItemButton
+                sx={{
+                  ...listItemButtonStyles,
+                  ...(isActiveItem(item.path) && {
+                    backgroundColor: 'var(--color-background-elevated)',
+                    borderLeft: '4px solid var(--color-primary)',
+                    '&:hover': {
+                      backgroundColor: 'var(--color-background-elevated)'
+                    }
+                  })
                 }}
-              />
-            </ListItemButton>
+              >
+                <ListItemIcon sx={listItemIconStyles}>{item.icon}</ListItemIcon>
+                <ListItemText
+                  primary={item.label}
+                  primaryTypographyProps={{
+                    sx: {
+                      ...listItemTextStyles,
+                      ...(isActiveItem(item.path) && {
+                        fontWeight: 600,
+                        color: 'primary.main'
+                      })
+                    }
+                  }}
+                />
+              </ListItemButton>
+            </LocalizedLink>
           </ListItem>
         ))}
       </List>
+
+      {/* Кнопки авторизации */}
+      <Box sx={authButtonsStyles}>
+        {isLoggedIn ? (
+          <Button
+            startIcon={<Logout />}
+            onClick={handleLogout}
+            variant="outlined"
+            fullWidth
+            sx={authButtonStyles}
+          >
+            {t('layout.layout_button_logout')}
+          </Button>
+        ) : (
+          <Button
+            startIcon={<Login />}
+            onClick={handleLogin}
+            variant="contained"
+            fullWidth
+            sx={authButtonStyles}
+          >
+            {t('layout.layout_button_login')}
+          </Button>
+        )}
+      </Box>
 
       {/* Управление */}
       <Box sx={controlsStyles}>

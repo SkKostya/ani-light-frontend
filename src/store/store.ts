@@ -8,10 +8,12 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import appReducer from './app.slice';
 import episodeReducer from './episode.slice';
+import userReducer from './user.slice';
 
 const rootReducer = combineReducers({
-  app: appReducer,
-  episode: episodeReducer
+  app: appReducer.reducer,
+  episode: episodeReducer.reducer,
+  user: userReducer.reducer
 });
 
 const middleware: Middleware[] = [];

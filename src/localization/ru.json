@@ -13,6 +13,8 @@
     "user_menu_profile": "Профиль",
     "user_menu_settings": "Настройки",
     "user_menu_logout": "Выйти",
+    "layout_button_login": "Войти",
+    "layout_button_logout": "Выйти",
     "language_switch": "Сменить язык",
     "theme_switch": "Сменить тему",
     "menu_toggle": "Меню"
@@ -312,5 +314,9 @@
   "form_confirm_password_label": "Подтверждение пароля",
   "form_confirm_password_placeholder": "Повторите пароль",
   "form_validation_confirm_password_required": "Подтверждение пароля обязательно",
-  "form_validation_confirm_password_mismatch": "Пароли не совпадают"
+  "form_validation_confirm_password_mismatch": "Пароли не совпадают",
+  "login_no_account": "Нет аккаунта?",
+  "login_register_link": "Зарегистрироваться",
+  "register_has_account": "Уже есть аккаунт?",
+  "register_login_link": "Войти"
 }

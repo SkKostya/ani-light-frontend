@@ -1,7 +1,9 @@
-import { Search } from '@mui/icons-material';
+import { Login, Logout, Search } from '@mui/icons-material';
 import {
   AppBar,
   Box,
+  Button,
+  IconButton,
   InputBase,
   Toolbar,
   Typography,
@@ -14,9 +16,13 @@ import { useTranslation } from 'react-i18next';
 import { ROUTES } from '@/shared/constants';
 import { useAppNavigate } from '@/shared/hooks/useAppNavigate';
 import { ThemeToggle } from '@/shared/ui';
+import { useAppDispatch, useAppSelector } from '@/store/store';
+import { setUser } from '@/store/user.slice';
 
 import {
   appBarStyles,
+  authButtonStyles,
+  authIconButtonStyles,
   controlsContainerStyles,
   logoContainerStyles,
   logoTextStyles,
@@ -38,6 +44,9 @@ const Header: React.FC = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [searchQuery, setSearchQuery] = useState('');
+  const dispatch = useAppDispatch();
+  const user = useAppSelector((state) => state.user.user);
+  const isLoggedIn = !!user;
 
   const handleSearch = (event: React.FormEvent) => {
     event.preventDefault();
@@ -48,6 +57,14 @@ const Header: React.FC = () => {
 
   const handleLogoClick = () => {
     navigate('/' + ROUTES.catalog);
+  };
+
+  const handleLogin = () => {
+    navigate(ROUTES.login);
+  };
+
+  const handleLogout = () => {
+    dispatch(setUser(undefined));
   };
 
   return (
@@ -79,6 +96,24 @@ const Header: React.FC = () => {
         {!isMobile && (
           <Box sx={controlsContainerStyles}>
             <ThemeToggle size="medium" />
+            {isLoggedIn ? (
+              <IconButton
+                onClick={handleLogout}
+                sx={authIconButtonStyles}
+                title={t('layout.layout_button_logout')}
+              >
+                <Logout />
+              </IconButton>
+            ) : (
+              <Button
+                startIcon={<Login />}
+                onClick={handleLogin}
+                variant="contained"
+                sx={authButtonStyles}
+              >
+                {t('layout.layout_button_login')}
+              </Button>
+            )}
 
             {/* TODO английский не поддерживается на сервере */}
             {/* <LanguageSwitcher size="medium" /> */}

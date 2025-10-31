@@ -101,3 +101,23 @@ export const controlsContainerStyles: SxProps<Theme> = {
   gap: { xs: 0.5, md: 1 },
   marginLeft: 'auto' // Прижимаем к правому краю
 };
+
+export const authButtonStyles: SxProps<Theme> = {
+  borderRadius: 'var(--border-radius-medium)',
+  textTransform: 'none',
+  fontWeight: 600,
+  px: 2,
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    boxShadow: 'var(--shadow-medium)'
+  }
+};
+
+export const authIconButtonStyles: SxProps<Theme> = {
+  transition: 'all 0.3s ease-in-out',
+  '&:hover': {
+    transform: 'translateY(-2px)',
+    color: 'primary.main'
+  }
+};

@@ -13,6 +13,8 @@
     "user_menu_profile": "Profile",
     "user_menu_settings": "Settings",
     "user_menu_logout": "Logout",
+    "layout_button_login": "Sign In",
+    "layout_button_logout": "Logout",
     "language_switch": "Change language",
     "theme_switch": "Change theme",
     "menu_toggle": "Menu"
@@ -312,5 +314,9 @@
   "form_confirm_password_label": "Confirm Password",
   "form_confirm_password_placeholder": "Repeat password",
   "form_validation_confirm_password_required": "Password confirmation is required",
-  "form_validation_confirm_password_mismatch": "Passwords do not match"
+  "form_validation_confirm_password_mismatch": "Passwords do not match",
+  "login_no_account": "Don't have an account?",
+  "login_register_link": "Sign Up",
+  "register_has_account": "Already have an account?",
+  "register_login_link": "Sign In"
 }
