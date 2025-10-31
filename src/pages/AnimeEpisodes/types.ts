@@ -48,6 +48,7 @@ export interface AnimeDetailedInfo {
   isInWatchList: boolean;
   isInWantList: boolean;
   seasons: AnimeSeason[];
+  movies: AnimeSeason[];
   ageRating: {
     label: string;
     description: string;
