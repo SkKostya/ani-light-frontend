@@ -3,6 +3,7 @@ import Hls from 'hls.js';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { storageApi } from '@/local-storage-api/storage.api';
 import { useAppSelector } from '@/store/store';
 
 import useUserVideo from '../../../hooks/useUserVideo';
@@ -10,6 +11,7 @@ import useUserVideo from '../../../hooks/useUserVideo';
 interface UseInitPlayerProps {
   playerRef: React.RefObject<HTMLDivElement | null>;
   artPlayerRef: React.RefObject<ArtPlayer | null>;
+  animePageRef: React.RefObject<HTMLDivElement | null>;
   updateButtonsVisibility: (currentTime: number) => void;
   handleSkipNextPosition: (isFullscreen: boolean) => void;
   addButtonsToLayers: () => void;
@@ -18,6 +20,7 @@ interface UseInitPlayerProps {
 const useInitPlayer = ({
   playerRef,
   artPlayerRef,
+  animePageRef,
   updateButtonsVisibility,
   handleSkipNextPosition,
   addButtonsToLayers
@@ -331,10 +334,49 @@ const useInitPlayer = ({
             setIsLoading(true);
           });
 
+          artPlayerRef.current.on('video:play', () => {
+            const seasonExternalId = animePageRef.current?.dataset
+              .seasonExternalId
+              ? Number(animePageRef.current?.dataset.seasonExternalId)
+              : 0;
+            const currentEpisodeNumber = animePageRef.current?.dataset
+              .currentEpisodeNumber
+              ? Number(animePageRef.current?.dataset.currentEpisodeNumber)
+              : 0;
+            const watchingTime = storageApi.getWatchingTime(
+              seasonExternalId,
+              currentEpisodeNumber
+            );
+            if (
+              watchingTime > 0 &&
+              artPlayerRef.current &&
+              artPlayerRef.current.currentTime === 0
+            ) {
+              artPlayerRef.current.currentTime = watchingTime;
+            }
+          });
+
           artPlayerRef.current.on('video:timeupdate', () => {
             const newTime = artPlayerRef.current?.currentTime || 0;
             // Обновляем видимость кнопок при изменении времени
             updateButtonsVisibility(newTime);
+
+            // Сохраняем время просмотра
+            if (Math.floor(newTime) % 5 === 0) {
+              const seasonExternalId = animePageRef.current?.dataset
+                .seasonExternalId
+                ? Number(animePageRef.current?.dataset.seasonExternalId)
+                : 0;
+              const currentEpisodeNumber = animePageRef.current?.dataset
+                .currentEpisodeNumber
+                ? Number(animePageRef.current?.dataset.currentEpisodeNumber)
+                : 0;
+              storageApi.updateWatchingTime({
+                seasonExternalId: seasonExternalId,
+                episodeNumber: currentEpisodeNumber,
+                watchingTime: Math.floor(newTime)
+              });
+            }
 
             if (newTime >= 30) handleStartWatching(episodeId);
             const endingStart = playerRef.current?.dataset.endingStart

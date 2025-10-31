@@ -37,6 +37,7 @@ const AnimePlayer = ({ animePageRef }: AnimePlayerProps) => {
     useInitPlayer({
       playerRef,
       artPlayerRef,
+      animePageRef,
       updateButtonsVisibility,
       handleSkipNextPosition,
       addButtonsToLayers

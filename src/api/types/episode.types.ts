@@ -25,6 +25,7 @@ export interface Episode {
 export interface EpisodeDetails extends Episode {
   animeRelease: {
     id: string;
+    external_id: number;
     title_ru: string;
     title_en: string;
     poster_url: string;

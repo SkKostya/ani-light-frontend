@@ -146,6 +146,8 @@ const Anime = () => {
       sx={animePageStyles.container}
       data-next-season-sort-order={nextEpisode?.seasonSortOrder}
       data-next-episode-number={nextEpisode?.nextEpisodeNumber}
+      data-season-external-id={episode?.animeRelease.external_id}
+      data-current-episode-number={episode?.number}
     >
       <Container maxWidth="lg">
         {/* Плеер */}
