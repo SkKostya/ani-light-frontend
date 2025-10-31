@@ -124,9 +124,17 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
     setSearchParams(params, { replace: true });
 
     // Сбрасываем локальное состояние
-    setFilters(initialFilters);
+    setFilters({
+      search: '',
+      genre: undefined,
+      year_from: undefined,
+      year_to: undefined,
+      min_rating: undefined,
+      max_rating: undefined,
+      is_ongoing: undefined
+    });
     setSearchInput('');
-  }, [initialFilters]);
+  }, []);
 
   // Автоматически обновляем URL при изменении debounced search
   useEffect(() => {
