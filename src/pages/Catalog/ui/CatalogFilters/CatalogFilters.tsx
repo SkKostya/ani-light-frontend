@@ -22,7 +22,9 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useSearchParams } from 'react-router';
 
+import { dictionariesApi } from '@/api/dictionaries.api';
 import type { IGetAnimeListParams } from '@/api/types/anime.types';
+import type { Genre } from '@/api/types/dictionaries.types';
 import { useDebouncedValue } from '@/shared/hooks/useDebouncedValue';
 
 import { useUrlFilters } from '../../hooks/useUrlFilters';
@@ -60,6 +62,8 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 
   const initialFilters = useUrlFilters();
 
+  const [genres, setGenres] = useState<Genre[]>([]);
+
   const [filters, setFilters] = useState<IGetAnimeListParams>(initialFilters);
   const [showFilters, setShowFilters] = useState(false);
   const [searchInput, setSearchInput] = useState(initialFilters.search || '');
@@ -75,7 +79,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
   };
 
   const handleApplyFilters = () => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(location.search);
     Object.entries(filters).forEach(([key, value]) => {
       if (value) params.set(key, value.toString());
       else params.delete(key);
@@ -109,7 +113,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
 
   // Сбрасываем фильтры в URL
   const resetFilters = useCallback(() => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(location.search);
     params.delete('search');
     params.delete('genre');
     params.delete('year_from');
@@ -122,18 +126,30 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
     // Сбрасываем локальное состояние
     setFilters(initialFilters);
     setSearchInput('');
-  }, [searchParams, setSearchParams, initialFilters]);
+  }, [initialFilters]);
 
   // Автоматически обновляем URL при изменении debounced search
   useEffect(() => {
-    const params = new URLSearchParams(searchParams);
+    const params = new URLSearchParams(location.search);
     if (debouncedSearch) {
       params.set('search', debouncedSearch);
     } else {
       params.delete('search');
     }
     setSearchParams(params);
-  }, [debouncedSearch, searchParams, setSearchParams]);
+  }, [debouncedSearch]);
+
+  useEffect(() => {
+    const getGenres = async () => {
+      try {
+        const genres = await dictionariesApi.getAllGenres();
+        setGenres(genres);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    getGenres();
+  }, []);
 
   return (
     <Box sx={filtersContainerStyles}>
@@ -282,8 +298,7 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
             </FormControl>
 
             {/* Жанр */}
-            {/* TODO Настроить получение жанров из API */}
-            {/* <FormControl sx={formControlStyles}>
+            <FormControl sx={formControlStyles}>
               <InputLabel>{t('catalog_filter_genre')}</InputLabel>
               <Select
                 value={filters.genre || ''}
@@ -293,13 +308,13 @@ export const CatalogFiltersComponent: React.FC<CatalogFiltersProps> = ({
                 <MenuItem value="">
                   <em>{t('catalog_filter_all_genres')}</em>
                 </MenuItem>
-                {GENRES.map((genre) => (
-                  <MenuItem key={genre} value={genre}>
-                    {genre}
+                {genres.map((genre) => (
+                  <MenuItem key={genre.id} value={genre.name}>
+                    {genre.name}
                   </MenuItem>
                 ))}
               </Select>
-            </FormControl> */}
+            </FormControl>
 
             {/* Только продолжающиеся */}
             <FormControlLabel

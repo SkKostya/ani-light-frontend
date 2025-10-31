@@ -2,7 +2,7 @@ import type { SxProps, Theme } from '@mui/material';
 
 export const animePageStyles = {
   container: {
-    minHeight: '100vh',
+    flex: 1,
     backgroundColor: 'var(--color-background)',
     py: { xs: 2, sm: 3, md: 4 }
   } as SxProps<Theme>,

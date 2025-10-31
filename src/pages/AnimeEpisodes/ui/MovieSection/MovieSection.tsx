@@ -72,7 +72,7 @@ const MovieSection = ({ movies }: MovieSectionProps) => {
         sx={movieSectionStyles.accordionSummary}
       >
         <Typography variant="h6" sx={movieSectionStyles.title}>
-          Фильмы
+          {t('anime_movies_title')}
         </Typography>
       </AccordionSummary>
 

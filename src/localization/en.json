@@ -253,6 +253,7 @@
   "anime_episodes_title": "Anime Episodes",
   "anime_episodes_seasons_title": "Seasons",
   "anime_episodes_ova_title": "OVA Episodes",
+  "anime_movies_title": "Movies",
   "anime_episodes_related_title": "Related Anime",
   "anime_episodes_ova_description": "Additional episodes not part of the main series",
   "anime_episodes_total_episodes": "{{count}} episode",
